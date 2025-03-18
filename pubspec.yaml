@@ -60,6 +60,7 @@ dependencies:
   # API Integration
   dio: ^5.3.3
   json_annotation: ^4.8.1
+  mobile_scanner: ^6.0.7
 
 dev_dependencies:
   flutter_test:
