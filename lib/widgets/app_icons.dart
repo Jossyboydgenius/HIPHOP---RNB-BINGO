@@ -13,6 +13,7 @@ class AppIconData {
   static const String arrowLeft = '$_base/arrowleft.svg';
   static const String ban = '$_base/ban.svg';
   static const String mute = '$_base/mute.svg';
+  static const String close = '$_base/close.svg';
 
   // Game related icons
   static const String card = '$_base/card.svg';
