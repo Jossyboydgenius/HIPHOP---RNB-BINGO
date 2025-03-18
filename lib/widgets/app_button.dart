@@ -126,7 +126,6 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
       return AppIcons(
         icon: widget.iconPath!,
         size: widget.iconSize!,
-        color: widget.iconColor ?? widget.textColor,
       );
     } else if (widget.imagePath != null) {
       return AppImages(
