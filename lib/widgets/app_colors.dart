@@ -42,4 +42,14 @@ class AppColors {
   static const Color gradientPink = Color(0xFFFDA5FF);
   static const Color gradientPinkDark = Color(0xFFFC8AFF);
   static const Color gradientPurple = Color(0xFFDA57F0);
+
+  // Loading bar colors
+  static const Color loadingBarStart = Color(0xFF8B60EF);
+  static const Color loadingBarEnd = Color(0xFF2A0C32);
+
+  static const LinearGradient loadingBarGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [loadingBarStart, loadingBarEnd],
+  );
 } 
