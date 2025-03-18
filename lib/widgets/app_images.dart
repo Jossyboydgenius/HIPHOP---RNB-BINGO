@@ -44,6 +44,8 @@ class AppImages extends StatelessWidget {
   final double? height;
   final double? width;
   final BoxFit? fit;
+  final Animation<double>? animation;
+  final AlignmentGeometry? alignment;
 
   const AppImages({
     super.key,
@@ -51,19 +53,31 @@ class AppImages extends StatelessWidget {
     this.height,
     this.width,
     this.fit,
+    this.animation,
+    this.alignment,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
+    Widget image = Image.asset(
       imagePath,
       height: height,
       width: width,
       fit: fit,
+      alignment: alignment ?? Alignment.center,
       errorBuilder: (context, error, stackTrace) {
         return _errorWidget();
       },
     );
+
+    if (animation != null) {
+      return ScaleTransition(
+        scale: animation!,
+        child: image,
+      );
+    }
+
+    return image;
   }
 
   Widget _errorWidget() {
