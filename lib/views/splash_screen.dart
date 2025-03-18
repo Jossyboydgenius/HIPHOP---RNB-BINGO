@@ -3,6 +3,7 @@ import '../widgets/app_background.dart';
 import '../widgets/app_images.dart';
 import '../widgets/app_loading_bar.dart';
 import '../widgets/app_text_style.dart';
+import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -40,11 +41,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _controller.forward().then((_) {
       Future.delayed(const Duration(seconds: 1), () {
-        // TODO: Navigate to main menu
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const MainMenu()),
-        // );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+        );
       });
     });
   }
@@ -75,7 +75,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   fontSize: 20,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-
                 ),
               ),
               const SizedBox(height: 16),
