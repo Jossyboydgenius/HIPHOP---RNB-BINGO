@@ -5,6 +5,7 @@ import '../widgets/app_button.dart';
 import '../widgets/app_text_style.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_top_bar.dart';
+import 'qr_code_scanner_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -52,7 +53,14 @@ class HomeScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                       fontSize: 24,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const QRCodeScannerScreen(),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 24),
                     AppButton(
