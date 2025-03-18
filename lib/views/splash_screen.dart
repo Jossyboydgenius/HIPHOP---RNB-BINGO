@@ -3,7 +3,8 @@ import '../widgets/app_background.dart';
 import '../widgets/app_images.dart';
 import '../widgets/app_loading_bar.dart';
 import '../widgets/app_text_style.dart';
-import 'onboarding_screen.dart';
+import '../routes/app_routes.dart';
+import '../services/navigation_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -41,10 +42,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _controller.forward().then((_) {
       Future.delayed(const Duration(seconds: 1), () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-        );
+        NavigationService.pushReplacementNamed(AppRoutes.onboarding);
       });
     });
   }
