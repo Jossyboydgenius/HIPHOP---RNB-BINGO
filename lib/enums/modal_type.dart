@@ -1,0 +1,4 @@
+enum ModalType {
+  signIn,
+  signUp,
+} 
