@@ -61,24 +61,39 @@ class AppIcons extends StatelessWidget {
   final String icon;
   final double size;
   final Color? color;
+  final Animation<double>? animation;
+  final AlignmentGeometry? alignment;
+
   const AppIcons({
     super.key,
     this.onPressed,
     this.color,
     required this.icon,
     this.size = 24,
+    this.animation,
+    this.alignment,
   });
 
   @override
   Widget build(BuildContext context) {
+    Widget iconWidget = SvgPicture.asset(
+      icon,
+      height: size,
+      width: size,
+      color: color,
+      alignment: alignment ?? Alignment.center,
+    );
+
+    if (animation != null) {
+      iconWidget = ScaleTransition(
+        scale: animation!,
+        child: iconWidget,
+      );
+    }
+
     return GestureDetector(
       onTap: onPressed,
-      child: SvgPicture.asset(
-        icon,
-        height: size,
-        width: size,
-        color: color,
-      ),
+      child: iconWidget,
     );
   }
 } 
