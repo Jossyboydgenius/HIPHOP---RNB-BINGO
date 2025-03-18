@@ -6,6 +6,8 @@ import '../widgets/app_images.dart';
 import '../widgets/app_colors.dart';
 import '../widgets/app_text_style.dart';
 import '../widgets/app_modal_container.dart';
+import '../widgets/app_icons.dart';
+import '../enums/modal_type.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -36,6 +38,110 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         });
       }
     });
+  }
+
+  Widget _buildModalContent(ModalType type) {
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              AppButton(
+                text: 'Google',
+                iconPath: AppIconData.google,
+                fillColor: AppColors.purpleOverlay,
+                layerColor: Colors.white,
+                height: 62,
+                hasBorder: true,
+                layerTopPosition: 0,
+                layerHeight: 50,
+                borderRadius: 100,
+                borderColor: Colors.white,
+                textColor: Colors.black,
+                fontFamily: AppTextStyle.dmSansFont,
+                onPressed: () {
+                  // Handle Google sign in/up
+                },
+              ),
+              const SizedBox(height: 16),
+              AppButton(
+                text: 'Facebook',
+                iconPath: AppIconData.facebook,
+                fillColor: AppColors.purpleOverlay,
+                layerColor: Colors.white,
+                height: 62,
+                hasBorder: true,
+                layerTopPosition: 0,
+                layerHeight: 50,
+                borderRadius: 100,
+                borderColor: Colors.white,
+                textColor: Colors.black,
+                fontFamily: AppTextStyle.dmSansFont,
+                onPressed: () {
+                  // Handle Facebook sign in/up
+                },
+              ),
+              const SizedBox(height: 16),
+              AppButton(
+                text: 'Apple',
+                iconPath: AppIconData.apple,
+                fillColor: AppColors.purpleOverlay,
+                layerColor: Colors.white,
+                height: 62,
+                hasBorder: true,
+                layerTopPosition: 0,
+                layerHeight: 50,
+                borderRadius: 100,
+                borderColor: Colors.white,
+                textColor: Colors.black,
+                fontFamily: AppTextStyle.dmSansFont,
+                onPressed: () {
+                  // Handle Apple sign in/up
+                },
+              ),
+            ],
+          ),
+        ),
+        const Spacer(),
+        Padding(
+          padding: const EdgeInsets.only(
+            bottom: 32,
+            left: 24,
+            right: 24,
+          ),
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: AppTextStyle.dmSans(
+                fontSize: 18,
+                color: Colors.white,
+                fontStyle: FontStyle.italic,
+              ),
+              children: [
+                const TextSpan(
+                  text: 'By continuing, you agree to our ',
+                ),
+                TextSpan(
+                  text: 'Terms of Services',
+                  style: AppTextStyle.dmSans(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const TextSpan(text: ' & '),
+                TextSpan(
+                  text: 'Privacy Policy',
+                  style: AppTextStyle.dmSans(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -99,25 +205,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               opacity: _isModalVisible ? 1.0 : 0.0,
               duration: const Duration(milliseconds: 200),
               child: Container(
-                color: Colors.transparent,
+                color: Colors.black54,
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    color: Colors.black54,
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Center(
                       child: AppModalContainer(
-                        type: _currentModal!,
+                        height: 420,
+                        fillColor: _currentModal == ModalType.signIn 
+                            ? AppColors.yellowPrimary 
+                            : AppColors.purplePrimary,
+                        borderColor: _currentModal == ModalType.signIn 
+                            ? AppColors.yellowLight 
+                            : AppColors.purpleLight,
+                        layerColor: _currentModal == ModalType.signIn 
+                            ? AppColors.yellowDark 
+                            : AppColors.purpleDark,
+                        layerTopPosition: -4,
+                        borderRadius: 32,
+                        title: _currentModal == ModalType.signIn ? 'Sign In' : 'Sign Up',
                         onClose: _hideModal,
-                        onGooglePressed: () {
-                          // TODO: Implement Google sign in/up
-                        },
-                        onFacebookPressed: () {
-                          // TODO: Implement Facebook sign in/up
-                        },
-                        onApplePressed: () {
-                          // TODO: Implement Apple sign in/up
-                        },
+                        child: _buildModalContent(_currentModal!),
                       ),
                     ),
                   ),
