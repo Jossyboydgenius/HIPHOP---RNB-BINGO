@@ -7,49 +7,49 @@ abstract class AppTextStyle {
   static const String poppinsFont = 'Poppins';
 
   // DMSans styles
-  static TextStyle get dmSansRegular => TextStyle(
+  static TextStyle get dmSansRegular => const TextStyle(
     fontFamily: dmSansFont,
     fontWeight: AppFontWeight.regular,
   );
 
-  static TextStyle get dmSansItalic => TextStyle(
+  static TextStyle get dmSansItalic => const TextStyle(
     fontFamily: dmSansFont,
     fontStyle: FontStyle.italic,
   );
 
   // MochiyPopOne styles
-  static TextStyle get mochiyPopOneRegular => TextStyle(
+  static TextStyle get mochiyPopOneRegular => const TextStyle(
     fontFamily: mochiyPopOneFont,
     fontWeight: AppFontWeight.regular,
   );
 
   // Poppins styles
-  static TextStyle get poppinsBlack => TextStyle(
+  static TextStyle get poppinsBlack => const TextStyle(
     fontFamily: poppinsFont,
     fontWeight: AppFontWeight.black,
   );
 
-  static TextStyle get poppinsBold => TextStyle(
+  static TextStyle get poppinsBold => const TextStyle(
     fontFamily: poppinsFont,
     fontWeight: AppFontWeight.bold,
   );
 
-  static TextStyle get poppinsLight => TextStyle(
+  static TextStyle get poppinsLight => const TextStyle(
     fontFamily: poppinsFont,
     fontWeight: AppFontWeight.light,
   );
 
-  static TextStyle get poppinsMedium => TextStyle(
+  static TextStyle get poppinsMedium => const TextStyle(
     fontFamily: poppinsFont,
     fontWeight: AppFontWeight.medium,
   );
 
-  static TextStyle get poppinsSemiBold => TextStyle(
+  static TextStyle get poppinsSemiBold => const TextStyle(
     fontFamily: poppinsFont,
     fontWeight: AppFontWeight.semiBold,
   );
 
-  static TextStyle get poppinsRegular => TextStyle(
+  static TextStyle get poppinsRegular => const TextStyle(
     fontFamily: poppinsFont,
     fontWeight: AppFontWeight.regular,
   );
