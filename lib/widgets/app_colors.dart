@@ -15,6 +15,7 @@ class AppColors {
   static const Color purplePrimary = Color(0xFFB26BFB);
   static const Color purpleLight = Color(0xFFB57BFE);
   static const Color purpleDark = Color(0xFF8B60EF);
+  static const Color purpleDark2 = Color(0xFF9B3DD4);
   static const Color deepPurple = Color(0xFF5B15FF);
   static const Color purpleOverlay = Color(0xFFD3D8FF);
   static const Color purpleTransparent = Color(0x26D3D8FF);
