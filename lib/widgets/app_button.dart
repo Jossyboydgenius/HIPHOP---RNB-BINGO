@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'app_text_style.dart';
+import 'app_icons.dart';
+import 'app_images.dart';
 
 class AppButton extends StatefulWidget {
   final String text;
@@ -23,6 +25,15 @@ class AppButton extends StatefulWidget {
   final FontWeight? fontWeight;
   final Color? textColor;
   final String? fontFamily;
+  final String? iconPath;
+  final String? imagePath;
+  final double? iconSize;
+  final Color? iconColor;
+  final double? imageHeight;
+  final double? imageWidth;
+  final BoxFit? imageFit;
+  final double? iconSpacing;
+  final bool iconAfterText;
 
   const AppButton({
     super.key,
@@ -47,6 +58,15 @@ class AppButton extends StatefulWidget {
     this.fontWeight = FontWeight.bold,
     this.textColor = Colors.white,
     this.fontFamily,
+    this.iconPath,
+    this.imagePath,
+    this.iconSize = 24,
+    this.iconColor,
+    this.imageHeight,
+    this.imageWidth,
+    this.imageFit,
+    this.iconSpacing = 12,
+    this.iconAfterText = false,
   });
 
   @override
@@ -101,6 +121,106 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
     }
   }
 
+  Widget _buildIcon() {
+    if (widget.iconPath != null) {
+      return AppIcons(
+        icon: widget.iconPath!,
+        size: widget.iconSize!,
+        color: widget.iconColor ?? widget.textColor,
+      );
+    } else if (widget.imagePath != null) {
+      return AppImages(
+        imagePath: widget.imagePath!,
+        height: widget.imageHeight ?? widget.iconSize,
+        width: widget.imageWidth ?? widget.iconSize,
+        fit: widget.imageFit,
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildContent() {
+    final hasIcon = widget.iconPath != null || widget.imagePath != null;
+    final iconWidget = hasIcon ? _buildIcon() : null;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (hasIcon && !widget.iconAfterText) ...[
+          iconWidget!,
+          SizedBox(width: widget.iconSpacing),
+        ],
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            widget.textStyle != null
+                ? Text(
+                    widget.text,
+                    style: widget.textStyle?.copyWith(
+                      color: widget.disabled 
+                          ? widget.textColor?.withOpacity(0.5) 
+                          : widget.textColor,
+                    ),
+                  )
+                : Text(
+                    widget.text,
+                    style: widget.fontFamily != null
+                        ? TextStyle(
+                            fontFamily: widget.fontFamily,
+                            fontSize: widget.fontSize,
+                            fontWeight: widget.fontWeight,
+                            color: widget.disabled 
+                                ? widget.textColor?.withOpacity(0.5) 
+                                : widget.textColor,
+                          )
+                        : AppTextStyle.poppins(
+                            fontSize: widget.fontSize,
+                            fontWeight: widget.fontWeight,
+                            color: widget.disabled 
+                                ? widget.textColor?.withOpacity(0.5) 
+                                : widget.textColor,
+                          ),
+                  ),
+            if (widget.subtitle != null) ...[
+              const SizedBox(height: 4),
+              widget.subtitleStyle != null
+                  ? Text(
+                      widget.subtitle!,
+                      style: widget.subtitleStyle?.copyWith(
+                        color: widget.disabled 
+                            ? widget.textColor?.withOpacity(0.5) 
+                            : widget.textColor,
+                      ),
+                    )
+                  : Text(
+                      widget.subtitle!,
+                      style: widget.fontFamily != null
+                          ? TextStyle(
+                              fontFamily: widget.fontFamily,
+                              fontSize: widget.subtitleFontSize,
+                              color: widget.disabled 
+                                  ? widget.textColor?.withOpacity(0.5) 
+                                  : widget.textColor,
+                            )
+                          : AppTextStyle.poppins(
+                              fontSize: widget.subtitleFontSize,
+                              color: widget.disabled 
+                                  ? widget.textColor?.withOpacity(0.5) 
+                                  : widget.textColor,
+                            ),
+                    ),
+            ],
+          ],
+        ),
+        if (hasIcon && widget.iconAfterText) ...[
+          SizedBox(width: widget.iconSpacing),
+          iconWidget!,
+        ],
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -138,72 +258,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                   ),
                 ),
               ],
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Main text
-                    widget.textStyle != null
-                        ? Text(
-                            widget.text,
-                            style: widget.textStyle?.copyWith(
-                              color: widget.disabled 
-                                  ? widget.textColor?.withOpacity(0.5) 
-                                  : widget.textColor,
-                            ),
-                          )
-                        : Text(
-                            widget.text,
-                            style: widget.fontFamily != null
-                                ? TextStyle(
-                                    fontFamily: widget.fontFamily,
-                                    fontSize: widget.fontSize,
-                                    fontWeight: widget.fontWeight,
-                                    color: widget.disabled 
-                                        ? widget.textColor?.withOpacity(0.5) 
-                                        : widget.textColor,
-                                  )
-                                : AppTextStyle.poppins(
-                                    fontSize: widget.fontSize,
-                                    fontWeight: widget.fontWeight,
-                                    color: widget.disabled 
-                                        ? widget.textColor?.withOpacity(0.5) 
-                                        : widget.textColor,
-                                  ),
-                          ),
-                    // Subtitle text if provided
-                    if (widget.subtitle != null) ...[
-                      const SizedBox(height: 4),
-                      widget.subtitleStyle != null
-                          ? Text(
-                              widget.subtitle!,
-                              style: widget.subtitleStyle?.copyWith(
-                                color: widget.disabled 
-                                    ? widget.textColor?.withOpacity(0.5) 
-                                    : widget.textColor,
-                              ),
-                            )
-                          : Text(
-                              widget.subtitle!,
-                              style: widget.fontFamily != null
-                                  ? TextStyle(
-                                      fontFamily: widget.fontFamily,
-                                      fontSize: widget.subtitleFontSize,
-                                      color: widget.disabled 
-                                          ? widget.textColor?.withOpacity(0.5) 
-                                          : widget.textColor,
-                                    )
-                                  : AppTextStyle.poppins(
-                                      fontSize: widget.subtitleFontSize,
-                                      color: widget.disabled 
-                                          ? widget.textColor?.withOpacity(0.5) 
-                                          : widget.textColor,
-                                    ),
-                            ),
-                    ],
-                  ],
-                ),
-              ),
+              Center(child: _buildContent()),
             ],
           ),
         ),
