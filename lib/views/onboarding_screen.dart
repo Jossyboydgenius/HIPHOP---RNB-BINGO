@@ -8,6 +8,7 @@ import '../widgets/app_text_style.dart';
 import '../widgets/app_modal_container.dart';
 import '../widgets/app_icons.dart';
 import '../enums/modal_type.dart';
+import '../routes/app_routes.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -62,7 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 textColor: Colors.black,
                 fontFamily: AppTextStyle.dmSansFont,
                 onPressed: () {
-                  // Handle Google sign in/up
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);
                 },
               ),
               const SizedBox(height: 16),
@@ -80,7 +81,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 textColor: Colors.black,
                 fontFamily: AppTextStyle.dmSansFont,
                 onPressed: () {
-                  // Handle Facebook sign in/up
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);
                 },
               ),
               const SizedBox(height: 16),
@@ -98,7 +99,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 textColor: Colors.black,
                 fontFamily: AppTextStyle.dmSansFont,
                 onPressed: () {
-                  // Handle Apple sign in/up
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);
                 },
               ),
             ],
