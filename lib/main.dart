@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hiphop_rnb_bingo/themes/app_theme.dart';
-import 'package:hiphop_rnb_bingo/views/splash_screen.dart';
+import 'themes/app_theme.dart';
+import 'routes/app_routes.dart';
+import 'services/navigation_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +18,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      home: const SplashScreen(),
+      navigatorKey: NavigationService.navigatorKey,
+      initialRoute: AppRoutes.initialRoute,
+      routes: AppRoutes.routes,
     );
   }
 }
