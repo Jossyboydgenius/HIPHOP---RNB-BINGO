@@ -1,112 +1,35 @@
 import 'package:flutter/material.dart';
-import 'app_button.dart';
 import 'app_icons.dart';
 import 'app_text_style.dart';
-import 'app_colors.dart';
-
-enum ModalType {
-  signIn,
-  signUp,
-}
-
-class _ContainerColors {
-  final Color fillColor;
-  final Color borderColor;
-  final Color layerColor;
-
-  const _ContainerColors({
-    required this.fillColor,
-    required this.borderColor,
-    required this.layerColor,
-  });
-
-  static _ContainerColors signIn() => const _ContainerColors(
-        fillColor: AppColors.yellowPrimary,
-        borderColor: AppColors.yellowLight,
-        layerColor: AppColors.yellowDark,
-      );
-
-  static _ContainerColors signUp() => const _ContainerColors(
-        fillColor: AppColors.purplePrimary,
-        borderColor: AppColors.purpleLight,
-        layerColor: AppColors.purpleDark,
-      );
-}
-
-class _SocialButton extends StatelessWidget {
-  final String icon;
-  final String text;
-  final VoidCallback? onPressed;
-
-  const _SocialButton({
-    required this.icon,
-    required this.text,
-    this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Stack(
-            children: [
-              AppButton(
-                text: '',
-                fillColor: Colors.white,
-                layerColor: AppColors.purpleOverlay,
-                height: 56,
-                borderRadius: 16,
-                hasBorder: true,
-                borderColor: Colors.white,
-                textColor: Colors.black,
-                fontFamily: AppTextStyle.poppinsFont,
-                onPressed: onPressed,
-              ),
-              Positioned.fill(
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AppIcons(
-                        icon: icon,
-                        size: 24,
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        text,
-                        style: AppTextStyle.poppins(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class AppModalContainer extends StatefulWidget {
-  final ModalType type;
+  final Widget child;
   final VoidCallback onClose;
-  final VoidCallback? onGooglePressed;
-  final VoidCallback? onFacebookPressed;
-  final VoidCallback? onApplePressed;
+  final double? width;
+  final double? height;
+  final Color? fillColor;
+  final Color? borderColor;
+  final Color? layerColor;
+  final double borderWidth;
+  final double borderRadius;
+  final String? title;
+  final TextStyle? titleStyle;
+  final double layerTopPosition;
 
   const AppModalContainer({
     super.key,
-    required this.type,
+    required this.child,
     required this.onClose,
-    this.onGooglePressed,
-    this.onFacebookPressed,
-    this.onApplePressed,
+    this.width,
+    this.height,
+    this.fillColor,
+    this.borderColor,
+    this.layerColor,
+    this.borderWidth = 5,
+    this.borderRadius = 32,
+    this.title,
+    this.titleStyle,
+    this.layerTopPosition = -4,
   });
 
   @override
@@ -164,10 +87,6 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    final containerColors = widget.type == ModalType.signIn
-        ? _ContainerColors.signIn()
-        : _ContainerColors.signUp();
-
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -176,57 +95,52 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
           child: Transform.scale(
             scale: _scaleAnimation.value,
             child: Stack(
+              clipBehavior: Clip.none,
               children: [
-                // Background layer
-                Positioned(
-                  left: 4,
-                  right: 4,
-                  top: 4,
-                  child: Container(
-                    height: 480,
-                    decoration: BoxDecoration(
-                      color: containerColors.layerColor,
-                      borderRadius: BorderRadius.circular(32),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 15,
-                          offset: const Offset(0, 8),
-                          spreadRadius: 2,
-                        ),
-                      ],
+                // Layer behind the main container
+                if (widget.layerColor != null)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: widget.layerTopPosition *3,  // Position from bottom instead of top
+                    height: 100,  // Fixed height for the layer
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: widget.layerColor,
+                        borderRadius: BorderRadius.circular(widget.borderRadius),
+                      ),
                     ),
                   ),
-                ),
-                // Main container
+                // Main container (moved after layer to be on top)
                 Container(
-                  width: double.infinity,
-                  height: 480,
+                  width: widget.width ?? double.infinity,
+                  height: widget.height,
                   decoration: BoxDecoration(
-                    color: containerColors.fillColor,
-                    borderRadius: BorderRadius.circular(32),
+                    color: widget.fillColor,
+                    borderRadius: BorderRadius.circular(widget.borderRadius),
                     border: Border.all(
-                      color: containerColors.borderColor,
-                      width: 5,
+                      color: widget.borderColor ?? Colors.transparent,
+                      width: widget.borderWidth,
                     ),
                   ),
                   child: Column(
                     children: [
-                      // Close button and title
+                      // Title bar with close button
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const SizedBox(width: 40),
-                            Text(
-                              widget.type == ModalType.signIn ? 'Sign In' : 'Sign Up',
-                              style: AppTextStyle.poppins(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                            if (widget.title != null)
+                              Text(
+                                widget.title!,
+                                style: widget.titleStyle ?? AppTextStyle.poppins(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
                             AppIcons(
                               icon: AppIconData.close,
                               size: 40,
@@ -235,69 +149,8 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                           ],
                         ),
                       ),
-                      const SizedBox(height: 32),
-                      // Social buttons
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Column(
-                          children: [
-                            _SocialButton(
-                              icon: AppIconData.google,
-                              text: '${widget.type == ModalType.signIn ? "Sign in" : "Sign up"} with Google',
-                              onPressed: widget.onGooglePressed,
-                            ),
-                            const SizedBox(height: 16),
-                            _SocialButton(
-                              icon: AppIconData.facebook,
-                              text: '${widget.type == ModalType.signIn ? "Sign in" : "Sign up"} with Facebook',
-                              onPressed: widget.onFacebookPressed,
-                            ),
-                            const SizedBox(height: 16),
-                            _SocialButton(
-                              icon: AppIconData.apple,
-                              text: '${widget.type == ModalType.signIn ? "Sign in" : "Sign up"} with Apple',
-                              onPressed: widget.onApplePressed,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Spacer(),
-                      // Terms text
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 32,
-                          left: 24,
-                          right: 24,
-                        ),
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: AppTextStyle.dmSans(
-                              fontSize: 14,
-                              color: Colors.white,
-                              fontStyle: FontStyle.italic,
-                            ),
-                            children: [
-                              const TextSpan(
-                                text: 'By continuing, you agree to our ',
-                              ),
-                              TextSpan(
-                                text: 'Terms of Services',
-                                style: AppTextStyle.dmSans(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const TextSpan(text: ' & '),
-                              TextSpan(
-                                text: 'Privacy Policy',
-                                style: AppTextStyle.dmSans(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // Content
+                      Expanded(child: widget.child),
                     ],
                   ),
                 ),
