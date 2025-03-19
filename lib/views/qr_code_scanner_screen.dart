@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:image_picker/image_picker.dart';
 import '../widgets/app_colors.dart';
 import '../widgets/app_icons.dart';
 import '../widgets/app_images.dart';
@@ -16,11 +17,29 @@ class QRCodeScannerScreen extends StatefulWidget {
 class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
   bool _isTorchOn = false;
   final MobileScannerController _controller = MobileScannerController();
+  final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        final result = await _controller.analyzeImage(image.path);
+        if (result != null) {
+          for (final barcode in result.barcodes) {
+            debugPrint('QR Code found in image: ${barcode.rawValue}');
+            // Handle the QR code data here
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+    }
   }
 
   void _onDetect(BarcodeCapture capture) {
@@ -31,6 +50,18 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
     }
   }
 
+  Widget _buildScannerOverlay() {
+    return Center(
+      child: CustomPaint(
+        painter: ScannerOverlayPainter(color: AppColors.purpleDark2),
+        child: SizedBox(
+          width: 280,
+          height: 280,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,54 +69,21 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            // QR Scanner
-            MobileScanner(
-              controller: _controller,
-              onDetect: _onDetect,
-            ),
-            
-            // Gradient Overlay
-            ShaderMask(
-              shaderCallback: (Rect bounds) {
-                return LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.8),
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.8),
-                  ],
-                  stops: const [0.0, 0.2, 0.8, 1.0],
-                ).createShader(bounds);
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: Colors.white,
-              ),
-            ),
-
-            // Scanner Border
-            Center(
-              child: Container(
-                width: 280,
-                height: 280,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: AppColors.purpleDark2,
-                    width: 3,
-                  ),
-                  borderRadius: BorderRadius.circular(24),
+            // QR Scanner with overlay
+            Stack(
+              children: [
+                MobileScanner(
+                  controller: _controller,
+                  onDetect: _onDetect,
                 ),
-              ),
+                _buildScannerOverlay(),
+              ],
             ),
 
             // Top Bar
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Back button and title
                   Row(
@@ -97,14 +95,17 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
                           height: 48,
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      Text(
-                        'QR Code Scan',
-                        style: AppTextStyle.mochiyPopOne(
-                          fontSize: 24,
-                          color: Colors.white,
+                      Expanded(
+                        child: Text(
+                          'QR Code Scan',
+                          textAlign: TextAlign.center,
+                          style: AppTextStyle.mochiyPopOne(
+                            fontSize: 24,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
+                      const SizedBox(width: 48), // Balance the back button
                     ],
                   ),
                 ],
@@ -116,47 +117,56 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
               bottom: 48,
               left: 0,
               right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Image picker
-                  GestureDetector(
-                    onTap: () async {
-                      await _controller.analyzeImage('');
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const AppIcons(
-                        icon: AppIconData.image,
-                        size: 32,
-                      ),
-                    ),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  const SizedBox(width: 48),
-                  // Flash toggle
-                  GestureDetector(
-                    onTap: () async {
-                      setState(() => _isTorchOn = !_isTorchOn);
-                      await _controller.toggleTorch();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Image picker
+                      GestureDetector(
+                        onTap: _pickImage,
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: AppIcons(
+                            icon: AppIconData.image,
+                            size: 28,
+                          ),
+                        ),
                       ),
-                      child: Icon(
-                        _isTorchOn ? Icons.flash_on : Icons.flash_off,
+                      const SizedBox(width: 46),
+                      Container(
+                        height: 32,
+                        width: 2,
                         color: Colors.white,
-                        size: 32,
                       ),
-                    ),
+                      const SizedBox(width: 46),
+                      // Flash toggle
+                      GestureDetector(
+                        onTap: () async {
+                          try {
+                            await _controller.toggleTorch();
+                            setState(() => _isTorchOn = !_isTorchOn);
+                          } catch (e) {
+                            debugPrint('Error toggling torch: $e');
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Icon(
+                            _isTorchOn ? Icons.flash_on : Icons.flash_off,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],
@@ -164,4 +174,63 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
       ),
     );
   }
+}
+
+class ScannerOverlayPainter extends CustomPainter {
+  final Color color;
+
+  ScannerOverlayPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = color
+      ..strokeWidth = 5
+      ..style = PaintingStyle.stroke;
+
+    const double cornerLength = 60;
+    const double radius = 40;
+
+    // Top left corner
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, radius)
+        ..quadraticBezierTo(0, 0, radius, 0)
+        ..lineTo(cornerLength, 0),
+      paint,
+    );
+
+    // Top right corner
+    canvas.drawPath(
+      Path()
+        ..moveTo(size.width - cornerLength, 0)
+        ..lineTo(size.width - radius, 0)
+        ..quadraticBezierTo(size.width, 0, size.width, radius)
+        ..lineTo(size.width, cornerLength),
+      paint,
+    );
+
+    // Bottom left corner
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, size.height - cornerLength)
+        ..lineTo(0, size.height - radius)
+        ..quadraticBezierTo(0, size.height, radius, size.height)
+        ..lineTo(cornerLength, size.height),
+      paint,
+    );
+
+    // Bottom right corner
+    canvas.drawPath(
+      Path()
+        ..moveTo(size.width, size.height - cornerLength)
+        ..lineTo(size.width, size.height - radius)
+        ..quadraticBezierTo(size.width, size.height, size.width - radius, size.height)
+        ..lineTo(size.width - cornerLength, size.height),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 } 
