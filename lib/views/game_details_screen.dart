@@ -80,9 +80,9 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                           alignment: Alignment.center,
                           children: [
                             const Positioned(
-                              top: 15,
+                              top: 5,
                               child: AppImages(
-                                imagePath: AppImageData.www,
+                                imagePath: AppImageData.map,
                                 width: 40,
                                 height: 40,
                               ),
@@ -195,10 +195,10 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                   text: _isWaiting ? 'Waiting...' : 'Join Game',
                                   fillColor: _isWaiting
                                       ? AppColors.yellowDark
-                                      : AppColors.greenBright,
+                                      : AppColors.greenDark,
                                   layerColor: _isWaiting
                                       ? AppColors.yellowPrimary
-                                      : AppColors.greenDark,
+                                      : AppColors.greenBright,
                                   height: 72,
                                   hasBorder: true,
                                   layerTopPosition: -2,
