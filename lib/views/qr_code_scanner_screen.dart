@@ -194,9 +194,10 @@ class ScannerOverlayPainter extends CustomPainter {
     // Top left corner
     canvas.drawPath(
       Path()
-        ..moveTo(0, radius)
-        ..quadraticBezierTo(0, 0, radius, 0)
-        ..lineTo(cornerLength, 0),
+        ..moveTo(cornerLength, 0)
+        ..lineTo(radius, 0)
+        ..quadraticBezierTo(0, 0, 0, radius)
+        ..lineTo(0, cornerLength),
       paint,
     );
 
