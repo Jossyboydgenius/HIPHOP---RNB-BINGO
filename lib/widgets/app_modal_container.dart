@@ -15,6 +15,7 @@ class AppModalContainer extends StatefulWidget {
   final String? title;
   final TextStyle? titleStyle;
   final double layerTopPosition;
+  final Widget? customTitle;
 
   const AppModalContainer({
     super.key,
@@ -29,6 +30,7 @@ class AppModalContainer extends StatefulWidget {
     this.borderRadius = 32,
     this.title,
     this.titleStyle,
+    this.customTitle,
     this.layerTopPosition = -4,
   });
 
@@ -132,7 +134,9 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const SizedBox(width: 40),
-                            if (widget.title != null)
+                            if (widget.customTitle != null)
+                              widget.customTitle!
+                            else if (widget.title != null)
                               Text(
                                 widget.title!,
                                 style: widget.titleStyle ?? AppTextStyle.poppins(
