@@ -10,7 +10,7 @@ class AppIconData {
   static const String add = '$_base/add.svg';
   static const String add2 = '$_base/add2.svg';
   static const String edit = '$_base/edit.svg';
-  static const String arrowLeft = '$_base/arrowleft.svg';
+  static const String arrowRight = '$_base/arrowright.svg';
   static const String ban = '$_base/ban.svg';
   static const String mute = '$_base/mute.svg';
   static const String close = '$_base/close.svg';
@@ -55,6 +55,7 @@ class AppIconData {
   static const String flash = '$_base/flash.svg';
   static const String image = '$_base/image.svg';
   static const String zelle = '$_base/zelle.svg';
+  static const String copy = '$_base/copy.svg';
 }
 
 class AppIcons extends StatelessWidget {
