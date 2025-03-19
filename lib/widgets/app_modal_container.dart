@@ -143,7 +143,7 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                               ),
                             AppIcons(
                               icon: AppIconData.close,
-                              size: 40,
+                              size: 32,
                               onPressed: _handleClose,
                             ),
                           ],
