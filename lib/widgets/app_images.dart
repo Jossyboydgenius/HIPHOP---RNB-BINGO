@@ -34,9 +34,6 @@ class AppImageData {
   static const String straightlineBingo = '$_base/straightline-bingo.png';
   static const String tShapeBingo = '$_base/T-shape-bingo.png';
   static const String xPatternBingo = '$_base/X-pattern-bingo.png';
-  static const String round1 = '$_base/round1.png';
-  static const String round2 = '$_base/round2.png';
-  static const String round3 = '$_base/round3.png';
 
   // Avatar images
   static const String image = '$_base/image.png';
