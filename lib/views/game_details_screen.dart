@@ -75,27 +75,37 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        const AppImages(
-                          imagePath: AppImageData.map,
-                          width: 35,
-                          height: 35,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.pinkDark,
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          child: Text(
-                            'Lorem ipsum dolor sit amet',
-                            style: AppTextStyle.mochiyPopOne(
-                              fontSize: 14,
-                              color: Colors.white,
+                        Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.center,
+                          children: [
+                            const Positioned(
+                              top: 15,
+                              child: AppImages(
+                                imagePath: AppImageData.www,
+                                width: 40,
+                                height: 40,
+                              ),
                             ),
-                          ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 35),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.pinkDark,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Text(
+                                'Lorem ipsum dolor sit amet',
+                                style: AppTextStyle.mochiyPopOne(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 16),
                         Stack(
