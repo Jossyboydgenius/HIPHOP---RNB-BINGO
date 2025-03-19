@@ -9,7 +9,7 @@ class AppRoutes {
   static const String home = '/home';
   static const String qrCodeScanner = '/qrCodeScanner';
 
-  static const String initialRoute = qrCodeScanner;
+  static const String initialRoute = splash;
 
   static Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
