@@ -24,6 +24,8 @@ class AppImageData {
   static const String notification = '$_base/notification.png';
   static const String time = '$_base/time.png';
   static const String user = '$_base/user.png';
+  static const String clock = '$_base/clock.png';
+  static const String map = '$_base/map.png';
 
   // Avatar images
   static const String image = '$_base/image.png';
