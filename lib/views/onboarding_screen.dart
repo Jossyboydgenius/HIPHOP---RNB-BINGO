@@ -147,94 +147,100 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Background and main content
-          AppBackground(
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const Spacer(),
-                    const AppImages(
-                      imagePath: AppImageData.bingo,
-                      height: 200,
-                    ),
-                    const Spacer(),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 168),
-                      child: Column(
-                        children: [
-                          AppButton(
-                            text: 'Sign In',
-                            fillColor: AppColors.yellowDark,
-                            layerColor: AppColors.yellowPrimary,
-                            height: 72,
-                            hasBorder: true,
-                            layerTopPosition: -2,
-                            layerHeight: 60,
-                            fontFamily: AppTextStyle.poppinsFont,
-                            fontSize: 24,
-                            onPressed: () => _showModal(ModalType.signIn),
-                          ),
-                          const SizedBox(height: 26),
-                          AppButton(
-                            text: 'Sign Up',
-                            fillColor: AppColors.purpleDark,
-                            layerColor: AppColors.purplePrimary,
-                            height: 72,
-                            hasBorder: true,
-                            layerTopPosition: -2,
-                            layerHeight: 60,
-                            fontFamily: AppTextStyle.poppinsFont,
-                            fontSize: 24,
-                            onPressed: () => _showModal(ModalType.signUp),
-                          ),
-                        ],
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacementNamed(context, AppRoutes.splash);
+        return false;
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            // Background and main content
+            AppBackground(
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      const Spacer(),
+                      const AppImages(
+                        imagePath: AppImageData.bingo,
+                        height: 200,
                       ),
-                    ),
-                  ],
+                      const Spacer(),
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 168),
+                        child: Column(
+                          children: [
+                            AppButton(
+                              text: 'Sign In',
+                              fillColor: AppColors.yellowDark,
+                              layerColor: AppColors.yellowPrimary,
+                              height: 72,
+                              hasBorder: true,
+                              layerTopPosition: -2,
+                              layerHeight: 60,
+                              fontFamily: AppTextStyle.poppinsFont,
+                              fontSize: 24,
+                              onPressed: () => _showModal(ModalType.signIn),
+                            ),
+                            const SizedBox(height: 26),
+                            AppButton(
+                              text: 'Sign Up',
+                              fillColor: AppColors.purpleDark,
+                              layerColor: AppColors.purplePrimary,
+                              height: 72,
+                              hasBorder: true,
+                              layerTopPosition: -2,
+                              layerHeight: 60,
+                              fontFamily: AppTextStyle.poppinsFont,
+                              fontSize: 24,
+                              onPressed: () => _showModal(ModalType.signUp),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          // Modal overlay with blur
-          if (_currentModal != null)
-            AnimatedOpacity(
-              opacity: _isModalVisible ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 200),
-              child: Container(
-                color: Colors.black54,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Center(
-                      child: AppModalContainer(
-                        height: 420,
-                        fillColor: _currentModal == ModalType.signIn 
-                            ? AppColors.yellowPrimary 
-                            : AppColors.purplePrimary,
-                        borderColor: _currentModal == ModalType.signIn 
-                            ? AppColors.yellowLight 
-                            : AppColors.purpleLight,
-                        layerColor: _currentModal == ModalType.signIn 
-                            ? AppColors.yellowDark 
-                            : AppColors.purpleDark,
-                        layerTopPosition: -4,
-                        borderRadius: 32,
-                        title: _currentModal == ModalType.signIn ? 'Sign In' : 'Sign Up',
-                        onClose: _hideModal,
-                        child: _buildModalContent(_currentModal!),
+            // Modal overlay with blur
+            if (_currentModal != null)
+              AnimatedOpacity(
+                opacity: _isModalVisible ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 200),
+                child: Container(
+                  color: Colors.black54,
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Center(
+                        child: AppModalContainer(
+                          height: 420,
+                          fillColor: _currentModal == ModalType.signIn 
+                              ? AppColors.yellowPrimary 
+                              : AppColors.purplePrimary,
+                          borderColor: _currentModal == ModalType.signIn 
+                              ? AppColors.yellowLight 
+                              : AppColors.purpleLight,
+                          layerColor: _currentModal == ModalType.signIn 
+                              ? AppColors.yellowDark 
+                              : AppColors.purpleDark,
+                          layerTopPosition: -4,
+                          borderRadius: 32,
+                          title: _currentModal == ModalType.signIn ? 'Sign In' : 'Sign Up',
+                          onClose: _hideModal,
+                          child: _buildModalContent(_currentModal!),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
