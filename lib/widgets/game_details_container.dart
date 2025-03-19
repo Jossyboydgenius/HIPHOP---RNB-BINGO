@@ -9,7 +9,7 @@ class GameDetailsContainer extends StatelessWidget {
   final String rounds;
   final String musicTheme;
   final String gameType;
-  final String gameFee;
+  final String? gameFee;
   final List<String> gameStyles;
   final String timeRemaining;
   final String? cardAmount;
@@ -23,11 +23,11 @@ class GameDetailsContainer extends StatelessWidget {
     required this.rounds,
     required this.musicTheme,
     required this.gameType,
-    required this.gameFee,
     required this.gameStyles,
     required this.timeRemaining,
+    this.gameFee,
     this.cardAmount,
-    this.showMoneyIcon = true,
+    this.showMoneyIcon = false,
     this.showCardIcon = false,
   });
 
@@ -58,6 +58,8 @@ class GameDetailsContainer extends StatelessWidget {
   }
 
   Widget _buildGameFeeRow() {
+    if (gameFee == null) return const SizedBox.shrink();
+    
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
