@@ -55,7 +55,6 @@ class AppIconData {
   static const String flash = '$_base/flash.svg';
   static const String image = '$_base/image.svg';
   static const String zelle = '$_base/zelle.svg';
-  static const String copy = '$_base/copy.svg';
 }
 
 class AppIcons extends StatelessWidget {
