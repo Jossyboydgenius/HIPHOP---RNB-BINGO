@@ -127,13 +127,14 @@ class _RemoteCodeScreenState extends State<RemoteCodeScreen> {
                           hasBorder: true,
                           height: 56,
                           width: 220,
-                          layerHeight: 42,
+                          layerHeight: 44,
+                          layerTopPosition: -2,
                           borderRadius: 16,
                           onPressed: () {
                             if (_codeController.text.length == 4) {
                               Navigator.pushReplacementNamed(
                                 context,
-                                AppRoutes.gameDetails,
+                                AppRoutes.remoteGameDetails,
                               );
                             }
                           },
