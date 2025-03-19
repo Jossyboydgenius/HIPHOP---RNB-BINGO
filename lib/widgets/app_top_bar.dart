@@ -3,6 +3,7 @@ import 'app_colors.dart';
 import 'app_icons.dart';
 import 'app_images.dart';
 import 'app_text_style.dart';
+import 'notification_modal.dart';
 
 class AppTopBar extends StatelessWidget {
   final String initials;
@@ -117,35 +118,82 @@ class AppTopBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNotificationIcon() {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        const AppImages(
-          imagePath: AppImageData.notification,
-          height: 32,
-        ),
-        if (notificationCount > 0)
-          Positioned(
-            right: -4,
-            top: -4,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                color: AppColors.accent,
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                notificationCount.toString(),
-                style: AppTextStyle.poppins(
-                  fontSize: 12,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+  Widget _buildNotificationIcon(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => NotificationModal(
+            onClose: () {
+              Navigator.of(context).pop();
+            },
+            notifications: [
+              {
+                'title': 'Congratulations! You Won!',
+                'subtitle': 'Your Bingo win has been confirmed! Click below to withdraw your prize: \$50',
+                'buttonText': 'Claim Prize',
+                'onButtonPressed': () {
+                  // TODO: Handle claim prize
+                },
+                'isRead': false,
+              },
+              {
+                'title': 'DJ Ray invited you to play!',
+                'subtitle': 'Game: Hip-Hop Fire Round\nGame Code: 9823\nStarts in 10 minutes!',
+                'buttonText': 'Join Game',
+                'onButtonPressed': () {
+                  // TODO: Handle join game
+                },
+                'isRead': false,
+              },
+              {
+                'title': 'Congratulations! You Won!',
+                'subtitle': 'Your Bingo win has been confirmed! Click below to withdraw your prize: \$10',
+                'buttonText': 'Claim Prize',
+                'onButtonPressed': () {
+                  // TODO: Handle claim prize
+                },
+                'isRead': true,
+              },
+              const {
+                'title': 'Purchase of \$20 Bingo Board',
+                'subtitle': "You've successfully purchased a 5 Bingo Board for \$20",
+                'isRead': true,
+              },
+            ],
+          ),
+        );
+      },
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const AppImages(
+            imagePath: AppImageData.notification,
+            height: 32,
+          ),
+          if (notificationCount > 0)
+            Positioned(
+              right: -4,
+              top: -4,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: AppColors.accent,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  notificationCount.toString(),
+                  style: AppTextStyle.poppins(
+                    fontSize: 12,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -174,7 +222,7 @@ class AppTopBar extends StatelessWidget {
               ),
             ],
           ),
-          _buildNotificationIcon(),
+          _buildNotificationIcon(context),
         ],
       ),
     );
