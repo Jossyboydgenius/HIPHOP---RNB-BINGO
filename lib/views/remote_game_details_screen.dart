@@ -56,11 +56,20 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => PaymentOptionsModal(
-        onClose: () => Navigator.pop(context),
+      builder: (BuildContext context) => PaymentOptionsModal(
+        onClose: () {
+          Navigator.of(context).pop(); // Just close the modal
+        },
         onPaymentSelected: (paymentMethod) {
-          setState(() => _hasPaid = true);
-          Navigator.pop(context);
+          // First close the payment modal
+          Navigator.of(context).pop();
+          
+          // Then update the state to enable join game and start countdown
+          setState(() {
+            _hasPaid = true;
+          });
+          
+          // Start the countdown immediately after payment
           _startCountdown();
         },
       ),
