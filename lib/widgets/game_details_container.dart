@@ -168,7 +168,7 @@ class GameDetailsContainer extends StatelessWidget {
                         ),
                       ),
                       const Positioned(
-                        left: -14,
+                        left: -10,
                         top: 0,
                         bottom: 0,
                         child: Center(
