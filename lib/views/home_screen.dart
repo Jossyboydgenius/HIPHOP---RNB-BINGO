@@ -54,12 +54,6 @@ class HomeScreen extends StatelessWidget {
                       ),
                       fontSize: 24,
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const QRCodeScannerScreen(),
-                          ),
-                        );
                       },
                     ),
                     const SizedBox(height: 24),
@@ -83,7 +77,14 @@ class HomeScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                       fontSize: 24,
-                      onPressed: () {},
+                      onPressed: () {
+                         Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const QRCodeScannerScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
