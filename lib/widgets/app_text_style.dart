@@ -83,12 +83,17 @@ abstract class AppTextStyle {
     double? fontSize,
     FontWeight? fontWeight,
     Color? color,
-  }) => TextStyle(
-    fontFamily: poppinsFont,
-    fontSize: fontSize,
-    fontWeight: fontWeight,
-    color: color,
-  );
+    FontStyle? fontStyle,
+  }) {
+    return TextStyle(
+      fontFamily: poppinsFont,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+      fontStyle: fontStyle,
+      decoration: TextDecoration.none,
+    );
+  }
 }
 
 abstract class AppFontWeight {
