@@ -20,6 +20,12 @@ class AppColors {
   static const Color purpleOverlay = Color(0xFFD3D8FF);
   static const Color purpleTransparent = Color(0x26D3D8FF);
 
+  // Gray shades
+  static const Color grayLight = Color(0xFFF0F0F0);
+  static const Color grayDark = Color(0xFFD9D9D9);
+  static const Color grayTransparent = Color(0x26D9D9D9);
+ 
+
   // Green shades
   static const Color greenBright = Color(0xFF67EB00);
   static const Color greenDark = Color(0xFF4EC307);
