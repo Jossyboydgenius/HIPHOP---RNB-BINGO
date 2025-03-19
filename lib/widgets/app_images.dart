@@ -26,6 +26,17 @@ class AppImageData {
   static const String user = '$_base/user.png';
   static const String clock = '$_base/clock.png';
   static const String map = '$_base/map.png';
+  static const String gameImage = '$_base/game-image.png';
+  static const String www = '$_base/www.png';
+  static const String info = '$_base/info.png';
+  static const String fourCornersBingo = '$_base/four-corners-bingo.png';
+  static const String blackoutBingo = '$_base/blackout-bingo.png';
+  static const String straightlineBingo = '$_base/straightline-bingo.png';
+  static const String tShapeBingo = '$_base/T-shape-bingo.png';
+  static const String xPatternBingo = '$_base/X-pattern-bingo.png';
+  static const String round1 = '$_base/round1.png';
+  static const String round2 = '$_base/round2.png';
+  static const String round3 = '$_base/round3.png';
 
   // Avatar images
   static const String image = '$_base/image.png';
