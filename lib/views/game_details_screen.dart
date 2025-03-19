@@ -160,10 +160,6 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                           rounds: '3 rounds',
                           musicTheme: '90s R&B',
                           gameType: 'Classic',
-                          gameFee: '5',
-                          cardAmount: '3',
-                          showMoneyIcon: true,
-                          showCardIcon: true,
                           gameStyles: const [
                             'T-Shape',
                             'Blackout',
