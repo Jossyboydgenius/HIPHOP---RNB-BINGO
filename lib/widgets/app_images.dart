@@ -17,6 +17,11 @@ class AppImageData {
   static const String treasure = '$_base/treasure.png';
   static const String won = '$_base/won.png';
 
+  // Payment options images
+  static const String paypal = '$_base/paypal.png';
+  static const String cashapp = '$_base/cashapp.png';
+  static const String zelle = '$_base/zelle.png';
+
   // Navigation and utility images
   static const String back = '$_base/back.png';
   static const String ban = '$_base/ban.png';
