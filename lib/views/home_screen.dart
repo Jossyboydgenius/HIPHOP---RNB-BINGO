@@ -89,7 +89,9 @@ class HomeScreen extends StatelessWidget {
                           color: Colors.white,
                         ),
                         fontSize: 24,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRoutes.remoteCode);
+                        },
                       ),
                     ],
                   ),
