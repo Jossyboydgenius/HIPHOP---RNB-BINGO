@@ -22,8 +22,8 @@ class AppColors {
 
   // Gray shades
   static const Color grayLight = Color(0xFFF0F0F0);
-  static const Color grayDark = Color(0xFFD9D9D9);
-  static const Color grayTransparent = Color(0x26D9D9D9);
+  static const Color grayDark = Color(0xFFA5A5A5);
+  static const Color grayTransparent = Color(0xFFD9D9D9);
  
 
   // Green shades
