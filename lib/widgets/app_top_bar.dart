@@ -5,8 +5,9 @@ import 'app_images.dart';
 import 'app_text_style.dart';
 import 'notification_modal.dart';
 import 'chat_room_modal.dart';
+import 'user_profile_modal.dart';
 
-class AppTopBar extends StatelessWidget {
+class AppTopBar extends StatefulWidget {
   final String initials;
   final String gemAmount;
   final String cardAmount;
@@ -20,44 +21,78 @@ class AppTopBar extends StatelessWidget {
     required this.notificationCount,
   });
 
-  Widget _buildUserAvatar() {
-    return Stack(
-      children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.primary,
-            border: Border.all(
-              color: Colors.white,
-              width: 2,
+  @override
+  State<AppTopBar> createState() => _AppTopBarState();
+}
+
+class _AppTopBarState extends State<AppTopBar> {
+  String? _selectedAvatar;
+
+  Widget _buildUserAvatar(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        _showUserProfile(context);
+      },
+      child: Stack(
+        children: [
+          if (_selectedAvatar != null)
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: AppImages(
+                  imagePath: _selectedAvatar!,
+                  width: 48,
+                  height: 48,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          else
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primary,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  widget.initials,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
-          ),
-          child: Center(
-            child: Text(
-              initials,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.teal,
               ),
             ),
           ),
-        ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Container(
-            width: 12,
-            height: 12,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.teal,
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -169,7 +204,7 @@ class AppTopBar extends StatelessWidget {
             imagePath: AppImageData.notification,
             height: 32,
           ),
-          if (notificationCount > 0)
+          if (widget.notificationCount > 0)
             Positioned(
               right: -4,
               top: -4,
@@ -180,7 +215,7 @@ class AppTopBar extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Text(
-                  notificationCount.toString(),
+                  widget.notificationCount.toString(),
                   style: AppTextStyle.poppins(
                     fontSize: 12,
                     color: Colors.white,
@@ -194,6 +229,25 @@ class AppTopBar extends StatelessWidget {
     );
   }
 
+  void _showUserProfile(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => UserProfileModal(
+        onClose: () {
+          Navigator.of(context).pop();
+        },
+        userInitials: widget.initials,
+        currentAvatar: _selectedAvatar,
+        onAvatarChanged: (String? newAvatar) {
+          setState(() {
+            _selectedAvatar = newAvatar;
+          });
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -201,7 +255,7 @@ class AppTopBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildUserAvatar(),
+          _buildUserAvatar(context),
           Row(
             children: [
               GestureDetector(
@@ -221,7 +275,7 @@ class AppTopBar extends StatelessWidget {
                 },
                 child: _buildAmountContainer(
                   color: AppColors.purplePrimary,
-                  amount: gemAmount,
+                  amount: widget.gemAmount,
                   leftIcon: AppIconData.gem,
                   rightIcon: AppIconData.add,
                 ),
@@ -229,7 +283,7 @@ class AppTopBar extends StatelessWidget {
               const SizedBox(width: 34),
               _buildAmountContainer(
                 color: AppColors.yellowPrimary,
-                amount: cardAmount,
+                amount: widget.cardAmount,
                 leftIcon: AppIconData.card,
                 rightIcon: AppIconData.add2,
               ),
