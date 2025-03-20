@@ -35,7 +35,7 @@ class ChatMessageCard extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.purplePrimary,
+              color: AppColors.primary,
               border: Border.all(
                 color: Colors.white,
                 width: 2,
@@ -52,23 +52,22 @@ class ChatMessageCard extends StatelessWidget {
               ),
             ),
           ),
-          if (isMe)
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.greenBright,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.greenBright,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
                 ),
               ),
             ),
+          ),
         ],
       ),
     );
@@ -77,9 +76,15 @@ class ChatMessageCard extends StatelessWidget {
   void _showProfileMenu(BuildContext context, Offset position) {
     final items = [
       PopupMenuItem(
+        height: 40,
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const AppImages(imagePath: AppImageData.ban),
+            const AppImages(
+              imagePath: AppImageData.ban,
+              width: 20,
+              height: 20,
+            ),
             const SizedBox(width: 8),
             Text(
               'Report',
@@ -92,9 +97,15 @@ class ChatMessageCard extends StatelessWidget {
         },
       ),
       PopupMenuItem(
+        height: 40,
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const AppImages(imagePath: AppImageData.mute),
+            const AppImages(
+              imagePath: AppImageData.mute,
+              width: 20,
+              height: 20,
+            ),
             const SizedBox(width: 8),
             Text(
               'Mute',
@@ -117,6 +128,11 @@ class ChatMessageCard extends StatelessWidget {
         position.dy + 1,
       ),
       items: items,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: AppColors.grayDark),
+      ),
+      color: Colors.white,
     );
   }
 
@@ -126,7 +142,7 @@ class ChatMessageCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMe) ...[
             _buildAvatar(context),
@@ -163,7 +179,12 @@ class ChatMessageCard extends StatelessWidget {
                       color: AppColors.purplePrimary,
                       width: 2,
                     ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(16),
+                      topRight: const Radius.circular(16),
+                      bottomLeft: Radius.circular(isMe ? 16 : 0),
+                      bottomRight: Radius.circular(isMe ? 0 : 16),
+                    ),
                   ),
                   child: Text(
                     message,
