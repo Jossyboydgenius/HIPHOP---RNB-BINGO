@@ -89,8 +89,8 @@ class NotificationCard extends StatelessWidget {
                 onPressed: isRead ? null : () {
                   onButtonPressed?.call();
                 },
-                color: isRead ? AppColors.grayDark : AppColors.purpleLight,
-                disabledColor: AppColors.grayDark,
+                color: isRead ? AppColors.grayTransparent : AppColors.purpleLight,
+                disabledColor: AppColors.grayTransparent,
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
