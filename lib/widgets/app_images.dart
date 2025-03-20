@@ -5,6 +5,7 @@ class AppImageData {
 
   // Game related images
   static const String bingo = '$_base/bingo.png';
+  static const String bingoo = '$_base/bingoo.png';
   static const String card = '$_base/card.png';
   static const String chest = '$_base/chest.png';
   static const String coin = '$_base/coin.png';
@@ -16,6 +17,7 @@ class AppImageData {
   static const String money = '$_base/money.png';
   static const String treasure = '$_base/treasure.png';
   static const String won = '$_base/won.png';
+  static const String chat = '$_base/chat.png';
 
   // Payment options images
   static const String paypal = '$_base/paypal.png';
@@ -39,6 +41,8 @@ class AppImageData {
   static const String straightlineBingo = '$_base/straightline-bingo.png';
   static const String tShapeBingo = '$_base/T-shape-bingo.png';
   static const String xPatternBingo = '$_base/X-pattern-bingo.png';
+  static const String send = '$_base/send.png';
+  static const String close = '$_base/close.png';
 
   // Avatar images
   static const String image = '$_base/image.png';
@@ -61,6 +65,7 @@ class AppImages extends StatelessWidget {
   final BoxFit? fit;
   final Animation<double>? animation;
   final AlignmentGeometry? alignment;
+  final VoidCallback? onPressed;
 
   const AppImages({
     super.key,
@@ -70,6 +75,7 @@ class AppImages extends StatelessWidget {
     this.fit,
     this.animation,
     this.alignment,
+    this.onPressed,
   });
 
   @override
@@ -86,8 +92,15 @@ class AppImages extends StatelessWidget {
     );
 
     if (animation != null) {
-      return ScaleTransition(
+      image = ScaleTransition(
         scale: animation!,
+        child: image,
+      );
+    }
+
+    if (onPressed != null) {
+      return GestureDetector(
+        onTap: onPressed,
         child: image,
       );
     }
