@@ -223,33 +223,35 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
     final currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
     return Column(
       children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.purplePrimary,
-              width: 3,
+        Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.purplePrimary,
+                width: 3,
+              ),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const AppImages(
-                imagePath: AppImageData.money,
-                width: 24,
-                height: 24,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '\$${widget.amount}',
-                style: AppTextStyle.dmSans(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const AppImages(
+                  imagePath: AppImageData.money,
+                  width: 24,
+                  height: 24,
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                Text(
+                  '\$${widget.amount}',
+                  style: AppTextStyle.dmSans(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 24),
