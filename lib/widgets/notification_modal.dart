@@ -5,6 +5,7 @@ import 'app_modal_container.dart';
 import 'app_colors.dart';
 import 'notification_card.dart';
 import 'app_banner.dart';
+import 'fund_withdrawal_modal.dart';
 
 class NotificationModal extends StatelessWidget {
   final VoidCallback onClose;
@@ -15,6 +16,19 @@ class NotificationModal extends StatelessWidget {
     required this.onClose,
     required this.notifications,
   });
+
+  void _handleClaimPrize(BuildContext context, Map<String, dynamic> notification) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => FundWithdrawalModal(
+        onClose: () {
+          Navigator.of(context).pop();
+        },
+        amount: notification['amount'] ?? '130',
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +79,7 @@ class NotificationModal extends StatelessWidget {
                           title: notification['title'],
                           subtitle: notification['subtitle'],
                           buttonText: notification['buttonText'],
-                          onButtonPressed: notification['onButtonPressed'],
+                          onButtonPressed: () => _handleClaimPrize(context, notification),
                           isRead: notification['isRead'] ?? false,
                         );
                       }).toList(),
