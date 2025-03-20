@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 class AppBannerPainter extends CustomPainter {
   final Color fillColor;
   final Color borderColor;
+  final bool hasShadow;
+  final Color shadowColor;
+  final double shadowBlurRadius;
 
   AppBannerPainter({
     required this.fillColor,
     required this.borderColor,
+    this.hasShadow = false,
+    this.shadowColor = Colors.black38,
+    this.shadowBlurRadius = 8.0,
   });
 
   @override
@@ -56,6 +62,14 @@ class AppBannerPainter extends CustomPainter {
     );
     path.close();
 
+    // Draw shadow if enabled
+    if (hasShadow) {
+      Paint shadowPaint = Paint()
+        ..color = shadowColor
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, shadowBlurRadius);
+      canvas.drawPath(path, shadowPaint);
+    }
+
     // Fill the main shape
     Paint mainPaint = Paint()
       ..style = PaintingStyle.fill
@@ -74,7 +88,10 @@ class AppBannerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(AppBannerPainter oldDelegate) {
-    return oldDelegate.fillColor != fillColor || 
-           oldDelegate.borderColor != borderColor;
+    return oldDelegate.fillColor != fillColor ||
+           oldDelegate.borderColor != borderColor ||
+           oldDelegate.hasShadow != hasShadow ||
+           oldDelegate.shadowColor != shadowColor ||
+           oldDelegate.shadowBlurRadius != shadowBlurRadius;
   }
 } 
