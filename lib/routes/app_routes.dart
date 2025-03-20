@@ -5,6 +5,7 @@ import '../views/home_screen.dart';
 import '../views/qr_code_scanner_screen.dart';
 import '../views/game_details_screen.dart';
 import '../views/remote_code_screen.dart';
+import '../views/remote_game_details_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -13,6 +14,7 @@ class AppRoutes {
   static const String qrCodeScanner = '/qrCodeScanner';
   static const String gameDetails = '/gameDetails';
   static const String remoteCode = '/remoteCode';
+  static const String remoteGameDetails = '/remoteGameDetails';
 
   static const String initialRoute = splash;
 
@@ -23,5 +25,6 @@ class AppRoutes {
     qrCodeScanner: (context) => const QRCodeScannerScreen(),
     gameDetails: (context) => const GameDetailsScreen(),
     remoteCode: (context) => const RemoteCodeScreen(),
+    remoteGameDetails: (context) => const RemoteGameDetailsScreen(),
   };
 } 
