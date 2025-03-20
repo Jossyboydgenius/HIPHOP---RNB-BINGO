@@ -27,7 +27,7 @@ class NotificationModal extends StatelessWidget {
           child: Center(
             child: AppModalContainer(
               width: 500,
-              height: 750,
+              height: 650,
               fillColor: AppColors.purplePrimary,
               borderColor: AppColors.purpleLight,
               layerColor: AppColors.purpleDark,
@@ -44,7 +44,7 @@ class NotificationModal extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
                 width: 200,
-                height: 45,
+                height: 40,
                 hasShadow: true,
                 shadowColor: Colors.black,
                 shadowBlurRadius: 15,
