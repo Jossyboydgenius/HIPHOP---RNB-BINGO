@@ -4,6 +4,7 @@ import 'app_icons.dart';
 import 'app_images.dart';
 import 'app_text_style.dart';
 import 'notification_modal.dart';
+import 'chat_room_modal.dart';
 
 class AppTopBar extends StatelessWidget {
   final String initials;
@@ -203,11 +204,27 @@ class AppTopBar extends StatelessWidget {
           _buildUserAvatar(),
           Row(
             children: [
-              _buildAmountContainer(
-                color: AppColors.purplePrimary,
-                amount: gemAmount,
-                leftIcon: AppIconData.gem,
-                rightIcon: AppIconData.add,
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) => ChatRoomModal(
+                      onClose: () {
+                        Navigator.of(context).pop();
+                      },
+                      userInitials: 'JD', // Replace with actual user initials
+                      activeUsers: 2500,
+                      isConnected: true,
+                    ),
+                  );
+                },
+                child: _buildAmountContainer(
+                  color: AppColors.purplePrimary,
+                  amount: gemAmount,
+                  leftIcon: AppIconData.gem,
+                  rightIcon: AppIconData.add,
+                ),
               ),
               const SizedBox(width: 34),
               _buildAmountContainer(
