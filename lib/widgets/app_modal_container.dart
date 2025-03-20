@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_banner.dart';
 import 'app_icons.dart';
 import 'app_text_style.dart';
 
@@ -16,6 +17,7 @@ class AppModalContainer extends StatefulWidget {
   final TextStyle? titleStyle;
   final double layerTopPosition;
   final Widget? customTitle;
+  final AppBanner? banner;
 
   const AppModalContainer({
     super.key,
@@ -32,6 +34,7 @@ class AppModalContainer extends StatefulWidget {
     this.titleStyle,
     this.customTitle,
     this.layerTopPosition = -4,
+    this.banner,
   });
 
   @override
@@ -104,8 +107,8 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                   Positioned(
                     left: 0,
                     right: 0,
-                    bottom: widget.layerTopPosition *3,  // Position from bottom instead of top
-                    height: 100,  // Fixed height for the layer
+                    bottom: widget.layerTopPosition * 3,
+                    height: 100,
                     child: Container(
                       decoration: BoxDecoration(
                         color: widget.layerColor,
@@ -113,7 +116,7 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                       ),
                     ),
                   ),
-                // Main container (moved after layer to be on top)
+                // Main container
                 Container(
                   width: widget.width ?? double.infinity,
                   height: widget.height,
@@ -153,11 +156,18 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                           ],
                         ),
                       ),
-                      // Content
                       Expanded(child: widget.child),
                     ],
                   ),
                 ),
+                // Banner on top
+                if (widget.banner != null)
+                  Positioned(
+                    top: -20,  // Adjust this value to position the banner
+                    left: 0,
+                    right: 0,
+                    child: Center(child: widget.banner!),
+                  ),
               ],
             ),
           ),
