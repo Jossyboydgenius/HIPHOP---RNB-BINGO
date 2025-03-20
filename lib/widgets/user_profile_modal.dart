@@ -9,6 +9,7 @@ import 'app_banner.dart';
 import 'app_button.dart';
 import 'app_images.dart';
 import 'app_input.dart';
+import 'withdraw_to_modal.dart';
 
 class UserProfileModal extends StatefulWidget {
   final VoidCallback onClose;
@@ -199,44 +200,16 @@ class _UserProfileModalState extends State<UserProfileModal> {
   void _showWithdrawalOptions() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Withdraw To'),
-        contentPadding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const AppImages(imagePath: AppImageData.paypal),
-              title: const Text('PayPal'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                setState(() => _withdrawalController.text = 'PayPal');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const AppImages(imagePath: AppImageData.cashapp),
-              title: const Text('CashApp'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                setState(() => _withdrawalController.text = 'CashApp');
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const AppImages(imagePath: AppImageData.zelle),
-              title: const Text('Zelle'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                setState(() => _withdrawalController.text = 'Zelle');
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
+      barrierDismissible: false,
+      builder: (BuildContext context) => WithdrawToModal(
+        onClose: () {
+          Navigator.of(context).pop();
+        },
+        onConfirm: (details) {
+          setState(() {
+            _withdrawalController.text = details['platform']!;
+          });
+        },
       ),
     );
   }
@@ -309,7 +282,7 @@ class _UserProfileModalState extends State<UserProfileModal> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   SizedBox(
-                                    width: 85,
+                                    width: 80,
                                     child: Text(
                                       field['label'] as String,
                                       style: AppTextStyle.dmSans(
@@ -318,7 +291,7 @@ class _UserProfileModalState extends State<UserProfileModal> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  const SizedBox(width: 2),
                                   Expanded(
                                     child: AppInput(
                                       label: '',
