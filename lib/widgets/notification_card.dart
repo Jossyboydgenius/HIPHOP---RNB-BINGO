@@ -50,7 +50,7 @@ class NotificationCard extends StatelessWidget {
                   color: isRead ? AppColors.grayDark : AppColors.purpleLight,
                   disabledColor: AppColors.grayDark,
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),
@@ -92,7 +92,7 @@ class NotificationCard extends StatelessWidget {
                 color: isRead ? AppColors.grayDark : AppColors.purpleLight,
                 disabledColor: AppColors.grayDark,
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
