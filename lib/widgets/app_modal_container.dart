@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_banner.dart';
-import 'app_icons.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'app_text_style.dart';
 
 class AppModalContainer extends StatefulWidget {
@@ -18,6 +18,7 @@ class AppModalContainer extends StatefulWidget {
   final double layerTopPosition;
   final Widget? customTitle;
   final AppBanner? banner;
+  final bool maintainFocus;
 
   const AppModalContainer({
     super.key,
@@ -35,6 +36,7 @@ class AppModalContainer extends StatefulWidget {
     this.customTitle,
     this.layerTopPosition = -4,
     this.banner,
+    this.maintainFocus = true,
   });
 
   @override
@@ -92,87 +94,91 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Opacity(
-          opacity: _opacityAnimation.value,
-          child: Transform.scale(
-            scale: _scaleAnimation.value,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // Layer behind the main container
-                if (widget.layerColor != null)
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: widget.layerTopPosition * 3,
-                    height: 100,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: widget.layerColor,
-                        borderRadius: BorderRadius.circular(widget.borderRadius),
-                      ),
-                    ),
-                  ),
-                // Main container
-                Container(
-                  width: widget.width ?? double.infinity,
-                  height: widget.height,
-                  decoration: BoxDecoration(
-                    color: widget.fillColor,
-                    borderRadius: BorderRadius.circular(widget.borderRadius),
-                    border: Border.all(
-                      color: widget.borderColor ?? Colors.transparent,
-                      width: widget.borderWidth,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      // Title bar with close button
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const SizedBox(width: 40),
-                            if (widget.customTitle != null)
-                              widget.customTitle!
-                            else if (widget.title != null)
-                              Text(
-                                widget.title!,
-                                style: widget.titleStyle ?? AppTextStyle.poppins(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            AppIcons(
-                              icon: AppIconData.close,
-                              size: 32,
-                              onPressed: _handleClose,
-                            ),
-                          ],
+    return GestureDetector(
+      onTap: widget.maintainFocus ? null : () => FocusScope.of(context).unfocus(),
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Opacity(
+            opacity: _opacityAnimation.value,
+            child: Transform.scale(
+              scale: _scaleAnimation.value,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // Layer behind the main container
+                  if (widget.layerColor != null)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: widget.layerTopPosition * 3,
+                      height: 100,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: widget.layerColor,
+                          borderRadius: BorderRadius.circular(widget.borderRadius),
                         ),
                       ),
-                      Expanded(child: widget.child),
-                    ],
+                    ),
+                  // Main container
+                  Container(
+                    width: widget.width ?? double.infinity,
+                    height: widget.height,
+                    decoration: BoxDecoration(
+                      color: widget.fillColor,
+                      borderRadius: BorderRadius.circular(widget.borderRadius),
+                      border: Border.all(
+                        color: widget.borderColor ?? Colors.transparent,
+                        width: widget.borderWidth,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        // Title bar with close button
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const SizedBox(width: 40),
+                              if (widget.customTitle != null)
+                                widget.customTitle!
+                              else if (widget.title != null)
+                                Text(
+                                  widget.title!,
+                                  style: widget.titleStyle ?? AppTextStyle.poppins(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              AppImages(
+                                imagePath: AppImageData.close,
+                                height: 32,
+                                width: 32,
+                                onPressed: _handleClose,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(child: widget.child),
+                      ],
+                    ),
                   ),
-                ),
-                // Banner on top
-                if (widget.banner != null)
-                  Positioned(
-                    top: -20,  // Adjust this value to position the banner
-                    left: 0,
-                    right: 0,
-                    child: Center(child: widget.banner!),
-                  ),
-              ],
+                  // Banner on top
+                  if (widget.banner != null)
+                    Positioned(
+                      top: -20,  // Adjust this value to position the banner
+                      left: 0,
+                      right: 0,
+                      child: Center(child: widget.banner!),
+                    ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 } 
