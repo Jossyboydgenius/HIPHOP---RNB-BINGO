@@ -8,6 +8,9 @@ class AppBanner extends StatelessWidget {
   final TextStyle textStyle;
   final double width;
   final double height;
+  final bool hasShadow;
+  final Color shadowColor;
+  final double shadowBlurRadius;
 
   const AppBanner({
     super.key,
@@ -17,6 +20,9 @@ class AppBanner extends StatelessWidget {
     required this.textStyle,
     this.width = 194,
     this.height = 38,
+    this.hasShadow = false,
+    this.shadowColor = Colors.black38,
+    this.shadowBlurRadius = 8.0,
   });
 
   @override
@@ -31,6 +37,9 @@ class AppBanner extends StatelessWidget {
             painter: AppBannerPainter(
               fillColor: fillColor,
               borderColor: borderColor,
+              hasShadow: hasShadow,
+              shadowColor: shadowColor,
+              shadowBlurRadius: shadowBlurRadius,
             ),
           ),
           // Center the text both horizontally and vertically
