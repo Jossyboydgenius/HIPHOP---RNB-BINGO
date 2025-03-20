@@ -28,6 +28,7 @@ class ChatRoomModal extends StatefulWidget {
 
 class _ChatRoomModalState extends State<ChatRoomModal> {
   final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final int maxLength = 250;
   
   // Add this list to store chat messages
@@ -58,6 +59,7 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
   @override
   void dispose() {
     _messageController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -68,8 +70,8 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
         Row(
           children: [
             Container(
-              width: 12,
-              height: 12,
+              width: 14,
+              height: 14,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: widget.isConnected ? AppColors.greenBright : Colors.red,
@@ -85,7 +87,7 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Row(
           children: [
             const AppIcons(
@@ -107,64 +109,83 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
   }
 
   Widget _buildChatInput() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _messageController,
-              maxLength: maxLength,
-              style: AppTextStyle.dmSans(
-                fontSize: 14,
-                color: Colors.black,
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 62, 
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  TextField(
+                    controller: _messageController,
+                    maxLength: maxLength,
+                    style: AppTextStyle.dmSans(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Type Here',
+                      hintStyle: AppTextStyle.dmSans(
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.black,
+                      ),
+                      border: InputBorder.none,
+                      counterText: '',
+                      contentPadding: const EdgeInsets.only(right: 2), // Add padding for counter
+                    ),
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  Positioned(
+                    right: 0,
+                    bottom: 4,
+                    child: Text(
+                      '${_messageController.text.length}/$maxLength',
+                      style: AppTextStyle.dmSans(
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              decoration: InputDecoration(
-                hintText: 'Type Here',
-                hintStyle: AppTextStyle.dmSans(
-                  fontSize: 14,
-                  fontStyle: FontStyle.italic,
-                  color: Colors.black,
-                ),
-                border: InputBorder.none,
-                counterText: '',
-                suffixText: '${_messageController.text.length}/$maxLength',
-                suffixStyle: AppTextStyle.dmSans(
-                  fontSize: 12,
-                  color: Colors.black,
-                ),
-              ),
-              onChanged: (_) => setState(() {}),
             ),
           ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 44,
-            height: 44,
-            child: AppButton(
-              text: '', // Add empty text since it's required
-              onPressed: _messageController.text.isEmpty ? null : _handleSendMessage,
-              fillColor: _messageController.text.isEmpty 
-                ? AppColors.grayLight 
-                : AppColors.greenBright,
-              layerColor: _messageController.text.isEmpty 
-                ? AppColors.grayDark 
-                : AppColors.greenDark,
-              borderColor: Colors.white,
-              height: 44,
-              borderRadius: 8,
-              iconPath: AppIconData.send, // Use iconPath instead of child
-              iconColor: Colors.white,
-              iconSize: 24,
-              disabled: _messageController.text.isEmpty,
-            ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 62, 
+          height: 62, 
+          child: AppButton(
+            text: '',
+            onPressed: _messageController.text.isEmpty ? null : _handleSendMessage,
+            fillColor: _messageController.text.isEmpty 
+              ? AppColors.grayDark 
+              : AppColors.greenDark,
+            layerColor: _messageController.text.isEmpty 
+              ? AppColors.grayLight 
+              : AppColors.greenBright,
+            borderColor: Colors.white,
+            hasBorder: true,
+            borderWidth: 2,
+            height: 80,
+            layerTopPosition: -1,
+            borderRadius: 16,
+            iconPath: AppIconData.send,
+            iconSize: 22,
+            disabled: _messageController.text.isEmpty,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -218,6 +239,7 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: SingleChildScrollView(
+                        controller: _scrollController,
                         child: Column(
                           children: [
                             const Text(
@@ -247,7 +269,12 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                      bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+                    ),
                     child: _buildChatInput(),
                   ),
                 ],
@@ -272,6 +299,15 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
         });
       });
       _messageController.clear();
+      
+      // Scroll to bottom with animation
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
     }
   }
 } 
