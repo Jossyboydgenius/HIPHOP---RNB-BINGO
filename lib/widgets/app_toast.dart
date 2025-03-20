@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'app_colors.dart';
-import 'app_icons.dart';
 import 'app_text_style.dart';
 
 class AppToast extends StatefulWidget {
@@ -116,9 +116,10 @@ class _AppToastState extends State<AppToast> with SingleTickerProviderStateMixin
                     ),
                   ),
                 ),
-                AppIcons(
-                  icon: AppIconData.close,
-                  size: 24,
+                AppImages(
+                  imagePath: AppImageData.close,
+                  height: 32,
+                  width: 32,
                   onPressed: () {
                     _controller.reverse().then((_) => widget.onClose());
                   },
