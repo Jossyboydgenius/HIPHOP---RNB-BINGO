@@ -56,6 +56,20 @@ class AppImageData {
   static const String image8 = '$_base/image8.png';
   static const String image9 = '$_base/image9.png';
   static const String image10 = '$_base/image10.png';
+
+  static final Map<String, String> avatarImages = {
+    'image': image,
+    'image1': image1,
+    'image2': image2,
+    'image3': image3,
+    'image4': image4,
+    'image5': image5,
+    'image6': image6,
+    'image7': image7,
+    'image8': image8,
+    'image9': image9,
+    'image10': image10,
+  };
 }
 
 class AppImages extends StatelessWidget {
