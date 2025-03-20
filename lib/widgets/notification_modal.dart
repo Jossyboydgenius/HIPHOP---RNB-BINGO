@@ -45,6 +45,9 @@ class NotificationModal extends StatelessWidget {
                 ),
                 width: 200,
                 height: 45,
+                hasShadow: true,
+                shadowColor: Colors.black,
+                shadowBlurRadius: 15,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
