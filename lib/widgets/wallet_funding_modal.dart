@@ -78,7 +78,29 @@ class WalletFundingModal extends StatelessWidget {
                     fontSize: 20,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Poppins',
+                    fontFamily: 'MochiyPopOne',
+                    shadows: [
+                      Shadow(
+                        color: AppColors.purpleDark,
+                        offset: Offset(0, 4),
+                        blurRadius: 0,
+                      ),
+                      Shadow(
+                        color: AppColors.purpleDark,
+                        offset: Offset(4, 0),
+                        blurRadius: 0,
+                      ),
+                      Shadow(
+                        color: AppColors.purpleDark,
+                        offset: Offset(0, -4),
+                        blurRadius: 0,
+                      ),
+                      Shadow(
+                        color: AppColors.purpleDark,
+                        offset: Offset(-4, 0),
+                        blurRadius: 0,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -151,31 +173,40 @@ class WalletFundingModal extends StatelessWidget {
               // Gem amount
               Padding(
                 padding: const EdgeInsets.only(top: 36),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: AppColors.purplePrimary,
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(color: Colors.white),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const AppIcons(
-                        icon: AppIconData.gem,
-                        size: 24,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.purplePrimary,
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(color: Colors.white),
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        gemAmount,
-                        style: AppTextStyle.poppins(
-                          fontSize: 14,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          gemAmount,
+                          style: AppTextStyle.poppins(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    const Positioned(
+                      left: -12,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: AppIcons(
+                          icon: AppIconData.gem,
+                          size: 32,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               // Store button
