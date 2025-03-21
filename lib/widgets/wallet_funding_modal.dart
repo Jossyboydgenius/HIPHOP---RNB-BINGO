@@ -68,39 +68,17 @@ class WalletFundingModal extends StatelessWidget {
                 ),
               ),
               // Banner
-              const Padding(
-                padding: EdgeInsets.only(bottom: 32),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 32),
                 child: AppBanner(
                   text: 'Gems',
                   fillColor: AppColors.purplePrimary,
                   borderColor: AppColors.purpleDark,
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'MochiyPopOne',
-                    shadows: [
-                      Shadow(
-                        color: AppColors.purpleDark,
-                        offset: Offset(0, 4),
-                        blurRadius: 0,
-                      ),
-                      Shadow(
-                        color: AppColors.purpleDark,
-                        offset: Offset(4, 0),
-                        blurRadius: 0,
-                      ),
-                      Shadow(
-                        color: AppColors.purpleDark,
-                        offset: Offset(0, -4),
-                        blurRadius: 0,
-                      ),
-                      Shadow(
-                        color: AppColors.purpleDark,
-                        offset: Offset(-4, 0),
-                        blurRadius: 0,
-                      ),
-                    ],
+                  textStyle: AppTextStyle.textWithStroke(
+                    fontSize: 24,
+                    textColor: Colors.white,
+                    strokeColor: AppColors.purpleDark,
+                    strokeWidth: 6,
                   ),
                 ),
               ),
