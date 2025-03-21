@@ -6,6 +6,7 @@ import 'app_text_style.dart';
 import 'notification_modal.dart';
 import 'chat_room_modal.dart';
 import 'user_profile_modal.dart';
+import 'wallet_funding_modal.dart';
 
 class AppTopBar extends StatefulWidget {
   final String initials;
@@ -281,11 +282,25 @@ class _AppTopBarState extends State<AppTopBar> {
                 ),
               ),
               const SizedBox(width: 34),
-              _buildAmountContainer(
-                color: AppColors.yellowPrimary,
-                amount: widget.cardAmount,
-                leftIcon: AppIconData.card,
-                rightIcon: AppIconData.add2,
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) => WalletFundingModal(
+                      onClose: () {
+                        Navigator.of(context).pop();
+                      },
+                      gemAmount: widget.gemAmount,
+                    ),
+                  );
+                },
+                child: _buildAmountContainer(
+                  color: AppColors.yellowPrimary,
+                  amount: widget.cardAmount,
+                  leftIcon: AppIconData.card,
+                  rightIcon: AppIconData.add2,
+                ),
               ),
             ],
           ),
