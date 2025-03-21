@@ -25,8 +25,6 @@ class HomeScreen extends StatelessWidget {
               children: [
                 const AppTopBar(
                   initials: 'JD',
-                  gemAmount: '1200',
-                  cardAmount: '120',
                   notificationCount: 1,
                 ),
                 const Spacer(flex: 2),
