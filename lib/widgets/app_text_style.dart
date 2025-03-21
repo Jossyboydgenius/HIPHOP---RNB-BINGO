@@ -94,6 +94,69 @@ abstract class AppTextStyle {
       decoration: TextDecoration.none,
     );
   }
+
+  static TextStyle textWithStroke({
+    required double fontSize,
+    required Color textColor,
+    required Color strokeColor,
+    FontWeight fontWeight = FontWeight.bold,
+    String fontFamily = mochiyPopOneFont,
+    double strokeWidth = 8,
+  }) {
+    return TextStyle(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      fontFamily: fontFamily,
+      shadows: [
+        // Top
+        Shadow(
+          offset: Offset(0, -strokeWidth/2),
+          color: strokeColor,
+          blurRadius: 0,
+        ),
+        // Bottom
+        Shadow(
+          offset: Offset(0, strokeWidth/2),
+          color: strokeColor,
+          blurRadius: 0,
+        ),
+        // Left
+        Shadow(
+          offset: Offset(-strokeWidth/2, 0),
+          color: strokeColor,
+          blurRadius: 0,
+        ),
+        // Right
+        Shadow(
+          offset: Offset(strokeWidth/2, 0),
+          color: strokeColor,
+          blurRadius: 0,
+        ),
+        // Diagonals for smoother corners
+        Shadow(
+          offset: Offset(-strokeWidth/2, -strokeWidth/2),
+          color: strokeColor,
+          blurRadius: 0,
+        ),
+        Shadow(
+          offset: Offset(-strokeWidth/2, strokeWidth/2),
+          color: strokeColor,
+          blurRadius: 0,
+        ),
+        Shadow(
+          offset: Offset(strokeWidth/2, -strokeWidth/2),
+          color: strokeColor,
+          blurRadius: 0,
+        ),
+        Shadow(
+          offset: Offset(strokeWidth/2, strokeWidth/2),
+          color: strokeColor,
+          blurRadius: 0,
+        ),
+      ],
+      color: textColor,
+    );
+  }
 }
 
 abstract class AppFontWeight {
