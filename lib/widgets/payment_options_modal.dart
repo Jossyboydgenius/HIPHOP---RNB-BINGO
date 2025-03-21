@@ -9,16 +9,18 @@ import 'app_images.dart';
 class PaymentOptionsModal extends StatelessWidget {
   final VoidCallback onClose;
   final Function(String) onPaymentSelected;
+  final bool isInAppPurchase;
 
   const PaymentOptionsModal({
     super.key,
     required this.onClose,
     required this.onPaymentSelected,
+    this.isInAppPurchase = false,
   });
 
   Widget _buildTitle() {
     return Text(
-      'Pay Fees',
+      isInAppPurchase ? 'Fund from' : 'Pay Fees',
       style: AppTextStyle.poppins(
         fontSize: 24,
         fontWeight: FontWeight.bold,
@@ -57,7 +59,7 @@ class PaymentOptionsModal extends StatelessWidget {
                   Text(
                     title,
                     style: AppTextStyle.dmSans(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
