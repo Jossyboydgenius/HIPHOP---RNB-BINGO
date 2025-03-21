@@ -12,6 +12,7 @@ class AppInAppPurchaseCard extends StatefulWidget {
   final VoidCallback onGetPressed;
   final String iconPath;
   final Color bannerColor;
+  final bool isGemCard;
 
   const AppInAppPurchaseCard({
     super.key,
@@ -21,6 +22,7 @@ class AppInAppPurchaseCard extends StatefulWidget {
     required this.onGetPressed,
     this.iconPath = AppImageData.gem,
     this.bannerColor = AppColors.pinkPrimary,
+    this.isGemCard = true,
   });
 
   @override
@@ -50,12 +52,8 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
       decoration: BoxDecoration(
-        color: AppColors.purplePrimary,
+        color: widget.isGemCard ? AppColors.purplePrimary : AppColors.blueLight3,
         borderRadius: BorderRadius.circular(16),
-        // border: Border.all(
-        //   color: AppColors.purpleDark,
-        //   width: 2,
-        // ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -76,7 +74,7 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
                   width: 36,
                   height: 36,
                 ),
-                if (widget.plusValue.isNotEmpty)
+                if (widget.plusValue.isNotEmpty && widget.isGemCard)
                   Positioned(
                     right: 0,
                     bottom: 0,
@@ -104,20 +102,36 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const AppImages(
-                  imagePath: AppImageData.money,
-                  width: 20,
-                  height: 20,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '\$${widget.price}',
-                  style: AppTextStyle.mochiyPopOne(
-                    fontSize: 10,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
+                if (widget.isGemCard) ...[
+                  const AppImages(
+                    imagePath: AppImageData.money,
+                    width: 20,
+                    height: 20,
                   ),
-                ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '\$${widget.price}',
+                    style: AppTextStyle.mochiyPopOne(
+                      fontSize: 10,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ] else ...[
+                  const AppIcons(
+                    icon: AppIconData.gem,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    widget.price,
+                    style: AppTextStyle.mochiyPopOne(
+                      fontSize: 10,
+                      color: AppColors.blueDark2,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
