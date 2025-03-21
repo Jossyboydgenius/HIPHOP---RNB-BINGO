@@ -66,7 +66,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   Navigator.pushReplacementNamed(context, AppRoutes.home);
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
               AppButton(
                 text: 'Facebook',
                 iconPath: AppIconData.facebook,
@@ -84,7 +84,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   Navigator.pushReplacementNamed(context, AppRoutes.home);
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
               AppButton(
                 text: 'Apple',
                 iconPath: AppIconData.apple,
