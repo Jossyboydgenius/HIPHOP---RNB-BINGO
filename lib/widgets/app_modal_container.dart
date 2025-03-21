@@ -19,6 +19,7 @@ class AppModalContainer extends StatefulWidget {
   final Widget? customTitle;
   final AppBanner? banner;
   final bool maintainFocus;
+  final bool showCloseButton;
 
   const AppModalContainer({
     super.key,
@@ -37,6 +38,7 @@ class AppModalContainer extends StatefulWidget {
     this.layerTopPosition = -4,
     this.banner,
     this.maintainFocus = true,
+    this.showCloseButton = true,
   });
 
   @override
@@ -134,33 +136,33 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                     ),
                     child: Column(
                       children: [
-                        // Title bar with close button
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const SizedBox(width: 40),
-                              if (widget.customTitle != null)
-                                widget.customTitle!
-                              else if (widget.title != null)
-                                Text(
-                                  widget.title!,
-                                  style: widget.titleStyle ?? AppTextStyle.poppins(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                        if (widget.showCloseButton)
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const SizedBox(width: 40),
+                                if (widget.customTitle != null)
+                                  widget.customTitle!
+                                else if (widget.title != null)
+                                  Text(
+                                    widget.title!,
+                                    style: widget.titleStyle ?? AppTextStyle.poppins(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
+                                AppImages(
+                                  imagePath: AppImageData.close,
+                                  height: 32,
+                                  width: 32,
+                                  onPressed: _handleClose,
                                 ),
-                              AppImages(
-                                imagePath: AppImageData.close,
-                                height: 32,
-                                width: 32,
-                                onPressed: _handleClose,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
                         Expanded(child: widget.child),
                       ],
                     ),
