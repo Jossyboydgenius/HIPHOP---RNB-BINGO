@@ -21,6 +21,9 @@ class AppColors {
   static const Color deepPurple = Color(0xFF5B15FF);
   static const Color purpleOverlay = Color(0xFFD3D8FF);
   static const Color purpleTransparent = Color(0x26D3D8FF);
+  static const Color darkPurple = Color(0xFF7031FC);
+  static const Color darkPurple2 = Color(0xFF9A4AFE);
+  static const Color darkPurple3 = Color(0xFFA75CF4);
 
   // Gray shades
   static const Color grayLight = Color(0xFFF0F0F0);
@@ -38,9 +41,12 @@ class AppColors {
   static const Color backgroundLight = Color(0xFFF0F0F0);
   static const Color backgroundGrey = Color(0xFFD9D9D9);
 
-  // Pink/Red shades
+ // Pink/Red shades
   static const Color pinkPrimary = Color(0xFFFF4672);
   static const Color pinkDark = Color(0xFFE90038);
+  static const Color pinkDark2 = Color(0xFFE530B6);
+  static const Color pinkLight = Color(0xFFFF79EA);
+  static const Color pinkLight2 = Color(0xFFF989FF);
 
   // Blue shades
   static const Color bluePrimary = Color(0xFF39C7FF);
@@ -48,6 +54,7 @@ class AppColors {
   static const Color blueDark = Color(0xFF08B9FF);
   static const Color blueLight2 = Color(0xFF53C1FF);
   static const Color deepBlue = Color(0xFF098AEE);
+  static const Color blueLight3 = Color(0xFF67FCFF);
 
   // Pink/Purple gradient colors
   static const Color gradientPink = Color(0xFFFDA5FF);
