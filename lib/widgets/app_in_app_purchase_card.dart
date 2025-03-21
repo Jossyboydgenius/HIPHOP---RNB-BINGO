@@ -10,6 +10,8 @@ class AppInAppPurchaseCard extends StatefulWidget {
   final String price;
   final String plusValue;
   final VoidCallback onGetPressed;
+  final String iconPath;
+  final Color bannerColor;
 
   const AppInAppPurchaseCard({
     super.key,
@@ -17,6 +19,8 @@ class AppInAppPurchaseCard extends StatefulWidget {
     required this.price,
     required this.plusValue,
     required this.onGetPressed,
+    this.iconPath = AppImageData.gem,
+    this.bannerColor = AppColors.pinkPrimary,
   });
 
   @override
@@ -67,9 +71,10 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
                     size: 86,
                   ),
                 ),
-                const AppIcons(
-                  icon: AppIconData.gem1,
-                  size: 36,
+                AppImages(
+                  imagePath: widget.iconPath,
+                  width: 36,
+                  height: 36,
                 ),
                 if (widget.plusValue.isNotEmpty)
                   Positioned(
