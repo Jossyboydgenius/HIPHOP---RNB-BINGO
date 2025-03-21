@@ -175,8 +175,8 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                           child: _canStart
                               ? AppButton(
                                   text: 'Start',
-                                  fillColor: AppColors.greenBright,
-                                  layerColor: AppColors.greenDark,
+                                  fillColor: AppColors.greenDark,
+                                  layerColor: AppColors.greenBright,
                                   height: 72,
                                   hasBorder: true,
                                   layerTopPosition: -2,
