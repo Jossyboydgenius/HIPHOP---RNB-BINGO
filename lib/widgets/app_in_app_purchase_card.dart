@@ -48,10 +48,10 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
       decoration: BoxDecoration(
         color: AppColors.purplePrimary,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.purpleDark,
-          width: 2,
-        ),
+        // border: Border.all(
+        //   color: AppColors.purpleDark,
+        //   width: 2,
+        // ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
