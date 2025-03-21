@@ -52,9 +52,11 @@ class AppColors {
   static const Color bluePrimary = Color(0xFF39C7FF);
   static const Color blueLight = Color(0xFF4CDAFE);
   static const Color blueDark = Color(0xFF08B9FF);
+  static const Color blueDark2 = Color(0xFF05A4E8);
   static const Color blueLight2 = Color(0xFF53C1FF);
   static const Color deepBlue = Color(0xFF098AEE);
   static const Color blueLight3 = Color(0xFF67FCFF);
+  static const Color blueLight4 = Color(0xFF95E9FF);
 
   // Pink/Purple gradient colors
   static const Color gradientPink = Color(0xFFFDA5FF);
