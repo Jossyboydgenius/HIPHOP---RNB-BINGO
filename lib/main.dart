@@ -3,6 +3,8 @@ import 'themes/app_theme.dart';
 import 'routes/app_routes.dart';
 import 'services/navigation_service.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +15,12 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
   
-  runApp(const MyApp());
+  runApp(
+    BlocProvider(
+      create: (context) => BalanceBloc(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
