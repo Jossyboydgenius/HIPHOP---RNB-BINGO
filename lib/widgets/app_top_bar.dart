@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hiphop_rnb_bingo/blocs/balance/balance_state.dart';
 import 'app_colors.dart';
 import 'app_icons.dart';
 import 'app_images.dart';
@@ -7,18 +8,16 @@ import 'notification_modal.dart';
 import 'chat_room_modal.dart';
 import 'user_profile_modal.dart';
 import 'wallet_funding_modal.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
 
 class AppTopBar extends StatefulWidget {
   final String initials;
-  final String gemAmount;
-  final String cardAmount;
   final int notificationCount;
 
   const AppTopBar({
     super.key,
     required this.initials,
-    required this.gemAmount,
-    required this.cardAmount,
     required this.notificationCount,
   });
 
@@ -251,61 +250,66 @@ class _AppTopBarState extends State<AppTopBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _buildUserAvatar(context),
-          Row(
+    return BlocBuilder<BalanceBloc, BalanceState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) => ChatRoomModal(
-                      onClose: () {
-                        Navigator.of(context).pop();
-                      },
-                      userInitials: 'JD', // Replace with actual user initials
-                      activeUsers: 2500,
-                      isConnected: true,
+              _buildUserAvatar(context),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) => ChatRoomModal(
+                          onClose: () {
+                            Navigator.of(context).pop();
+                          },
+                          userInitials: 'JD', // Replace with actual user initials
+                          activeUsers: 2500,
+                          isConnected: true,
+                        ),
+                      );
+                    },
+                    child: _buildAmountContainer(
+                      color: AppColors.purplePrimary,
+                      amount: state.gemBalance.toString(),
+                      leftIcon: AppIconData.gem,
+                      rightIcon: AppIconData.add,
                     ),
-                  );
-                },
-                child: _buildAmountContainer(
-                  color: AppColors.purplePrimary,
-                  amount: widget.gemAmount,
-                  leftIcon: AppIconData.gem,
-                  rightIcon: AppIconData.add,
-                ),
-              ),
-              const SizedBox(width: 34),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) => WalletFundingModal(
-                      onClose: () {
-                        Navigator.of(context).pop();
-                      },
-                      gemAmount: widget.gemAmount,
+                  ),
+                  const SizedBox(width: 34),
+                  GestureDetector(
+                    onTap: () {
+                      _showWalletFundingModal();
+                    },
+                    child: _buildAmountContainer(
+                      color: AppColors.yellowPrimary,
+                      amount: state.boardBalance.toString(),
+                      leftIcon: AppIconData.card,
+                      rightIcon: AppIconData.add2,
                     ),
-                  );
-                },
-                child: _buildAmountContainer(
-                  color: AppColors.yellowPrimary,
-                  amount: widget.cardAmount,
-                  leftIcon: AppIconData.card,
-                  rightIcon: AppIconData.add2,
-                ),
+                  ),
+                ],
               ),
+              _buildNotificationIcon(context),
             ],
           ),
-          _buildNotificationIcon(context),
-        ],
+        );
+      },
+    );
+  }
+
+  void _showWalletFundingModal() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => WalletFundingModal(
+        onClose: () => Navigator.of(context).pop(),
       ),
     );
   }
