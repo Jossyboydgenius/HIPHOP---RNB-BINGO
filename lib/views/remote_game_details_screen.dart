@@ -96,8 +96,6 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
               children: [
                 const AppTopBar(
                   initials: 'JD',
-                  gemAmount: '1200',
-                  cardAmount: '120',
                   notificationCount: 1,
                 ),
                 Expanded(
