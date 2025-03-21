@@ -9,6 +9,8 @@ import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_in_app_purchase_card.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_modal_container.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
+import 'package:hiphop_rnb_bingo/widgets/payment_options_modal.dart';
+import 'package:hiphop_rnb_bingo/widgets/bingo_boards_store_modal.dart';
 
 class WalletFundingModal extends StatelessWidget {
   final VoidCallback onClose;
@@ -75,10 +77,10 @@ class WalletFundingModal extends StatelessWidget {
                   fillColor: AppColors.purplePrimary,
                   borderColor: AppColors.purpleDark,
                   textStyle: AppTextStyle.textWithStroke(
-                    fontSize: 24,
+                    fontSize: 16,
                     textColor: Colors.white,
                     strokeColor: AppColors.purpleDark,
-                    strokeWidth: 6,
+                    strokeWidth: 3,
                   ),
                 ),
               ),
@@ -111,8 +113,18 @@ class WalletFundingModal extends StatelessWidget {
                               amount: option['amount']!,
                               price: option['price']!,
                               plusValue: option['plus']!,
+                              iconPath: AppImageData.gem,
                               onGetPressed: () {
-                                // Handle purchase
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => PaymentOptionsModal(
+                                    isInAppPurchase: true,
+                                    onClose: () => Navigator.pop(context),
+                                    onPaymentSelected: (platform) {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                );
                               },
                             ),
                             Positioned(
@@ -202,7 +214,14 @@ class WalletFundingModal extends StatelessWidget {
                     hasBorder: true,
                     borderColor: Colors.white,
                     onPressed: () {
-                      // Handle store button press
+                      Navigator.pop(context);
+                      showDialog(
+                        context: context,
+                        builder: (context) => BingoBoardsStoreModal(
+                          onClose: () => Navigator.pop(context),
+                          boardsAmount: '0',
+                        ),
+                      );
                     },
                   ),
                 ),
