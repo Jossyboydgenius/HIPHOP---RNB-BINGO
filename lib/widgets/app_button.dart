@@ -34,6 +34,7 @@ class AppButton extends StatefulWidget {
   final BoxFit? imageFit;
   final double? iconSpacing;
   final bool iconAfterText;
+  final String? icon;
 
   const AppButton({
     super.key,
@@ -67,6 +68,7 @@ class AppButton extends StatefulWidget {
     this.imageFit,
     this.iconSpacing = 12,
     this.iconAfterText = false,
+    this.icon,
   });
 
   @override
@@ -134,12 +136,18 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
         width: widget.imageWidth ?? widget.iconSize,
         fit: widget.imageFit,
       );
+    } else if (widget.icon != null) {
+      return AppIcons(
+        icon: widget.icon!,
+        size: widget.iconSize!,
+        color: widget.iconColor ?? widget.textColor,
+      );
     }
     return const SizedBox.shrink();
   }
 
   Widget _buildContent() {
-    final hasIcon = widget.iconPath != null || widget.imagePath != null;
+    final hasIcon = widget.iconPath != null || widget.imagePath != null || widget.icon != null;
     final iconWidget = hasIcon ? _buildIcon() : null;
 
     return Row(
