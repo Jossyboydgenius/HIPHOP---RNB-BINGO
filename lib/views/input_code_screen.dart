@@ -80,8 +80,8 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                           layerColor: AppColors.purpleDark,
                           title: 'Input Code',
                           titleStyle: AppTextStyle.poppins(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
                             color: Colors.white,
                           ),
                           onClose: () => Navigator.pop(context),
@@ -108,11 +108,15 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                                   focusNode: _focusNode,
                                   textAlign: TextAlign.center,
                                   style: AppTextStyle.poppins(
-                                    fontSize: 32,
+                                    fontSize: 44,
+                                    fontWeight: FontWeight.w700,
                                     color: Colors.black,
-                                  ).copyWith(letterSpacing: 36),
+                                  ).copyWith(letterSpacing: 38),
                                   obscureText: true,
                                   obscuringCharacter: '●',
+                                  cursorColor: Colors.black,
+                                  cursorWidth: 1,
+                                  cursorHeight: 30,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(4),
@@ -121,8 +125,8 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 14,
+                                      horizontal: -1,
+                                      vertical: -16,
                                     ),
                                   ),
                                 ),
@@ -145,6 +149,11 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                         const SizedBox(height: 30),
                         AppButton(
                           text: 'Enter',
+                          textStyle: AppTextStyle.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
                           fillColor: AppColors.greenDark,
                           layerColor: AppColors.greenBright,
                           borderColor: Colors.white,
