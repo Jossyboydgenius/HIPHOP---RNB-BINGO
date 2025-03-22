@@ -20,6 +20,7 @@ class AppModalContainer extends StatefulWidget {
   final AppBanner? banner;
   final bool maintainFocus;
   final bool showCloseButton;
+  final bool handleBackNavigation;
 
   const AppModalContainer({
     super.key,
@@ -39,6 +40,7 @@ class AppModalContainer extends StatefulWidget {
     this.banner,
     this.maintainFocus = true,
     this.showCloseButton = true,
+    this.handleBackNavigation = false,
   });
 
   @override
@@ -91,6 +93,9 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
 
   void _handleClose() async {
     await _controller.reverse();
+    if (widget.handleBackNavigation) {
+      Navigator.pop(context);
+    }
     widget.onClose();
   }
 
