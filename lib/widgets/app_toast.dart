@@ -7,15 +7,27 @@ class AppToast extends StatefulWidget {
   final String message;
   final VoidCallback onClose;
   final Duration duration;
+  final bool showCloseIcon;
+  final bool showInfoIcon;
+  final Color? textColor;
 
   const AppToast({
     super.key,
     required this.message,
     required this.onClose,
     this.duration = const Duration(seconds: 3),
+    this.showCloseIcon = true,
+    this.showInfoIcon = true,
+    this.textColor,
   });
 
-  static void show(BuildContext context, String message) {
+  static void show(
+    BuildContext context,
+    String message, {
+    bool showCloseIcon = true,
+    bool showInfoIcon = true,
+    Color? textColor,
+  }) {
     OverlayState? overlay = Overlay.of(context);
     OverlayEntry? entry;
     
@@ -28,6 +40,9 @@ class AppToast extends StatefulWidget {
           color: Colors.transparent,
           child: AppToast(
             message: message,
+            showCloseIcon: showCloseIcon,
+            showInfoIcon: showInfoIcon,
+            textColor: textColor,
             onClose: () {
               entry?.remove();
             },
@@ -89,7 +104,7 @@ class _AppToastState extends State<AppToast> with SingleTickerProviderStateMixin
             child: Container(
               height: 60,
               decoration: BoxDecoration(
-                color: AppColors.purpleDark,
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
@@ -97,33 +112,42 @@ class _AppToastState extends State<AppToast> with SingleTickerProviderStateMixin
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: AppColors.purplePrimary,
+              color: AppColors.yellowLight2,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.purpleLight,
+                color: AppColors.yellowDark4,
                 width: 2,
               ),
             ),
             child: Row(
               children: [
+                if (widget.showInfoIcon)
+                  const AppImages(
+                    imagePath: AppImageData.info2,
+                    height: 24,
+                    width: 24,
+                  ),
+                if (widget.showInfoIcon)
+                  const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     widget.message,
                     style: AppTextStyle.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: widget.textColor ?? Colors.black,
                     ),
                   ),
                 ),
-                AppImages(
-                  imagePath: AppImageData.close,
-                  height: 32,
-                  width: 32,
-                  onPressed: () {
-                    _controller.reverse().then((_) => widget.onClose());
-                  },
-                ),
+                if (widget.showCloseIcon)
+                  AppImages(
+                    imagePath: AppImageData.close,
+                    height: 24,
+                    width: 24,
+                    onPressed: () {
+                      _controller.reverse().then((_) => widget.onClose());
+                    },
+                  ),
               ],
             ),
           ),
