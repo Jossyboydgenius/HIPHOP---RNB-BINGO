@@ -241,6 +241,11 @@ class _UserProfileModalState extends State<UserProfileModal> {
                   color: Colors.white,
                   fontFamily: 'MochiyPopOne',
                 ),
+                width: 200,
+                height: 40,
+                hasShadow: true,
+                shadowColor: Colors.black,
+                shadowBlurRadius: 15,
               ),
               child: Stack(
                 children: [
