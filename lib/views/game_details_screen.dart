@@ -10,7 +10,12 @@ import '../widgets/app_top_bar.dart';
 import '../widgets/game_details_container.dart';
 
 class GameDetailsScreen extends StatefulWidget {
-  const GameDetailsScreen({super.key});
+  final String? code;
+
+  const GameDetailsScreen({
+    super.key,
+    this.code,
+  });
 
   @override
   State<GameDetailsScreen> createState() => _GameDetailsScreenState();
@@ -96,7 +101,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                 borderRadius: BorderRadius.circular(100),
                               ),
                               child: Text(
-                                'Lorem ipsum dolor sit amet',
+                                'Game Location (City + Venue Name)',
                                 style: AppTextStyle.mochiyPopOne(
                                   fontSize: 14,
                                   color: Colors.white,
@@ -144,7 +149,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Lorem ipsum dolor sit amet',
+                          'Game Name Lorem ipsum dolor sit amet',
                           textAlign: TextAlign.center,
                           style: AppTextStyle.mochiyPopOne(
                             fontSize: 20,
