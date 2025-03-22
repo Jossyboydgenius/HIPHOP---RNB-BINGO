@@ -7,6 +7,7 @@ import '../widgets/app_icons.dart';
 import '../widgets/app_images.dart';
 import '../widgets/app_text_style.dart';
 import '../routes/app_routes.dart';
+import '../widgets/app_toast.dart';
 import 'package:google_ml_kit/google_ml_kit.dart' as ml_kit;
 
 class QRCodeScannerScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class QRCodeScannerScreen extends StatefulWidget {
   State<QRCodeScannerScreen> createState() => _QRCodeScannerScreenState();
 }
 
-class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
+class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsBindingObserver {
   bool _isTorchOn = false;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   qr.QRViewController? controller;
@@ -29,17 +30,33 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
   final ml_kit.BarcodeScanner _barcodeScanner = ml_kit.GoogleMlKit.vision.barcodeScanner();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _barcodeScanner.close();
     controller?.dispose();
     super.dispose();
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      controller?.resumeCamera();
+    }
+  }
+
+  @override
   void reassemble() {
     super.reassemble();
     if (controller != null) {
-      controller!.pauseCamera();
+      if (Theme.of(context).platform == TargetPlatform.android) {
+        controller!.pauseCamera();
+      }
       controller!.resumeCamera();
     }
   }
@@ -47,12 +64,12 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
   void _handleScannedCode(String? code) {
     if (code != null) {
       debugPrint('QR Code found: $code');
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('QR Code found! Redirecting...'),
-          backgroundColor: Colors.green,
-        ),
+      
+      // Show custom toast with info icon but no close button
+      AppToast.show(
+        context,
+        'QR Code detected! Processing game information...',
+        showCloseIcon: false,
       );
       
       // Navigate to appropriate screen based on mode
@@ -87,22 +104,20 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
           }
         } else {
           if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No QR code found in the image'),
-              backgroundColor: Colors.red,
-            ),
+          AppToast.show(
+            context,
+            'No QR code found in the selected image',
+            showCloseIcon: false,
           );
         }
       }
     } catch (e) {
       debugPrint('Error scanning image: $e');
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error scanning image'),
-          backgroundColor: Colors.red,
-        ),
+      AppToast.show(
+        context,
+        'Error scanning image. Please try again',
+        showCloseIcon: false,
       );
     }
   }
@@ -163,7 +178,8 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
                           onTap: () => Navigator.pop(context),
                           child: const AppImages(
                             imagePath: AppImageData.back,
-                            height: 48,
+                            height: 38,
+                            width: 38,
                           ),
                         ),
                         Expanded(
@@ -171,7 +187,8 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
                             'QR Code Scan',
                             textAlign: TextAlign.center,
                             style: AppTextStyle.mochiyPopOne(
-                              fontSize: 24,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400,
                               color: Colors.white,
                             ),
                           ),
