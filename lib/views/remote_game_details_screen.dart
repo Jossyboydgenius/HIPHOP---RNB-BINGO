@@ -15,7 +15,12 @@ import '../widgets/payment_options_modal.dart';
 import '../widgets/app_toast.dart';
 
 class RemoteGameDetailsScreen extends StatefulWidget {
-  const RemoteGameDetailsScreen({super.key});
+  final String? code;
+
+  const RemoteGameDetailsScreen({
+    super.key,
+    this.code,
+  });
 
   @override
   State<RemoteGameDetailsScreen> createState() => _RemoteGameDetailsScreenState();
