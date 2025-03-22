@@ -9,9 +9,11 @@ class AppColors {
   // Yellow shades
   static const Color yellowPrimary = Color(0xFFFFD217);
   static const Color yellowLight = Color(0xFFFFEE37);
+  static const Color yellowLight2 = Color(0xFFFFFAEB);
   static const Color yellowDark = Color(0xFFFFAE02);
   static const Color yellowDark2 = Color(0xFFFFB213);
   static const Color yellowDark3 = Color(0xFFFF8413);
+  static const Color yellowDark4 = Color(0xFFFFB828);
 
   // Purple shades
   static const Color purplePrimary = Color(0xFFB26BFB);
