@@ -25,6 +25,15 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
   final FocusNode _focusNode = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    // Focus the text field when the screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
   void dispose() {
     _codeController.dispose();
     _focusNode.dispose();
@@ -84,7 +93,10 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
                           ),
-                          onClose: () => Navigator.pop(context),
+                          handleBackNavigation: true,
+                          onClose: () {
+                            Navigator.pushReplacementNamed(context, AppRoutes.home);
+                          },
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                             child: Container(
@@ -122,6 +134,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                                     LengthLimitingTextInputFormatter(4),
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
+                                  onSubmitted: (_) => _handleCodeSubmission(),
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     contentPadding: EdgeInsets.symmetric(
