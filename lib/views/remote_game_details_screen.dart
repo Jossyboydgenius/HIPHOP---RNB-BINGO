@@ -123,8 +123,8 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                             Container(
                               margin: const EdgeInsets.only(top: 35),
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 6,
+                                horizontal: 14,
+                                vertical: 4,
                               ),
                               decoration: BoxDecoration(
                                 color: AppColors.pinkDark,
@@ -229,7 +229,7 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                           ],
                           timeRemaining: _timeString,
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height:24),
                         SizedBox(
                           width: 200,
                           child: _canStart
