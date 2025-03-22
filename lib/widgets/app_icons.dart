@@ -16,6 +16,8 @@ class AppIconData {
   static const String mute = '$_base/mute.svg';
   static const String close = '$_base/close.svg';
   static const String send = '$_base/send.svg';
+  static const String scan = '$_base/scan.svg';
+  static const String password = '$_base/password.svg';
 
   // Game related icons
   static const String card = '$_base/card.svg';
