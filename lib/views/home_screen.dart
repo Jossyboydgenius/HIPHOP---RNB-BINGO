@@ -8,6 +8,7 @@ import '../widgets/app_text_style.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_top_bar.dart';
 import 'qr_code_scanner_screen.dart';
+import 'input_code_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -162,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 'To Join Game',
                 style: AppTextStyle.mochiyPopOne(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: Colors.white,
                   fontWeight: FontWeight.w400,
                 ),
@@ -190,7 +191,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const QRCodeScannerScreen(),
+                      builder: (context) => QRCodeScannerScreen(
+                        isInPerson: isInPerson,
+                      ),
                     ),
                   );
                 },
@@ -215,7 +218,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconSize: 24,
                 iconSpacing: 8,
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.remoteCode);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InputCodeScreen(
+                        isInPerson: isInPerson,
+                      ),
+                    ),
+                  );
                 },
               ),
             ],
