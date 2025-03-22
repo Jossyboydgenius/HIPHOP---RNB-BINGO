@@ -62,6 +62,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 borderColor: Colors.white,
                 textColor: Colors.black,
                 fontFamily: AppTextStyle.dmSansFont,
+                fontSize: 16,
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, AppRoutes.home);
                 },
@@ -80,6 +81,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 borderColor: Colors.white,
                 textColor: Colors.black,
                 fontFamily: AppTextStyle.dmSansFont,
+                fontSize: 16,
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, AppRoutes.home);
                 },
@@ -98,6 +100,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 borderColor: Colors.white,
                 textColor: Colors.black,
                 fontFamily: AppTextStyle.dmSansFont,
+                fontSize: 16,
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, AppRoutes.home);
                 },
@@ -116,25 +119,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             textAlign: TextAlign.center,
             text: TextSpan(
               style: AppTextStyle.dmSans(
-                fontSize: 18,
+                fontSize: 12,
                 color: Colors.white,
                 fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w500,
               ),
               children: [
                 const TextSpan(
                   text: 'By continuing, you agree to our ',
                 ),
                 TextSpan(
-                  text: 'Terms of Services',
+                  text: 'Terms of Services & Privacy Policy',
                   style: AppTextStyle.dmSans(
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const TextSpan(text: ' & '),
-                TextSpan(
-                  text: 'Privacy Policy',
-                  style: AppTextStyle.dmSans(
-                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
               ],
@@ -155,33 +154,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: Scaffold(
         body: Stack(
           children: [
-            // Background and main content
             AppBackground(
               child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      const Spacer(),
-                      const AppImages(
-                        imagePath: AppImageData.bingo,
-                        height: 200,
-                      ),
-                      const Spacer(),
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 168),
+                child: Column(
+                  children: [
+                    const Spacer(),
+                    const AppImages(
+                      imagePath: AppImageData.bingo,
+                      height: 200,
+                    ),
+                    const Spacer(),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 168),
+                      child: Center(
                         child: Column(
                           children: [
                             AppButton(
                               text: 'Sign In',
                               fillColor: AppColors.yellowDark,
                               layerColor: AppColors.yellowPrimary,
-                              height: 72,
+                              height: 60,
+                              width: 340,
                               hasBorder: true,
                               layerTopPosition: -2,
-                              layerHeight: 60,
+                              layerHeight: 50,
+                              borderWidth: 3,
+                              borderRadius: 22,
                               fontFamily: AppTextStyle.poppinsFont,
-                              fontSize: 24,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
                               onPressed: () => _showModal(ModalType.signIn),
                             ),
                             const SizedBox(height: 26),
@@ -189,23 +190,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               text: 'Sign Up',
                               fillColor: AppColors.purpleDark,
                               layerColor: AppColors.purplePrimary,
-                              height: 72,
+                              height: 60,
+                              width: 340,
                               hasBorder: true,
                               layerTopPosition: -2,
-                              layerHeight: 60,
+                              layerHeight: 50,
+                              borderWidth: 3,
+                              borderRadius: 22,
                               fontFamily: AppTextStyle.poppinsFont,
-                              fontSize: 24,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
                               onPressed: () => _showModal(ModalType.signUp),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            // Modal overlay with blur
             if (_currentModal != null)
               AnimatedOpacity(
                 opacity: _isModalVisible ? 1.0 : 0.0,
@@ -218,7 +222,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Center(
                         child: AppModalContainer(
-                          height: 420,
+                          height: 380,
                           fillColor: _currentModal == ModalType.signIn 
                               ? AppColors.yellowPrimary 
                               : AppColors.purplePrimary,
@@ -231,6 +235,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           layerTopPosition: -4,
                           borderRadius: 32,
                           title: _currentModal == ModalType.signIn ? 'Sign In' : 'Sign Up',
+                          titleStyle: AppTextStyle.poppins(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
                           onClose: _hideModal,
                           child: _buildModalContent(_currentModal!),
                         ),
