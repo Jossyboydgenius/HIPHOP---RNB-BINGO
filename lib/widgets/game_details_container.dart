@@ -35,22 +35,27 @@ class GameDetailsContainer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '$label:',
-            style: AppTextStyle.mochiyPopOne(
-              fontSize: 10,
-              color: Colors.grey[500],
-              fontWeight: FontWeight.w400,
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: AppTextStyle.mochiyPopOne(
+                fontSize: 10,
+                color: Colors.grey[500],
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            value,
-            style: AppTextStyle.mochiyPopOne(
-              fontSize: 11,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
+          Expanded(
+            child: Text(
+              value,
+              style: AppTextStyle.mochiyPopOne(
+                fontSize: 11,
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+              ),
             ),
           ),
         ],
@@ -64,46 +69,107 @@ class GameDetailsContainer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Game Fee:',
-            style: AppTextStyle.mochiyPopOne(
-              fontSize: 11,
-              color: Colors.grey[500],
-            ),
-          ),
-          const SizedBox(width: 8),
-          if (showMoneyIcon) ...[
-            const AppImages(
-              imagePath: AppImageData.money,
-              height: 20,
-            ),
-            const SizedBox(width: 4),
-          ],
-          Text(
-            '\$$gameFee',
-            style: AppTextStyle.mochiyPopOne(
-              fontSize: 11,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
-            ),
-          ),
-          if (showCardIcon && cardAmount != null) ...[
-            const SizedBox(width: 8),
-            const AppImages(
-              imagePath: AppImageData.card,
-              height: 20,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              cardAmount!,
+          SizedBox(
+            width: 120,
+            child: Text(
+              'Game Fee',
               style: AppTextStyle.mochiyPopOne(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+                fontSize: 10,
+                color: Colors.grey[500],
+                fontWeight: FontWeight.w400,
               ),
             ),
-          ],
+          ),
+          Row(
+            children: [
+              if (showMoneyIcon) ...[
+                const AppImages(
+                  imagePath: AppImageData.money,
+                  height: 20,
+                ),
+                const SizedBox(width: 4),
+              ],
+              Text(
+                '\$$gameFee',
+                style: AppTextStyle.mochiyPopOne(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+              ),
+              if (showCardIcon && cardAmount != null) ...[
+                const SizedBox(width: 8),
+                const AppImages(
+                  imagePath: AppImageData.card,
+                  height: 20,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  cardAmount!,
+                  style: AppTextStyle.mochiyPopOne(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGameStylesRow() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              'Game Style',
+              style: AppTextStyle.mochiyPopOne(
+                fontSize: 10,
+                color: Colors.grey[500],
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: gameStyles.map((style) {
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: AppColors.greenBright,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      style,
+                      style: AppTextStyle.mochiyPopOne(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                  ],
+                );
+              }).toList(),
+            ),
+          ),
         ],
       ),
     );
@@ -116,7 +182,7 @@ class GameDetailsContainer extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
@@ -133,6 +199,12 @@ class GameDetailsContainer extends StatelessWidget {
                 children: [
                   Row(
                     children: [
+                      const AppImages(
+                        imagePath: AppImageData.info,
+                        width: 20,
+                        height: 20,
+                      ),
+                      const SizedBox(width: 8),
                       Text(
                         'Game Details',
                         style: AppTextStyle.mochiyPopOne(
@@ -140,12 +212,6 @@ class GameDetailsContainer extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                           color: AppColors.pinkDark,
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      const AppImages(
-                        imagePath: AppImageData.info,
-                        width: 20,
-                        height: 20,
                       ),
                     ],
                   ),
@@ -164,7 +230,7 @@ class GameDetailsContainer extends StatelessWidget {
                         child: Text(
                           timeRemaining,
                           style: AppTextStyle.poppins(
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -185,58 +251,14 @@ class GameDetailsContainer extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              _buildDetailRow('Host', host),
-              _buildDetailRow('DJ', dj),
+              const SizedBox(height: 14),
+              _buildDetailRow('Host Name', host),
+              _buildDetailRow('DJ Name', dj),
               _buildDetailRow('Rounds', rounds),
               _buildDetailRow('Music Theme', musicTheme),
-              _buildDetailRow('Game Type', gameType),
+              _buildDetailRow('Music Genre', gameType),
               _buildGameFeeRow(),
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Game Style:',
-                    style: AppTextStyle.mochiyPopOne(
-                      fontSize: 10,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      children: gameStyles.map((style) {
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: const BoxDecoration(
-                                color: AppColors.greenBright,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              style,
-                              style: AppTextStyle.mochiyPopOne(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
+              _buildGameStylesRow(),
             ],
           ),
         ),
