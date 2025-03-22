@@ -93,8 +93,8 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                             Container(
                               margin: const EdgeInsets.only(top: 35),
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 6,
+                                horizontal: 12,
+                                vertical: 4,
                               ),
                               decoration: BoxDecoration(
                                 color: AppColors.pinkDark,
@@ -103,7 +103,8 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                               child: Text(
                                 'Game Location (City + Venue Name)',
                                 style: AppTextStyle.mochiyPopOne(
-                                  fontSize: 14,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
                                   color: Colors.white,
                                 ),
                               ),
@@ -153,6 +154,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                           textAlign: TextAlign.center,
                           style: AppTextStyle.mochiyPopOne(
                             fontSize: 20,
+                            fontWeight: FontWeight.w400,
                             color: Colors.white,
                           ),
                         ),
@@ -203,7 +205,8 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                   layerTopPosition: -2,
                                   layerHeight: 60,
                                   fontFamily: AppTextStyle.poppinsFont,
-                                  fontSize: 24,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
                                   onPressed: _isWaiting ? null : _startCountdown,
                                 ),
                         ),
