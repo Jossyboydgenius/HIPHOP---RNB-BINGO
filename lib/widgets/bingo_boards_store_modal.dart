@@ -83,8 +83,8 @@ class BingoBoardsStoreModal extends StatelessWidget {
                       children: [
                         AppImages(
                           imagePath: AppImageData.back,
-                          height: 42,
-                          width: 42,
+                          height: 38,
+                          width: 38,
                           onPressed: onClose,
                         ),
                         Expanded(
@@ -92,9 +92,9 @@ class BingoBoardsStoreModal extends StatelessWidget {
                             child: Text(
                               'Store',
                               style: AppTextStyle.mochiyPopOne(
-                                fontSize: 24,
+                                fontSize: 20,
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                           ),
