@@ -53,8 +53,8 @@ class WalletFundingModal extends StatelessWidget {
                       children: [
                         AppImages(
                           imagePath: AppImageData.back,
-                          height: 42,
-                          width: 42,
+                          height: 38,
+                          width: 38,
                           onPressed: onClose,
                         ),
                         Expanded(
@@ -62,9 +62,9 @@ class WalletFundingModal extends StatelessWidget {
                             child: Text(
                               'Wallet',
                               style: AppTextStyle.mochiyPopOne(
-                                fontSize: 24,
+                                fontSize: 20,
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                           ),
