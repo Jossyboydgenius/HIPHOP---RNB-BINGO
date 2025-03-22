@@ -6,11 +6,16 @@ import '../widgets/app_colors.dart';
 import '../widgets/app_icons.dart';
 import '../widgets/app_images.dart';
 import '../widgets/app_text_style.dart';
+import '../routes/app_routes.dart';
 import 'package:google_ml_kit/google_ml_kit.dart' as ml_kit;
-import '../views/game_details_screen.dart';
 
 class QRCodeScannerScreen extends StatefulWidget {
-  const QRCodeScannerScreen({super.key});
+  final bool isInPerson;
+
+  const QRCodeScannerScreen({
+    super.key,
+    required this.isInPerson,
+  });
 
   @override
   State<QRCodeScannerScreen> createState() => _QRCodeScannerScreenState();
@@ -22,20 +27,6 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
   qr.QRViewController? controller;
   final ImagePicker _imagePicker = ImagePicker();
   final ml_kit.BarcodeScanner _barcodeScanner = ml_kit.GoogleMlKit.vision.barcodeScanner();
-
-  @override
-  void initState() {
-    super.initState();
-    // Simulate QR code scan after 5 seconds
-    Future.delayed(const Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const GameDetailsScreen(),
-        ),
-      );
-    });
-  }
 
   @override
   void dispose() {
@@ -53,6 +44,34 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
     }
   }
 
+  void _handleScannedCode(String? code) {
+    if (code != null) {
+      debugPrint('QR Code found: $code');
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('QR Code found! Redirecting...'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      
+      // Navigate to appropriate screen based on mode
+      if (widget.isInPerson) {
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.gameDetails,
+          arguments: code,
+        );
+      } else {
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.remoteGameDetails,
+          arguments: code,
+        );
+      }
+    }
+  }
+
   Future<void> _pickImage() async {
     try {
       final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
@@ -62,14 +81,8 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
         
         if (barcodes.isNotEmpty) {
           for (final barcode in barcodes) {
-            debugPrint('Barcode found in image: ${barcode.rawValue}');
             if (!mounted) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('QR Code found: ${barcode.rawValue}'),
-                backgroundColor: Colors.green,
-              ),
-            );
+            _handleScannedCode(barcode.rawValue);
             return;
           }
         } else {
@@ -97,26 +110,7 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> {
   void _onQRViewCreated(qr.QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-      if (scanData.code != null) {
-        debugPrint('QR Code found: ${scanData.code}');
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('QR Code found! Redirecting...'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        
-        // Navigate to game details after 5 seconds
-        Future.delayed(const Duration(seconds: 5), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const GameDetailsScreen(),
-            ),
-          );
-        });
-      }
+      _handleScannedCode(scanData.code);
     });
   }
 
