@@ -39,16 +39,17 @@ class GameDetailsContainer extends StatelessWidget {
           Text(
             '$label:',
             style: AppTextStyle.mochiyPopOne(
-              fontSize: 14,
-              color: Colors.grey[600],
+              fontSize: 10,
+              color: Colors.grey[500],
+              fontWeight: FontWeight.w400,
             ),
           ),
           const SizedBox(width: 8),
           Text(
             value,
             style: AppTextStyle.mochiyPopOne(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
               color: Colors.black,
             ),
           ),
@@ -67,8 +68,8 @@ class GameDetailsContainer extends StatelessWidget {
           Text(
             'Game Fee:',
             style: AppTextStyle.mochiyPopOne(
-              fontSize: 14,
-              color: Colors.grey[600],
+              fontSize: 11,
+              color: Colors.grey[500],
             ),
           ),
           const SizedBox(width: 8),
@@ -82,8 +83,8 @@ class GameDetailsContainer extends StatelessWidget {
           Text(
             '\$$gameFee',
             style: AppTextStyle.mochiyPopOne(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
               color: Colors.black,
             ),
           ),
@@ -135,8 +136,8 @@ class GameDetailsContainer extends StatelessWidget {
                       Text(
                         'Game Details',
                         style: AppTextStyle.mochiyPopOne(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
                           color: AppColors.pinkDark,
                         ),
                       ),
@@ -163,7 +164,7 @@ class GameDetailsContainer extends StatelessWidget {
                         child: Text(
                           timeRemaining,
                           style: AppTextStyle.poppins(
-                            fontSize: 14,
+                            fontSize: 11,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -198,8 +199,8 @@ class GameDetailsContainer extends StatelessWidget {
                   Text(
                     'Game Style:',
                     style: AppTextStyle.mochiyPopOne(
-                      fontSize: 14,
-                      color: Colors.grey[600],
+                      fontSize: 10,
+                      color: Colors.grey[500],
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -223,8 +224,8 @@ class GameDetailsContainer extends StatelessWidget {
                             Text(
                               style,
                               style: AppTextStyle.mochiyPopOne(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
                             ),
