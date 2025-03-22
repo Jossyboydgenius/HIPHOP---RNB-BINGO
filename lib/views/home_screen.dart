@@ -171,8 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 24),
               AppButton(
                 text: 'Scan QR',
-                fillColor: AppColors.purplePrimary,
-                layerColor: AppColors.purpleDark,
+                fillColor: AppColors.purpleDark,
+                layerColor: AppColors.purplePrimary,
                 height: 56,
                 width: 280,
                 hasBorder: true,
@@ -201,8 +201,8 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 26),
               AppButton(
                 text: 'Input Code',
-                fillColor: AppColors.purplePrimary,
-                layerColor: AppColors.purpleDark,
+                fillColor: AppColors.purpleDark,
+                layerColor: AppColors.purplePrimary,
                 height: 56,
                 width: 280,
                 hasBorder: true,
