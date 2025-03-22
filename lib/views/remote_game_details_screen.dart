@@ -152,6 +152,8 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                                         AppToast.show(
                                           context,
                                           'Game link copied to clipboard',
+                                          showInfoIcon: false,
+                                          showCloseIcon: true,
                                         );
                                       });
                                     },
