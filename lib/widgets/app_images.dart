@@ -38,6 +38,7 @@ class AppImageData {
   static const String info = '$_base/info.png';
   static const String info1 = '$_base/info1.png';
   static const String info2 = '$_base/info2.png';
+  static const String info3 = '$_base/info3.png';
   static const String fourCornersBingo = '$_base/four-corners-bingo.png';
   static const String blackoutBingo = '$_base/blackout-bingo.png';
   static const String straightlineBingo = '$_base/straightline-bingo.png';
