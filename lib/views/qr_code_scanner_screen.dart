@@ -37,16 +37,19 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _barcodeScanner.close();
     controller?.dispose();
+    _barcodeScanner.close();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      controller?.resumeCamera();
+    if (state == AppLifecycleState.resumed && controller != null) {
+      controller!.resumeCamera();
+    }
+    if (state == AppLifecycleState.inactive) {
+      controller?.pauseCamera();
     }
   }
 
@@ -57,7 +60,9 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
       if (Theme.of(context).platform == TargetPlatform.android) {
         controller!.pauseCamera();
       }
-      controller!.resumeCamera();
+      Future.delayed(const Duration(milliseconds: 100), () {
+        controller!.resumeCamera();
+      });
     }
   }
 
@@ -123,9 +128,19 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
   }
 
   void _onQRViewCreated(qr.QRViewController controller) {
-    this.controller = controller;
+    setState(() {
+      this.controller = controller;
+    });
+    
+    // Ensure camera is started after initialization
+    Future.delayed(const Duration(milliseconds: 100), () {
+      controller.resumeCamera();
+    });
+
     controller.scannedDataStream.listen((scanData) {
-      _handleScannedCode(scanData.code);
+      if (scanData.code != null) {
+        _handleScannedCode(scanData.code);
+      }
     });
   }
 
@@ -145,6 +160,7 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        controller?.pauseCamera();
         Navigator.pop(context);
         return false;
       },
