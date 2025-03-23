@@ -35,6 +35,7 @@ class AppColors {
 
   // Green shades
   static const Color greenBright = Color(0xFF67EB00);
+  static const Color greenLight = Color(0xFFF4FFE4);
   static const Color greenDark = Color(0xFF4EC307);
   static const Color teal = Color(0xFF3FD6B3);
 
@@ -49,6 +50,7 @@ class AppColors {
   static const Color pinkDark2 = Color(0xFFE530B6);
   static const Color pinkLight = Color(0xFFFF79EA);
   static const Color pinkLight2 = Color(0xFFF989FF);
+  static const Color redLight = Color(0xFFF9F0F2);
 
   // Blue shades
   static const Color bluePrimary = Color(0xFF39C7FF);
@@ -74,4 +76,4 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [loadingBarStart, loadingBarEnd],
   );
-} 
+}
