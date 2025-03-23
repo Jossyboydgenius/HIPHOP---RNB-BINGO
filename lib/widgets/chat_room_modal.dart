@@ -81,7 +81,8 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
             Text(
               widget.isConnected ? 'Connected' : 'Disabled',
               style: AppTextStyle.dmSans(
-                fontSize: 14,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
             ),
@@ -98,7 +99,8 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
             Text(
               widget.activeUsers.toString(),
               style: AppTextStyle.dmSans(
-                fontSize: 14,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
             ),
@@ -135,8 +137,9 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                       hintText: 'Type Here',
                       hintStyle: AppTextStyle.dmSans(
                         fontSize: 14,
+                        fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.italic,
-                        color: Colors.black,
+                        color: Colors.black54,
                       ),
                       border: InputBorder.none,
                       counterText: '',
@@ -151,6 +154,7 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                       '${_messageController.text.length}/$maxLength',
                       style: AppTextStyle.dmSans(
                         fontSize: 12,
+                        fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.italic,
                         color: Colors.black54,
                       ),
@@ -246,7 +250,8 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                               'Click profile to report or mute a Player',
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 12,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             const SizedBox(height: 16),
