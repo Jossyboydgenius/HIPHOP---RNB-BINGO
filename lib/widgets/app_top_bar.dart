@@ -71,10 +71,10 @@ class _AppTopBarState extends State<AppTopBar> {
               child: Center(
                 child: Text(
                   widget.initials,
-                  style: const TextStyle(
+                  style: AppTextStyle.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
                     color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -119,7 +119,7 @@ class _AppTopBarState extends State<AppTopBar> {
             amount,
             style: AppTextStyle.poppins(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w700,
               color: Colors.white,
             ),
           ),
@@ -219,7 +219,7 @@ class _AppTopBarState extends State<AppTopBar> {
                   style: AppTextStyle.poppins(
                     fontSize: 12,
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
