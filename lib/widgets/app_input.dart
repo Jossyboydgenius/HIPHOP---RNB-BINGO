@@ -129,8 +129,9 @@ class AppInput extends StatelessWidget {
                     ),
                     decoration: InputDecoration(
                       hintText: hintText,
-                      hintStyle: AppTextStyle.dmSans(
-                        fontSize: 14,
+                      hintStyle: AppTextStyle.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
                         color: Colors.grey,
                       ),
                       border: InputBorder.none,
