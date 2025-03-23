@@ -59,7 +59,7 @@ class AppButton extends StatefulWidget {
     this.subtitleFontSize = 14,
     this.fontWeight = FontWeight.bold,
     this.textColor = Colors.white,
-    this.nullTextColor = Colors.black,
+    this.nullTextColor,
     this.fontFamily,
     this.iconPath,
     this.imagePath,
@@ -151,7 +151,9 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   Widget _buildContent() {
     final hasIcon = widget.iconPath != null || widget.imagePath != null || widget.icon != null;
     final iconWidget = hasIcon ? _buildIcon() : null;
-    final effectiveTextColor = widget.onPressed == null ? widget.nullTextColor : widget.textColor;
+    final effectiveTextColor = widget.onPressed == null && widget.nullTextColor != null 
+        ? widget.nullTextColor 
+        : widget.textColor;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
