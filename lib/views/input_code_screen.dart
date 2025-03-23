@@ -31,10 +31,16 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
+    
+    // Add listener to update button state
+    _codeController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
+    _codeController.removeListener(() {});
     _codeController.dispose();
     _focusNode.dispose();
     super.dispose();
@@ -167,8 +173,12 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
                           ),
-                          fillColor: AppColors.greenDark,
-                          layerColor: AppColors.greenBright,
+                          fillColor: _codeController.text.length < 4
+                            ? AppColors.grayDark 
+                            : AppColors.greenDark,
+                          layerColor: _codeController.text.length < 4
+                            ? AppColors.grayLight 
+                            : AppColors.greenBright,
                           borderColor: Colors.white,
                           hasBorder: true,
                           height: 56,
@@ -176,7 +186,8 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                           layerHeight: 44,
                           layerTopPosition: -2,
                           borderRadius: 16,
-                          onPressed: _handleCodeSubmission,
+                          nullTextColor: Colors.black,
+                          onPressed: _codeController.text.length == 4 ? _handleCodeSubmission : null,
                         ),
                         const SizedBox(height: 110),
                       ],
