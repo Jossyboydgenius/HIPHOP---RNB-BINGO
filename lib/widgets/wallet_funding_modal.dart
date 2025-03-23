@@ -218,10 +218,15 @@ class WalletFundingModal extends StatelessWidget {
                       width: 200,
                       child: AppButton(
                         text: 'Store',
+                        textStyle: AppTextStyle.poppins(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
                         fillColor: AppColors.pinkDark,
                         layerColor: AppColors.pinkPrimary,
-                        height: 56,
-                        layerHeight: 44,
+                        height: 60,
+                        layerHeight: 50,
                         layerTopPosition: -2,
                         hasBorder: true,
                         borderColor: Colors.white,
