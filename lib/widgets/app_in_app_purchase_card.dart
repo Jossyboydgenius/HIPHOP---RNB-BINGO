@@ -50,7 +50,7 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(8, 26, 8, 8),
+      padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
       decoration: BoxDecoration(
         color: widget.isGemCard ? AppColors.purplePrimary : AppColors.blueLight3,
         borderRadius: BorderRadius.circular(16),
@@ -66,85 +66,33 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
                   turns: _controller,
                   child: const AppIcons(
                     icon: AppIconData.glowing,
-                    size: 88,
+                    size: 90,
                   ),
                 ),
                 AppImages(
                   imagePath: widget.iconPath,
-                  width: 36,
-                  height: 36,
+                  width: 32,
+                  height: 32,
                 ),
-                if (widget.plusValue.isNotEmpty && widget.isGemCard)
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: AppColors.pinkPrimary,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Text(
-                        '+${widget.plusValue}',
-                        style: AppTextStyle.dmSans(
-                          fontSize: 10,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
               ],
             ),
           ),
-          const SizedBox(height: 8),
-          FittedBox(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (widget.isGemCard) ...[
-                  const AppImages(
-                    imagePath: AppImageData.money,
-                    width: 20,
-                    height: 20,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '\$${widget.price}',
-                    style: AppTextStyle.mochiyPopOne(
-                      fontSize: 10,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ] else ...[
-                  const AppIcons(
-                    icon: AppIconData.gem,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    widget.price,
-                    style: AppTextStyle.mochiyPopOne(
-                      fontSize: 10,
-                      color: AppColors.blueDark2,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ],
+          Text(
+            '+${widget.amount}',
+            textAlign: TextAlign.center,
+            style: AppTextStyle.mochiyPopOne(
+              fontSize: 12,
+              color: widget.isGemCard ? Colors.white : AppColors.blueDark2,
+              fontWeight: FontWeight.w400,
             ),
           ),
           const SizedBox(height: 8),
           AppButton(
-            text: 'Get',
+            text: '',
             fillColor: AppColors.yellowDark3,
             layerColor: AppColors.yellowDark2,
             height: 26,
             width: double.infinity,
-            fontSize: 10,
-            fontFamily: AppTextStyle.mochiyPopOneFont,
-            fontWeight: FontWeight.w400,
             layerHeight: 22,
             layerTopPosition: -2,
             hasBorder: true,
@@ -152,6 +100,30 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
             borderWidth: 2,
             borderRadius: 8,
             onPressed: widget.onGetPressed,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                widget.isGemCard 
+                  ? const AppImages(
+                      imagePath: AppImageData.money,
+                      width: 20,
+                      height: 20,
+                    )
+                  : const AppIcons(
+                      icon: AppIconData.gem,
+                      size: 12,
+                    ),
+                const SizedBox(width: 4),
+                Text(
+                  widget.isGemCard ? '\$${widget.price}' : widget.price,
+                  style: AppTextStyle.mochiyPopOne(
+                    fontSize: 12,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
