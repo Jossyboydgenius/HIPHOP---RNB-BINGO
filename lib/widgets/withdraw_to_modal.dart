@@ -49,8 +49,8 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
     return Text(
       selectedOption == null ? 'Withdraw To' : 'Input Detail',
       style: AppTextStyle.poppins(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
         color: Colors.white,
       ),
     );
@@ -115,7 +115,8 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
         Text(
           'Platform',
           style: AppTextStyle.dmSans(
-            fontSize: 14,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
@@ -165,7 +166,8 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
                 child: Text(
                   'Change',
                   style: AppTextStyle.dmSans(
-                    fontSize: 14,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
                 ),
@@ -177,7 +179,8 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
         Text(
           option['firstFieldLabel'],
           style: AppTextStyle.dmSans(
-            fontSize: 14,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
@@ -192,7 +195,8 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
         Text(
           'Full Name',
           style: AppTextStyle.dmSans(
-            fontSize: 14,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
@@ -264,7 +268,8 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
                                   'Please verify your account carefully to ensure we can transfer money successfully',
                                   textAlign: TextAlign.center,
                                   style: AppTextStyle.dmSans(
-                                    fontSize: 14,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -281,6 +286,11 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
                   padding: const EdgeInsets.only(top: 24),
                   child: AppButton(
                     text: 'Confirm',
+                    textStyle: AppTextStyle.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
                     fillColor: AppColors.greenDark,
                     layerColor: AppColors.greenBright,
                     height: 56,
