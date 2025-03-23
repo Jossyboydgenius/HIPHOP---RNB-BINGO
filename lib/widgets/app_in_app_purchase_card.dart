@@ -50,7 +50,7 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+      padding: const EdgeInsets.fromLTRB(8, 26, 8, 8),
       decoration: BoxDecoration(
         color: widget.isGemCard ? AppColors.purplePrimary : AppColors.blueLight3,
         borderRadius: BorderRadius.circular(16),
@@ -66,7 +66,7 @@ class _AppInAppPurchaseCardState extends State<AppInAppPurchaseCard> with Single
                   turns: _controller,
                   child: const AppIcons(
                     icon: AppIconData.glowing,
-                    size: 86,
+                    size: 88,
                   ),
                 ),
                 AppImages(
