@@ -42,7 +42,7 @@ class _BoardPurchaseSuccessModalState extends State<BoardPurchaseSuccessModal> w
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black54,
+      color: Colors.black,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Padding(
@@ -51,8 +51,8 @@ class _BoardPurchaseSuccessModalState extends State<BoardPurchaseSuccessModal> w
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AppModalContainer(
-                width: 300,
-                height: 300,
+                width: 200,
+                height: 200,
                 fillColor: AppColors.purplePrimary,
                 borderColor: AppColors.purpleLight,
                 layerColor: AppColors.purpleDark,
