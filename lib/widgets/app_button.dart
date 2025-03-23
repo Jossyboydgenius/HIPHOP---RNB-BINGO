@@ -36,6 +36,7 @@ class AppButton extends StatefulWidget {
   final double? iconSpacing;
   final bool iconAfterText;
   final String? icon;
+  final Widget? child;
 
   const AppButton({
     super.key,
@@ -71,6 +72,7 @@ class AppButton extends StatefulWidget {
     this.iconSpacing = 12,
     this.iconAfterText = false,
     this.icon,
+    this.child,
   });
 
   @override
@@ -270,7 +272,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                   ),
                 ),
               ],
-              Center(child: _buildContent()),
+              Center(child: widget.child ?? _buildContent()),
             ],
           ),
         ),
