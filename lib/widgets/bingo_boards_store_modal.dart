@@ -14,6 +14,7 @@ import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/balance/balance_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/balance/balance_state.dart';
 import 'package:hiphop_rnb_bingo/widgets/wallet_funding_modal.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_toast.dart';
 
 class BingoBoardsStoreModal extends StatelessWidget {
   final VoidCallback onClose;
@@ -28,18 +29,17 @@ class BingoBoardsStoreModal extends StatelessWidget {
     return BlocBuilder<BalanceBloc, BalanceState>(
       builder: (context, state) {
         final purchaseOptions = [
-          {'amount': '2', 'price': '10', 'plus': ''},
-          {'amount': '4', 'price': '20', 'plus': ''},
-          {'amount': '8', 'price': '40', 'plus': ''},
-          {'amount': '12', 'price': '50', 'plus': ''},
-          {'amount': '16', 'price': '70', 'plus': ''},
-          {'amount': '20', 'price': '80', 'plus': ''},
+          {'amount': '1', 'price': '15', 'title': 'Solo Board'},
+          {'amount': '3', 'price': '40', 'title': 'Triple Board'},
+          {'amount': '7', 'price': '100', 'title': 'Pro Board'},
+          {'amount': '10', 'price': '140', 'title': 'Ultimate Board'},
         ];
 
         void handlePurchase(Map<String, String> option) {
           final currentGems = state.gemBalance;
           final requiredGems = int.parse(option['price']!);
           final boardsToAdd = int.parse(option['amount']!);
+          final boardTitle = option['title']!;
           
           if (currentGems >= requiredGems) {
             context.read<BalanceBloc>().add(
@@ -49,20 +49,38 @@ class BingoBoardsStoreModal extends StatelessWidget {
               UpdateBoardBalance(state.boardBalance + boardsToAdd)
             );
             
+            // Show both success toast and modal
+            AppToast.show(
+              context,
+              'You have successfully purchased $boardTitle using $requiredGems Diamonds!',
+              showCloseIcon: false,
+              showInfoIcon: true,
+              textColor: AppColors.greenDark,
+              backgroundColor: AppColors.greenLight,
+              borderColor: AppColors.greenDark,
+              infoIcon: AppImageData.info3,
+            );
+            
             Navigator.pop(context);
             showDialog(
               context: context,
               barrierDismissible: false,
               builder: (context) => BoardPurchaseSuccessModal(
-                onClose: () => Navigator.pop(context),
                 amount: option['amount']!,
+                onClose: () => Navigator.pop(context),
               ),
             );
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Insufficient gems balance'),
-              ),
+            // Error toast
+            AppToast.show(
+              context,
+              'You don\'t have enough Diamonds to complete this purchase.',
+              showCloseIcon: false,
+              showInfoIcon: true,
+              textColor: AppColors.pinkDark,
+              backgroundColor: AppColors.redLight,
+              borderColor: AppColors.pinkDark,
+              infoIcon: AppImageData.info,
             );
           }
         }
@@ -124,7 +142,7 @@ class BingoBoardsStoreModal extends StatelessWidget {
                     children: [
                       AppModalContainer(
                         width: 380,
-                        height: 370,
+                        height: 410,
                         fillColor: Colors.white,
                         borderColor: AppColors.purplePrimary,
                         layerColor: AppColors.purpleDark,
@@ -133,11 +151,11 @@ class BingoBoardsStoreModal extends StatelessWidget {
                         showCloseButton: false,
                         onClose: () {},
                         child: GridView.count(
-                          crossAxisCount: 3,
+                          crossAxisCount: 2,
                           mainAxisSpacing: 24,
                           crossAxisSpacing: 24,
-                          padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
-                          childAspectRatio: 0.65,
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                          childAspectRatio: 0.9,
                           children: purchaseOptions.map((option) {
                             return Stack(
                               clipBehavior: Clip.none,
@@ -165,10 +183,10 @@ class BingoBoardsStoreModal extends StatelessWidget {
                                       ),
                                     ),
                                     child: Text(
-                                      '${option['amount']} Boards',
+                                      option['title']!,
                                       textAlign: TextAlign.center,
                                       style: AppTextStyle.mochiyPopOne(
-                                        fontSize: 8,
+                                        fontSize: 12,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -198,7 +216,7 @@ class BingoBoardsStoreModal extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 10),
                             child: Text(
-                              state.boardBalance.toString(),
+                              state.gemBalance.toString(),
                               style: AppTextStyle.poppins(
                                 fontSize: 14,
                                 color: Colors.white,
@@ -213,7 +231,7 @@ class BingoBoardsStoreModal extends StatelessWidget {
                           bottom: 0,
                           child: Center(
                             child: AppIcons(
-                              icon: AppIconData.card,
+                              icon: AppIconData.gem,
                               size: 32,
                             ),
                           ),
