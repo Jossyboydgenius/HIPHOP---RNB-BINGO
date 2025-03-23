@@ -10,6 +10,9 @@ class AppToast extends StatefulWidget {
   final bool showCloseIcon;
   final bool showInfoIcon;
   final Color? textColor;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final String? infoIcon;
 
   const AppToast({
     super.key,
@@ -19,6 +22,9 @@ class AppToast extends StatefulWidget {
     this.showCloseIcon = true,
     this.showInfoIcon = true,
     this.textColor,
+    this.backgroundColor,
+    this.borderColor,
+    this.infoIcon,
   });
 
   static void show(
@@ -27,6 +33,9 @@ class AppToast extends StatefulWidget {
     bool showCloseIcon = true,
     bool showInfoIcon = true,
     Color? textColor,
+    Color? backgroundColor,
+    Color? borderColor,
+    String? infoIcon,
   }) {
     OverlayState? overlay = Overlay.of(context);
     OverlayEntry? entry;
@@ -43,6 +52,9 @@ class AppToast extends StatefulWidget {
             showCloseIcon: showCloseIcon,
             showInfoIcon: showInfoIcon,
             textColor: textColor,
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
+            infoIcon: infoIcon,
             onClose: () {
               entry?.remove();
             },
@@ -92,38 +104,25 @@ class _AppToastState extends State<AppToast> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _animation,
+    return FadeTransition(
+      opacity: _animation,
       child: Stack(
-        clipBehavior: Clip.none,
         children: [
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: -4,
-            child: Container(
-              height: 60,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-          ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: AppColors.yellowLight2,
+              color: widget.backgroundColor ?? AppColors.yellowLight2,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.yellowDark4,
+                color: widget.borderColor ?? AppColors.yellowDark4,
                 width: 2,
               ),
             ),
             child: Row(
               children: [
                 if (widget.showInfoIcon)
-                  const AppImages(
-                    imagePath: AppImageData.info2,
+                  AppImages(
+                    imagePath: widget.infoIcon ?? AppImageData.info2,
                     height: 24,
                     width: 24,
                   ),
