@@ -206,6 +206,7 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                           textAlign: TextAlign.center,
                           style: AppTextStyle.mochiyPopOne(
                             fontSize: 20,
+                            fontWeight: FontWeight.w400,
                             color: Colors.white,
                           ),
                         ),
@@ -235,12 +236,17 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                           child: _canStart
                               ? AppButton(
                                   text: 'Start',
+                                  textStyle: AppTextStyle.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
                                   fillColor: AppColors.greenBright,
                                   layerColor: AppColors.greenDark,
-                                  height: 72,
+                                  height: 60,
                                   hasBorder: true,
                                   layerTopPosition: -2,
-                                  layerHeight: 60,
+                                  layerHeight: 50,
                                   fontFamily: AppTextStyle.poppinsFont,
                                   fontSize: 24,
                                   onPressed: () {
@@ -249,16 +255,21 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                                 )
                               : AppButton(
                                   text: _isWaiting ? 'Waiting...' : 'Join Game',
+                                  textStyle: AppTextStyle.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
                                   fillColor: _isWaiting
                                       ? AppColors.yellowDark
                                       : AppColors.greenDark,
                                   layerColor: _isWaiting
                                       ? AppColors.yellowPrimary
                                       : AppColors.greenBright,
-                                  height: 72,
+                                  height: 60,
                                   hasBorder: true,
                                   layerTopPosition: -2,
-                                  layerHeight: 60,
+                                  layerHeight: 50,
                                   fontFamily: AppTextStyle.poppinsFont,
                                   fontSize: 24,
                                   onPressed: _isWaiting
