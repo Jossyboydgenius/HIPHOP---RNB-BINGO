@@ -182,10 +182,10 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                   text: 'Start',
                                   fillColor: AppColors.greenDark,
                                   layerColor: AppColors.greenBright,
-                                  height: 72,
+                                  height: 60,
                                   hasBorder: true,
                                   layerTopPosition: -2,
-                                  layerHeight: 60,
+                                  layerHeight: 50,
                                   fontFamily: AppTextStyle.poppinsFont,
                                   fontSize: 24,
                                   onPressed: () {
@@ -194,18 +194,23 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                 )
                               : AppButton(
                                   text: _isWaiting ? 'Waiting...' : 'Join Game',
+                                  textStyle: AppTextStyle.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
                                   fillColor: _isWaiting
                                       ? AppColors.yellowDark
                                       : AppColors.greenDark,
                                   layerColor: _isWaiting
                                       ? AppColors.yellowPrimary
                                       : AppColors.greenBright,
-                                  height: 72,
+                                  height: 60,
                                   hasBorder: true,
                                   layerTopPosition: -2,
-                                  layerHeight: 60,
+                                  layerHeight: 50,
                                   fontFamily: AppTextStyle.poppinsFont,
-                                  fontSize: 18,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w800,
                                   onPressed: _isWaiting ? null : _startCountdown,
                                 ),
