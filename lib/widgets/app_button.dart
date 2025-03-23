@@ -24,6 +24,7 @@ class AppButton extends StatefulWidget {
   final double? subtitleFontSize;
   final FontWeight? fontWeight;
   final Color? textColor;
+  final Color? nullTextColor;
   final String? fontFamily;
   final String? iconPath;
   final String? imagePath;
@@ -58,6 +59,7 @@ class AppButton extends StatefulWidget {
     this.subtitleFontSize = 14,
     this.fontWeight = FontWeight.bold,
     this.textColor = Colors.white,
+    this.nullTextColor = Colors.black,
     this.fontFamily,
     this.iconPath,
     this.imagePath,
@@ -149,6 +151,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   Widget _buildContent() {
     final hasIcon = widget.iconPath != null || widget.imagePath != null || widget.icon != null;
     final iconWidget = hasIcon ? _buildIcon() : null;
+    final effectiveTextColor = widget.onPressed == null ? widget.nullTextColor : widget.textColor;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -166,8 +169,8 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                     widget.text,
                     style: widget.textStyle?.copyWith(
                       color: widget.disabled 
-                          ? widget.textColor?.withOpacity(0.5) 
-                          : widget.textColor,
+                          ? effectiveTextColor?.withOpacity(0.5) 
+                          : effectiveTextColor,
                     ),
                   )
                 : Text(
@@ -178,15 +181,15 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                             fontSize: widget.fontSize,
                             fontWeight: widget.fontWeight,
                             color: widget.disabled 
-                                ? widget.textColor?.withOpacity(0.5) 
-                                : widget.textColor,
+                                ? effectiveTextColor?.withOpacity(0.5) 
+                                : effectiveTextColor,
                           )
                         : AppTextStyle.poppins(
                             fontSize: widget.fontSize,
                             fontWeight: widget.fontWeight,
                             color: widget.disabled 
-                                ? widget.textColor?.withOpacity(0.5) 
-                                : widget.textColor,
+                                ? effectiveTextColor?.withOpacity(0.5) 
+                                : effectiveTextColor,
                           ),
                   ),
             if (widget.subtitle != null) ...[
@@ -196,8 +199,8 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                       widget.subtitle!,
                       style: widget.subtitleStyle?.copyWith(
                         color: widget.disabled 
-                            ? widget.textColor?.withOpacity(0.5) 
-                            : widget.textColor,
+                            ? effectiveTextColor?.withOpacity(0.5) 
+                            : effectiveTextColor,
                       ),
                     )
                   : Text(
@@ -207,14 +210,14 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                               fontFamily: widget.fontFamily,
                               fontSize: widget.subtitleFontSize,
                               color: widget.disabled 
-                                  ? widget.textColor?.withOpacity(0.5) 
-                                  : widget.textColor,
+                                  ? effectiveTextColor?.withOpacity(0.5) 
+                                  : effectiveTextColor,
                             )
                           : AppTextStyle.poppins(
                               fontSize: widget.subtitleFontSize,
                               color: widget.disabled 
-                                  ? widget.textColor?.withOpacity(0.5) 
-                                  : widget.textColor,
+                                  ? effectiveTextColor?.withOpacity(0.5) 
+                                  : effectiveTextColor,
                             ),
                     ),
             ],
