@@ -27,12 +27,10 @@ class WalletFundingModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final purchaseOptions = [
-      {'amount': '20', 'price': '10', 'plus': ''},
-      {'amount': '40', 'price': '20', 'plus': '1'},
-      {'amount': '50', 'price': '30', 'plus': '2'},
-      {'amount': '80', 'price': '45', 'plus': '4'},
-      {'amount': '100', 'price': '60', 'plus': '6'},
-      {'amount': '150', 'price': '120', 'plus': '8'},
+      {'amount': '25', 'price': '25', 'title': 'Silver'},
+      {'amount': '50', 'price': '48', 'title': 'Silver'},
+      {'amount': '100', 'price': '75', 'title': 'Platinum'},
+      {'amount': '500', 'price': '460', 'title': 'Cave of Diamonds'},
     ];
 
     return BlocBuilder<BalanceBloc, BalanceState>(
@@ -95,7 +93,7 @@ class WalletFundingModal extends StatelessWidget {
                     children: [
                       AppModalContainer(
                         width: 380,
-                        height: 370,
+                        height: 410,
                         fillColor: Colors.white,
                         borderColor: AppColors.purplePrimary,
                         layerColor: AppColors.purpleDark,
@@ -104,11 +102,11 @@ class WalletFundingModal extends StatelessWidget {
                         showCloseButton: false,
                         onClose: () {},
                         child: GridView.count(
-                          crossAxisCount: 3,
+                          crossAxisCount: 2,
                           mainAxisSpacing: 24,
                           crossAxisSpacing: 24,
-                          padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
-                          childAspectRatio: 0.65,
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                          childAspectRatio: 0.9,
                           children: purchaseOptions.map((option) {
                             return Stack(
                               clipBehavior: Clip.none,
@@ -116,8 +114,10 @@ class WalletFundingModal extends StatelessWidget {
                                 AppInAppPurchaseCard(
                                   amount: option['amount']!,
                                   price: option['price']!,
-                                  plusValue: option['plus']!,
+                                  plusValue: '',
                                   iconPath: AppImageData.gem,
+                                  bannerColor: AppColors.pinkPrimary,
+                                  isGemCard: true,
                                   onGetPressed: () {
                                     showDialog(
                                       context: context,
@@ -150,15 +150,13 @@ class WalletFundingModal extends StatelessWidget {
                                       borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(8),
                                         topRight: Radius.circular(8),
-                                        bottomLeft: Radius.circular(0),
-                                        bottomRight: Radius.circular(0),
                                       ),
                                     ),
                                     child: Text(
-                                      '${option['amount']} Gems',
+                                      option['title']!,
                                       textAlign: TextAlign.center,
                                       style: AppTextStyle.mochiyPopOne(
-                                        fontSize: 8,
+                                        fontSize: 12,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w400,
                                       ),
