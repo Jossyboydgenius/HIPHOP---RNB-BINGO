@@ -51,8 +51,8 @@ class _BoardPurchaseSuccessModalState extends State<BoardPurchaseSuccessModal> w
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AppModalContainer(
-                width: 200,
-                height: 200,
+                width: 300,
+                height: 300,
                 fillColor: AppColors.purplePrimary,
                 borderColor: AppColors.purpleLight,
                 layerColor: AppColors.purpleDark,
@@ -117,10 +117,15 @@ class _BoardPurchaseSuccessModalState extends State<BoardPurchaseSuccessModal> w
                 width: 200,
                 child: AppButton(
                   text: 'Continue',
+                  textStyle: AppTextStyle.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
                   fillColor: AppColors.darkPurple,
                   layerColor: AppColors.darkPurple2,
-                  height: 56,
-                  layerHeight: 44,
+                  height: 60,
+                  layerHeight: 50,
                   layerTopPosition: -2,
                   hasBorder: true,
                   borderColor: Colors.white,
