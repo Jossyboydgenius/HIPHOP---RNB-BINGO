@@ -133,10 +133,10 @@ class _UserProfileModalState extends State<UserProfileModal> {
         child: Center(
           child: Text(
             widget.userInitials,
-            style: AppTextStyle.dmSans(
+            style: AppTextStyle.poppins(
               fontSize: 16,
               color: Colors.white,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),
@@ -259,9 +259,9 @@ class _UserProfileModalState extends State<UserProfileModal> {
                         const SizedBox(width: 16),
                         Text(
                           'John Doe',
-                          style: AppTextStyle.dmSans(
+                          style: AppTextStyle.poppins(
                             fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
                         ),
@@ -290,13 +290,14 @@ class _UserProfileModalState extends State<UserProfileModal> {
                                     width: 80,
                                     child: Text(
                                       field['label'] as String,
-                                      style: AppTextStyle.dmSans(
-                                        fontSize: 14,
+                                      style: AppTextStyle.poppins(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
                                         color: Colors.black,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 2),
+                                  const SizedBox(width: 0),
                                   Expanded(
                                     child: AppInput(
                                       label: '',
@@ -316,8 +317,9 @@ class _UserProfileModalState extends State<UserProfileModal> {
                             const SizedBox(height: 24),
                             Text(
                               'Profile Image',
-                              style: AppTextStyle.dmSans(
-                                fontSize: 12,
+                              style: AppTextStyle.poppins(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.black,
                               ),
                               textAlign: TextAlign.center,
@@ -392,6 +394,11 @@ class _UserProfileModalState extends State<UserProfileModal> {
   Widget _buildSaveButton() {
     return AppButton(
       text: 'Save',
+      textStyle: AppTextStyle.poppins(
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
+        color: Colors.white,
+      ),
       fillColor: AppColors.greenDark,
       layerColor: AppColors.greenBright,
       height: 56,
