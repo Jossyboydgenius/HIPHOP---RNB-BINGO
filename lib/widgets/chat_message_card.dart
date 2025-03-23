@@ -44,10 +44,10 @@ class ChatMessageCard extends StatelessWidget {
             child: Center(
               child: Text(
                 senderInitials,
-                style: AppTextStyle.dmSans(
-                  fontSize: 16,
+                style: AppTextStyle.poppins(
+                  fontSize: 15,
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -58,13 +58,9 @@ class ChatMessageCard extends StatelessWidget {
             child: Container(
               width: 12,
               height: 12,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.greenBright,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 2,
-                ),
+                color: AppColors.teal,
               ),
             ),
           ),
@@ -82,13 +78,17 @@ class ChatMessageCard extends StatelessWidget {
           children: [
             const AppImages(
               imagePath: AppImageData.ban,
-              width: 20,
-              height: 20,
+              width: 16,
+              height: 16,
             ),
             const SizedBox(width: 8),
             Text(
               'Report',
-              style: AppTextStyle.dmSans(fontSize: 14),
+              style: AppTextStyle.dmSans(
+                fontSize: 11,
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ),
@@ -103,13 +103,17 @@ class ChatMessageCard extends StatelessWidget {
           children: [
             const AppImages(
               imagePath: AppImageData.mute,
-              width: 20,
-              height: 20,
+              width: 16,
+              height: 16,
             ),
             const SizedBox(width: 8),
             Text(
               'Mute',
-              style: AppTextStyle.dmSans(fontSize: 14),
+              style: AppTextStyle.dmSans(
+                fontSize: 11,
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ),
@@ -130,7 +134,7 @@ class ChatMessageCard extends StatelessWidget {
       items: items,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: AppColors.grayDark),
+        side: const BorderSide(color: AppColors.grayDark),
       ),
       color: Colors.white,
     );
@@ -158,15 +162,17 @@ class ChatMessageCard extends StatelessWidget {
                     Text(
                       isMe ? 'Me' : senderName,
                       style: AppTextStyle.dmSans(
-                        fontSize: 12,
-                        color: Colors.grey,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
                     ),
                     Text(
                       time,
                       style: AppTextStyle.dmSans(
-                        fontSize: 12,
-                        color: Colors.grey,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
                     ),
                   ],
@@ -188,7 +194,11 @@ class ChatMessageCard extends StatelessWidget {
                   ),
                   child: Text(
                     message,
-                    style: AppTextStyle.dmSans(fontSize: 14),
+                    style: AppTextStyle.dmSans(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ],
