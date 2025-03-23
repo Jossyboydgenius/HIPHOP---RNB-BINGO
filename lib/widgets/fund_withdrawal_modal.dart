@@ -52,8 +52,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
       return Text(
         'Withdrawal',
         style: AppTextStyle.poppins(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
           color: Colors.white,
         ),
       );
@@ -61,8 +61,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
     return Text(
       selectedOption == null ? 'Withdraw To' : 'Input Detail',
       style: AppTextStyle.poppins(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
         color: Colors.white,
       ),
     );
@@ -127,7 +127,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
         Text(
           'Platform',
           style: AppTextStyle.dmSans(
-            fontSize: 14,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
@@ -177,7 +178,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                 child: Text(
                   'Change',
                   style: AppTextStyle.dmSans(
-                    fontSize: 14,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
                 ),
@@ -189,7 +191,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
         Text(
           option['firstFieldLabel'],
           style: AppTextStyle.dmSans(
-            fontSize: 14,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
@@ -204,7 +207,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
         Text(
           'Full Name',
           style: AppTextStyle.dmSans(
-            fontSize: 14,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
@@ -244,9 +248,9 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                 const SizedBox(width: 8),
                 Text(
                   '\$${widget.amount}',
-                  style: AppTextStyle.dmSans(
+                  style: AppTextStyle.poppins(
                     fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w800,
                     color: Colors.black,
                   ),
                 ),
@@ -285,7 +289,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
           Text(
             label,
             style: AppTextStyle.dmSans(
-              fontSize: 14,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
               color: Colors.black,
             ),
           ),
@@ -308,7 +313,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
               Text(
                 value,
                 style: AppTextStyle.dmSans(
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
@@ -380,7 +385,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                                   'Please verify your account carefully to ensure we can transfer money successfully',
                                   textAlign: TextAlign.center,
                                   style: AppTextStyle.dmSans(
-                                    fontSize: 14,
+                                    fontSize: 12,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -397,6 +402,11 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                   padding: const EdgeInsets.only(top: 24),
                   child: AppButton(
                     text: 'Confirm',
+                    textStyle: AppTextStyle.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
                     fillColor: AppColors.greenDark,
                     layerColor: AppColors.greenBright,
                     height: 56,
