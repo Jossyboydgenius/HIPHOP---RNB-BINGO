@@ -25,12 +25,12 @@ class NotificationCard extends StatelessWidget {
       children: [
         Text(
           lines[0], // Game: Hip-Hop Fire Round
-          style: AppTextStyle.dmSans(fontSize: 12),
+          style: AppTextStyle.dmSans(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black),
         ),
         const SizedBox(height: 2),
         Text(
           lines[1], // Game Code: 9823
-          style: AppTextStyle.dmSans(fontSize: 12),
+          style: AppTextStyle.dmSans(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black),
         ),
         // const SizedBox(height: 2),
         Row(
@@ -38,7 +38,7 @@ class NotificationCard extends StatelessWidget {
           children: [
             Text(
               lines[2], // Starts in 10 minutes!
-              style: AppTextStyle.dmSans(fontSize: 12),
+              style: AppTextStyle.dmSans(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black),
             ),
             if (buttonText != null)
               SizedBox(
@@ -77,7 +77,7 @@ class NotificationCard extends StatelessWidget {
       children: [
         Text(
           subtitle,
-          style: AppTextStyle.dmSans(fontSize: 12),
+          style: AppTextStyle.dmSans(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black),
         ),
         if (buttonText != null) ...[
           const SizedBox(height: 8),
@@ -135,9 +135,10 @@ class NotificationCard extends StatelessWidget {
           Text(
             title,
             style: AppTextStyle.dmSans(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
               fontStyle: FontStyle.italic,
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 4),
