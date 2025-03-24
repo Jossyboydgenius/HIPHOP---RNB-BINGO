@@ -5,6 +5,7 @@ import '../widgets/app_loading_bar.dart';
 import '../widgets/app_text_style.dart';
 import '../routes/app_routes.dart';
 import '../services/navigation_service.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -63,25 +64,25 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             children: [
               AppImages(
                 imagePath: AppImageData.bingo,
-                height: 300,
+                height: 280.h,
                 animation: _scaleAnimation,
               ),
-              const SizedBox(height: 80),
+              SizedBox(height: 80.h),
               Text(
                 'Loading....',
                 style: AppTextStyle.dmSans(
-                  fontSize: 20,
+                  fontSize: 14.sp,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 12.h),
               AnimatedBuilder(
                 animation: _loadingAnimation,
                 builder: (context, child) {
                   return AppLoadingBar(
                     progress: _loadingAnimation.value,
-                    width: 180,
+                    width: 140.w,
                   );
                 },
               ),
