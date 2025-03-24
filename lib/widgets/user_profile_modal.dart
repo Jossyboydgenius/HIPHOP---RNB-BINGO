@@ -10,6 +10,7 @@ import 'app_button.dart';
 import 'app_images.dart';
 import 'app_input.dart';
 import 'withdraw_to_modal.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserProfileModal extends StatefulWidget {
   final VoidCallback onClose;
@@ -99,42 +100,42 @@ class _UserProfileModalState extends State<UserProfileModal> {
     Widget avatar;
     if (_selectedAvatar != null) {
       avatar = Container(
-        width: 48,
-        height: 48,
+        width: 48.w,
+        height: 48.h,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
             color: isHeader ? Colors.white : AppColors.purpleLight,
-            width: 2,
+            width: 2.r,
           ),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(24.r),
           child: AppImages(
             imagePath: _selectedAvatar!,
-            width: 48,
-            height: 48,
+            width: 48.w,
+            height: 48.h,
             fit: BoxFit.cover,
           ),
         ),
       );
     } else {
       avatar = Container(
-        width: 48,
-        height: 48,
+        width: 48.w,
+        height: 48.h,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: AppColors.primary,
           border: Border.all(
             color: isHeader ? Colors.white : AppColors.purpleLight,
-            width: 2,
+            width: 2.r,
           ),
         ),
         child: Center(
           child: Text(
             widget.userInitials,
             style: AppTextStyle.poppins(
-              fontSize: 16,
+              fontSize: 14.sp,
               color: Colors.white,
               fontWeight: FontWeight.w700,
             ),
@@ -151,8 +152,8 @@ class _UserProfileModalState extends State<UserProfileModal> {
             right: 0,
             bottom: 0,
             child: Container(
-              width: 12,
-              height: 12,
+              width: 12.r,
+              height: 12.r,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.teal,
@@ -172,7 +173,7 @@ class _UserProfileModalState extends State<UserProfileModal> {
       builder: (context) => AlertDialog(
         contentPadding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -221,28 +222,28 @@ class _UserProfileModalState extends State<UserProfileModal> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Center(
             child: AppModalContainer(
-              width: 380,
-              height: 650,
+              width: double.infinity,
+              height: 580.h,
               fillColor: AppColors.purplePrimary,
               borderColor: AppColors.purpleLight,
               layerColor: AppColors.purpleDark,
-              borderRadius: 32,
+              borderRadius: 32.r,
               onClose: widget.onClose,
-              banner: const AppBanner(
+              banner: AppBanner(
                 text: 'User Profile',
                 fillColor: AppColors.yellowLight,
                 borderColor: AppColors.yellowDark,
                 textStyle: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   fontFamily: 'MochiyPopOne',
                 ),
-                width: 200,
-                height: 40,
+                width: 180.w,
+                height: 35.h,
                 hasShadow: true,
                 shadowColor: Colors.black,
                 shadowBlurRadius: 15,
@@ -251,16 +252,16 @@ class _UserProfileModalState extends State<UserProfileModal> {
                 children: [
                   // User info outside white container
                   Positioned(
-                    top: 8,
-                    left: 24,
+                    top: 18.h,
+                    left: 24.w,
                     child: Row(
                       children: [
                         _buildAvatar(isHeader: true),
-                        const SizedBox(width: 16),
+                        SizedBox(width: 16.w),
                         Text(
                           'John Doe',
                           style: AppTextStyle.poppins(
-                            fontSize: 20,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
@@ -270,28 +271,28 @@ class _UserProfileModalState extends State<UserProfileModal> {
                   ),
                   // White container with form
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 80, 16, 100),
+                    padding: EdgeInsets.fromLTRB(16.w, 80.h, 16.w, 100.h),
                     child: Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(24),
+                      padding: EdgeInsets.all(24.r),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(16.r),
                       ),
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
                             ..._inputFields.map((field) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
+                              padding: EdgeInsets.only(bottom: 8.h),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   SizedBox(
-                                    width: 80,
+                                    width: 70.w,
                                     child: Text(
                                       field['label'] as String,
                                       style: AppTextStyle.poppins(
-                                        fontSize: 10,
+                                        fontSize: 10.sp,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.black,
                                       ),
@@ -314,17 +315,17 @@ class _UserProfileModalState extends State<UserProfileModal> {
                                 ],
                               ),
                             )).toList(),
-                            const SizedBox(height: 24),
+                            SizedBox(height: 24.h),
                             Text(
                               'Profile Image',
                               style: AppTextStyle.poppins(
-                                fontSize: 11,
+                                fontSize: 10.sp,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black,
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16.h),
                             _buildAvatarGrid(),
                           ],
                         ),
@@ -333,9 +334,9 @@ class _UserProfileModalState extends State<UserProfileModal> {
                   ),
                   // Save button outside white container
                   Positioned(
-                    left: 70,
-                    right: 70,
-                    bottom: 32,
+                    left: 70.w,
+                    right: 70.w,
+                    bottom: 20.h,
                     child: _buildSaveButton(),
                   ),
                 ],
@@ -349,11 +350,11 @@ class _UserProfileModalState extends State<UserProfileModal> {
 
   Widget _buildAvatarGrid() {
     return SizedBox(
-      height: 200,
+      height: 200.h,
       child: GridView.count(
         crossAxisCount: 4,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
+        mainAxisSpacing: 16.h,
+        crossAxisSpacing: 16.h,
         children: [
           _buildAvatar(isHeader: false),
           ...AppImageData.avatarImages.entries.map((entry) => 
@@ -371,15 +372,15 @@ class _UserProfileModalState extends State<UserProfileModal> {
                     color: _selectedAvatar == entry.value 
                         ? AppColors.purpleLight 
                         : AppColors.purplePrimary,
-                    width: 2,
+                    width: 2.r,
                   ),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24.r),
                   child: AppImages(
                     imagePath: entry.value,
-                    width: 48,
-                    height: 48,
+                    width: 48.w,
+                    height: 48.h,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -395,18 +396,18 @@ class _UserProfileModalState extends State<UserProfileModal> {
     return AppButton(
       text: 'Save',
       textStyle: AppTextStyle.poppins(
-        fontSize: 20,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w800,
         color: Colors.white,
       ),
       fillColor: AppColors.greenDark,
       layerColor: AppColors.greenBright,
-      height: 56,
-      layerHeight: 46,
-      layerTopPosition: -2,
+      height: 46.h,
+      layerHeight: 40.h,
+      layerTopPosition: -2.r,
       hasBorder: true,
       borderColor: Colors.white,
-      borderWidth: 2,
+      borderWidth: 2.r,
       onPressed: () {
         widget.onAvatarChanged(_selectedAvatar);
         widget.onClose();
