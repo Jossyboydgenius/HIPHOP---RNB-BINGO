@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class AppTextStyle {
   // Font family names
@@ -62,7 +63,7 @@ abstract class AppTextStyle {
     FontStyle? fontStyle,
   }) => TextStyle(
     fontFamily: dmSansFont,
-    fontSize: fontSize,
+    fontSize: fontSize?.sp,
     fontWeight: fontWeight,
     color: color,
     fontStyle: fontStyle,
@@ -74,7 +75,7 @@ abstract class AppTextStyle {
     Color? color,
   }) => TextStyle(
     fontFamily: mochiyPopOneFont,
-    fontSize: fontSize,
+    fontSize: fontSize?.sp,
     fontWeight: fontWeight,
     color: color,
   );
@@ -87,7 +88,7 @@ abstract class AppTextStyle {
   }) {
     return TextStyle(
       fontFamily: poppinsFont,
-      fontSize: fontSize,
+      fontSize: fontSize?.sp,
       fontWeight: fontWeight,
       color: color,
       fontStyle: fontStyle,
@@ -104,7 +105,7 @@ abstract class AppTextStyle {
     double strokeWidth = 8,
   }) {
     return TextStyle(
-      fontSize: fontSize,
+      fontSize: fontSize.sp,
       fontWeight: fontWeight,
       fontFamily: fontFamily,
       shadows: [
