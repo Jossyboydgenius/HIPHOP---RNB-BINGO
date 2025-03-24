@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'dart:ui';
 import 'app_modal_container.dart';
@@ -37,42 +38,42 @@ class NotificationModal extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Center(
             child: AppModalContainer(
-              width: 500,
-              height: 650,
+              width: double.infinity,
+              height: 580.h,
               fillColor: AppColors.purplePrimary,
               borderColor: AppColors.purpleLight,
               layerColor: AppColors.purpleDark,
-              layerTopPosition: -4,
-              borderRadius: 32,
+              layerTopPosition: -4.h,
+              borderRadius: 32.r,
               onClose: onClose,
               banner: AppBanner(
                 text: 'Notification',
                 fillColor: AppColors.yellowLight,
                 borderColor: AppColors.yellowDark,
                 textStyle: AppTextStyle.mochiyPopOne(
-                  fontSize: 20,
+                  fontSize: 18.sp,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
-                width: 200,
-                height: 40,
+                width: 180.w,
+                height: 35.h,
                 hasShadow: true,
                 shadowColor: Colors.black,
                 shadowBlurRadius: 15,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16.r),
                 child: Container(
-                  width: 380,
+                  width: 380.w,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                     child: Column(
                       children: notifications.map((notification) {
                         return NotificationCard(
