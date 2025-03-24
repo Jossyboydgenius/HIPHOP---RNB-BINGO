@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 import 'app_modal_container.dart';
 import 'app_colors.dart';
@@ -70,36 +71,36 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
         Row(
           children: [
             Container(
-              width: 14,
-              height: 14,
+              width: 14.w,
+              height: 14.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: widget.isConnected ? AppColors.greenBright : Colors.red,
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Text(
               widget.isConnected ? 'Connected' : 'Disabled',
               style: AppTextStyle.dmSans(
-                fontSize: 16,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4.h),
         Row(
           children: [
-            const AppIcons(
+            AppIcons(
               icon: AppIconData.people,
-              size: 16,
+              size: 16.w,
             ),
-            const SizedBox(width: 4),
+            SizedBox(width: 4.w),
             Text(
               widget.activeUsers.toString(),
               style: AppTextStyle.dmSans(
-                fontSize: 16,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
@@ -115,11 +116,11 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
       children: [
         Expanded(
           child: Container(
-            height: 62, 
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            height: 62.h,
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
             child: Material(
               color: Colors.transparent,
@@ -130,30 +131,30 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                     controller: _messageController,
                     maxLength: maxLength,
                     style: AppTextStyle.dmSans(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Colors.black,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Type Here',
                       hintStyle: AppTextStyle.dmSans(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.italic,
                         color: Colors.black54,
                       ),
                       border: InputBorder.none,
                       counterText: '',
-                      contentPadding: const EdgeInsets.only(right: 2), // Add padding for counter
+                      contentPadding: EdgeInsets.only(right: 2.w),
                     ),
                     onChanged: (_) => setState(() {}),
                   ),
                   Positioned(
                     right: 0,
-                    bottom: 4,
+                    bottom: 4.h,
                     child: Text(
                       '${_messageController.text.length}/$maxLength',
                       style: AppTextStyle.dmSans(
-                        fontSize: 12,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.italic,
                         color: Colors.black54,
@@ -165,10 +166,10 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
         SizedBox(
-          width: 62, 
-          height: 62, 
+          width: 62.w,
+          height: 62.h,
           child: AppButton(
             text: '',
             onPressed: _messageController.text.isEmpty ? null : _handleSendMessage,
@@ -180,12 +181,13 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
               : AppColors.greenBright,
             borderColor: Colors.white,
             hasBorder: true,
-            borderWidth: 2,
-            height: 80,
-            layerTopPosition: -1,
-            borderRadius: 16,
+            borderWidth: 2.w,
+            height: 62.h,
+            layerHeight: 46.h,
+            layerTopPosition: -1.h,
+            borderRadius: 16.r,
             iconPath: AppIconData.send,
-            iconSize: 22,
+            iconSize: 22.w,
             disabled: _messageController.text.isEmpty,
           ),
         ),
@@ -200,16 +202,16 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Center(
             child: AppModalContainer(
-              width: 500,
-              height: 650,
+              width: double.infinity,
+              height: 580.h,
               fillColor: AppColors.purplePrimary,
               borderColor: AppColors.purpleLight,
               layerColor: AppColors.purpleDark,
-              layerTopPosition: -4,
-              borderRadius: 32,
+              layerTopPosition: -4.h,
+              borderRadius: 32.r,
               maintainFocus: true,
               onClose: widget.onClose,
               banner: AppBanner(
@@ -217,12 +219,12 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                 fillColor: AppColors.yellowLight,
                 borderColor: AppColors.yellowDark,
                 textStyle: AppTextStyle.mochiyPopOne(
-                  fontSize: 20,
+                  fontSize: 18.sp,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
-                width: 200,
-                height: 40,
+                width: 180.w,
+                height: 35.h,
                 hasShadow: true,
                 shadowColor: Colors.black,
                 shadowBlurRadius: 15,
@@ -230,32 +232,31 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: _buildHeader(),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Expanded(
                     child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      padding: const EdgeInsets.all(16),
+                      margin: EdgeInsets.symmetric(horizontal: 16.w),
+                      padding: EdgeInsets.all(16.r),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(16.r),
                       ),
                       child: SingleChildScrollView(
                         controller: _scrollController,
                         child: Column(
                           children: [
-                            const Text(
+                            Text(
                               'Click profile to report or mute a Player',
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 10,
+                                fontSize: 10.sp,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            // Add chat messages here
+                            SizedBox(height: 16.h),
                             ...messages.map((message) {
                               return ChatMessageCard(
                                 message: message['message'],
@@ -275,10 +276,10 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      top: 16,
-                      bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+                      left: 16.w,
+                      right: 16.w,
+                      top: 16.h,
+                      bottom: MediaQuery.of(context).viewInsets.bottom + 10.h,
                     ),
                     child: _buildChatInput(),
                   ),
