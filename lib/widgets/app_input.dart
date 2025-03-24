@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_text_style.dart';
 import 'app_icons.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppInput extends StatelessWidget {
   final String label;
@@ -80,20 +81,20 @@ class AppInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
+      height: 48.h,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: AppColors.purplePrimary,
-          width: 3,
+          width: 3.w,
         ),
         color: Colors.white,
         boxShadow: showShadow ? [
           BoxShadow(
             color: AppColors.grayDark.withOpacity(0.15),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-            spreadRadius: 2,
+            blurRadius: 12.r,
+            offset: Offset(0, 6.h),
+            spreadRadius: 2.r,
           ),
         ] : null,
       ),
@@ -111,7 +112,7 @@ class AppInput extends StatelessWidget {
               onTap!();
             }
           } : null,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           child: Center(
             child: Row(
               children: [
@@ -124,20 +125,20 @@ class AppInput extends StatelessWidget {
                     keyboardType: keyboardType,
                     textAlign: TextAlign.left,
                     style: AppTextStyle.dmSans(
-                      fontSize: 14,
+                      fontSize: 12.sp,
                       color: Colors.black,
                     ),
                     decoration: InputDecoration(
                       hintText: hintText,
                       hintStyle: AppTextStyle.poppins(
-                        fontSize: 12,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w500,
                         color: Colors.grey,
                       ),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.only(
-                        left: 16,
-                        right: 16,
+                      contentPadding: EdgeInsets.only(
+                        left: 16.w,
+                        right: 16.w,
                       ),
                       counterText: '',
                       isDense: true,
@@ -147,10 +148,10 @@ class AppInput extends StatelessWidget {
                 ),
                 if (iconPath != null)
                   Padding(
-                    padding: const EdgeInsets.only(right: 16),
+                    padding: EdgeInsets.only(right: 16.w),
                     child: AppIcons(
                       icon: iconPath!,
-                      size: 20,
+                      size: 20.w,
                       color: Colors.black,
                     ),
                   ),
