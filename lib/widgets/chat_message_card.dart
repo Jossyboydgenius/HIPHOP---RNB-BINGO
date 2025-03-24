@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_text_style.dart';
 import 'app_images.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatMessageCard extends StatelessWidget {
   final String message;
@@ -31,21 +32,21 @@ class ChatMessageCard extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 40.w,
+            height: 40.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppColors.primary,
               border: Border.all(
                 color: Colors.white,
-                width: 2,
+                width: 2.w,
               ),
             ),
             child: Center(
               child: Text(
                 senderInitials,
                 style: AppTextStyle.poppins(
-                  fontSize: 15,
+                  fontSize: 14.sp,
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                 ),
@@ -56,8 +57,8 @@ class ChatMessageCard extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: Container(
-              width: 12,
-              height: 12,
+              width: 12.w,
+              height: 12.h,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.teal,
@@ -72,20 +73,20 @@ class ChatMessageCard extends StatelessWidget {
   void _showProfileMenu(BuildContext context, Offset position) {
     final items = [
       PopupMenuItem(
-        height: 40,
+        height: 40.h,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const AppImages(
+            AppImages(
               imagePath: AppImageData.ban,
-              width: 16,
-              height: 16,
+              width: 16.w,
+              height: 16.h,
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Text(
               'Report',
               style: AppTextStyle.dmSans(
-                fontSize: 11,
+                fontSize: 11.sp,
                 color: Colors.black,
                 fontWeight: FontWeight.w700,
               ),
@@ -97,20 +98,20 @@ class ChatMessageCard extends StatelessWidget {
         },
       ),
       PopupMenuItem(
-        height: 40,
+        height: 40.h,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const AppImages(
+            AppImages(
               imagePath: AppImageData.mute,
-              width: 16,
-              height: 16,
+              width: 16.w,
+              height: 16.h,
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Text(
               'Mute',
               style: AppTextStyle.dmSans(
-                fontSize: 11,
+                fontSize: 11.sp,
                 color: Colors.black,
                 fontWeight: FontWeight.w700,
               ),
@@ -143,14 +144,14 @@ class ChatMessageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
         mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMe) ...[
             _buildAvatar(context),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
           ],
           Flexible(
             child: Column(
@@ -162,7 +163,7 @@ class ChatMessageCard extends StatelessWidget {
                     Text(
                       isMe ? 'Me' : senderName,
                       style: AppTextStyle.dmSans(
-                        fontSize: 9,
+                        fontSize: 8.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
@@ -170,7 +171,7 @@ class ChatMessageCard extends StatelessWidget {
                     Text(
                       time,
                       style: AppTextStyle.dmSans(
-                        fontSize: 9,
+                        fontSize: 8.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
@@ -178,24 +179,24 @@ class ChatMessageCard extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 4),
-                  padding: const EdgeInsets.all(12),
+                  margin: EdgeInsets.only(top: 4.h),
+                  padding: EdgeInsets.all(12.r),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: AppColors.purplePrimary,
-                      width: 2,
+                      width: 2.w,
                     ),
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(16),
-                      topRight: const Radius.circular(16),
-                      bottomLeft: Radius.circular(isMe ? 16 : 0),
-                      bottomRight: Radius.circular(isMe ? 0 : 16),
+                      topLeft: Radius.circular(16.r),
+                      topRight: Radius.circular(16.r),
+                      bottomLeft: Radius.circular(isMe ? 16.r : 0),
+                      bottomRight: Radius.circular(isMe ? 0 : 16.r),
                     ),
                   ),
                   child: Text(
                     message,
                     style: AppTextStyle.dmSans(
-                      fontSize: 12,
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                     ),
@@ -205,7 +206,7 @@ class ChatMessageCard extends StatelessWidget {
             ),
           ),
           if (isMe) ...[
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             _buildAvatar(context),
           ],
         ],
