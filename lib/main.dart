@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'themes/app_theme.dart';
 import 'routes/app_routes.dart';
 import 'services/navigation_service.dart';
@@ -28,14 +29,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'HIPHOP & RNB BINGO',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      navigatorKey: NavigationService.navigatorKey,
-      initialRoute: AppRoutes.initialRoute,
-      routes: AppRoutes.routes,
+    // Wrap MaterialApp with ScreenUtilInit
+    return ScreenUtilInit(
+      designSize: const Size(375, 812), // iOS design size
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'HIPHOP & RNB BINGO',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          navigatorKey: NavigationService.navigatorKey,
+          initialRoute: AppRoutes.initialRoute,
+          routes: AppRoutes.routes,
+        );
+      }
     );
   }
 }
