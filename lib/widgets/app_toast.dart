@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_colors.dart';
 import 'app_text_style.dart';
 
@@ -109,13 +110,13 @@ class _AppToastState extends State<AppToast> with SingleTickerProviderStateMixin
       child: Stack(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             decoration: BoxDecoration(
               color: widget.backgroundColor ?? AppColors.yellowLight2,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               border: Border.all(
                 color: widget.borderColor ?? AppColors.yellowDark4,
-                width: 2,
+                width: 2.w,
               ),
             ),
             child: Row(
@@ -123,16 +124,16 @@ class _AppToastState extends State<AppToast> with SingleTickerProviderStateMixin
                 if (widget.showInfoIcon)
                   AppImages(
                     imagePath: widget.infoIcon ?? AppImageData.info2,
-                    height: 24,
-                    width: 24,
+                    height: 24.h,
+                    width: 24.w,
                   ),
                 if (widget.showInfoIcon)
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                 Expanded(
                   child: Text(
                     widget.message,
                     style: AppTextStyle.poppins(
-                      fontSize: 14,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                       color: widget.textColor ?? Colors.black,
                     ),
@@ -141,8 +142,8 @@ class _AppToastState extends State<AppToast> with SingleTickerProviderStateMixin
                 if (widget.showCloseIcon)
                   AppImages(
                     imagePath: AppImageData.close,
-                    height: 24,
-                    width: 24,
+                    height: 24.h,
+                    width: 24.w,
                     onPressed: () {
                       _controller.reverse().then((_) => widget.onClose());
                     },
