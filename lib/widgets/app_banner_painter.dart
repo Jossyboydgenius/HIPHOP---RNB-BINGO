@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppBannerPainter extends CustomPainter {
   final Color fillColor;
@@ -64,34 +65,26 @@ class AppBannerPainter extends CustomPainter {
 
     // Draw shadow if enabled
     if (hasShadow) {
-      Paint shadowPaint = Paint()
+      final Paint shadowPaint = Paint()
         ..color = shadowColor
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, shadowBlurRadius);
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, shadowBlurRadius.r);
       canvas.drawPath(path, shadowPaint);
     }
 
-    // Fill the main shape
-    Paint mainPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = fillColor;
-    canvas.drawPath(path, mainPaint);
+    // Draw fill
+    final Paint fillPaint = Paint()
+      ..color = fillColor
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(path, fillPaint);
 
     // Draw border
-    if (borderColor.opacity > 0) {
-      Paint borderPaint = Paint()
-        ..style = PaintingStyle.stroke
-        ..color = borderColor
-        ..strokeWidth = 2;
-      canvas.drawPath(path, borderPaint);
-    }
+    final Paint borderPaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.w;
+    canvas.drawPath(path, borderPaint);
   }
 
   @override
-  bool shouldRepaint(AppBannerPainter oldDelegate) {
-    return oldDelegate.fillColor != fillColor ||
-           oldDelegate.borderColor != borderColor ||
-           oldDelegate.hasShadow != hasShadow ||
-           oldDelegate.shadowColor != shadowColor ||
-           oldDelegate.shadowBlurRadius != shadowBlurRadius;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 } 
