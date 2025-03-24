@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../routes/app_routes.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_button.dart';
@@ -105,30 +106,30 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.r),
                     child: Column(
                       children: [
                         Stack(
                           clipBehavior: Clip.none,
                           alignment: Alignment.center,
                           children: [
-                            const Positioned(
-                              top: 6,
+                            Positioned(
+                              top: 6.h,
                               child: AppImages(
                                 imagePath: AppImageData.www,
-                                width: 40,
-                                height: 40,
+                                width: 40.w,
+                                height: 40.h,
                               ),
                             ),
                             Container(
-                              margin: const EdgeInsets.only(top: 35),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 4,
+                              margin: EdgeInsets.only(top: 35.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 14.w,
+                                vertical: 2.h,
                               ),
                               decoration: BoxDecoration(
                                 color: AppColors.pinkDark,
-                                borderRadius: BorderRadius.circular(100),
+                                borderRadius: BorderRadius.circular(100.r),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -136,14 +137,14 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                                   Text(
                                     'Zoom Game Link',
                                     style: AppTextStyle.mochiyPopOne(
-                                      fontSize: 14,
+                                      fontSize: 10.sp,
                                       color: Colors.white,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: 8.w),
                                   AppIcons(
                                     icon: AppIconData.copy,
-                                    size: 20,
+                                    size: 16.w,
                                     color: Colors.white,
                                     onPressed: () {
                                       Clipboard.setData(const ClipboardData(
@@ -163,54 +164,54 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         Stack(
                           clipBehavior: Clip.none,
                           children: [
                             Positioned(
                               left: 0,
                               right: 0,
-                              bottom: -10,
-                              height: 60,
+                              bottom: -10.h,
+                              height: 60.h,
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: AppColors.purpleDark,
-                                  borderRadius: BorderRadius.circular(24),
+                                  borderRadius: BorderRadius.circular(24.r),
                                 ),
                               ),
                             ),
                             Container(
-                              width: 250,
+                              width: 250.w,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(24),
+                                borderRadius: BorderRadius.circular(24.r),
                                 border: Border.all(
                                   color: AppColors.purplePrimary,
-                                  width: 3,
+                                  width: 3.w,
                                 ),
                               ),
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(24),
-                                child: const AppImages(
+                                borderRadius: BorderRadius.circular(24.r),
+                                child: AppImages(
                                   imagePath: AppImageData.gameImage,
-                                  width: 250,
-                                  height: 250,
+                                  width: 250.w,
+                                  height: 250.h,
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         Text(
                           'Lorem ipsum dolor sit amet',
                           textAlign: TextAlign.center,
                           style: AppTextStyle.mochiyPopOne(
-                            fontSize: 20,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         GameDetailsContainer(
                           host: 'John Doe',
                           dj: 'DJ Ray',
@@ -230,25 +231,25 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                           ],
                           timeRemaining: _timeString,
                         ),
-                        const SizedBox(height:24),
+                        SizedBox(height: 24.h),
                         SizedBox(
-                          width: 200,
+                          width: 200.w,
                           child: _canStart
                               ? AppButton(
                                   text: 'Start',
                                   textStyle: AppTextStyle.poppins(
-                                    fontSize: 20,
+                                    fontSize: 18.sp,
                                     fontWeight: FontWeight.w800,
                                     color: Colors.white,
                                   ),
                                   fillColor: AppColors.greenBright,
                                   layerColor: AppColors.greenDark,
-                                  height: 60,
+                                  height: 50.h,
                                   hasBorder: true,
-                                  layerTopPosition: -2,
-                                  layerHeight: 50,
+                                  layerTopPosition: -2.h,
+                                  layerHeight: 42.h,
                                   fontFamily: AppTextStyle.poppinsFont,
-                                  fontSize: 24,
+                                  fontSize: 18.sp,
                                   onPressed: () {
                                     // Handle start game
                                   },
@@ -256,7 +257,7 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                               : AppButton(
                                   text: _isWaiting ? 'Waiting...' : 'Join Game',
                                   textStyle: AppTextStyle.poppins(
-                                    fontSize: 20,
+                                    fontSize: 18.sp,
                                     fontWeight: FontWeight.w800,
                                     color: Colors.white,
                                   ),
@@ -266,12 +267,12 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                                   layerColor: _isWaiting
                                       ? AppColors.yellowPrimary
                                       : AppColors.greenBright,
-                                  height: 60,
+                                  height: 50.h,
                                   hasBorder: true,
-                                  layerTopPosition: -2,
-                                  layerHeight: 50,
+                                  layerTopPosition: -2.h,
+                                  layerHeight: 42.h,
                                   fontFamily: AppTextStyle.poppinsFont,
-                                  fontSize: 24,
+                                  fontSize: 18.sp,
                                   onPressed: _isWaiting
                                       ? null
                                       : () {
