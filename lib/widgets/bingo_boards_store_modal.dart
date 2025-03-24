@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_banner.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_button.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
@@ -90,19 +91,19 @@ class BingoBoardsStoreModal extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Header section with back button
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 32, top: 0),
+                    padding: EdgeInsets.only(bottom: 32.h, top: 0),
                     child: Row(
                       children: [
                         AppImages(
                           imagePath: AppImageData.back,
-                          height: 38,
-                          width: 38,
+                          height: 38.h,
+                          width: 38.w,
                           onPressed: onClose,
                         ),
                         Expanded(
@@ -110,29 +111,29 @@ class BingoBoardsStoreModal extends StatelessWidget {
                             child: Text(
                               'Store',
                               style: AppTextStyle.mochiyPopOne(
-                                fontSize: 20,
+                                fontSize: 20.sp,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 42),
+                        SizedBox(width: 42.w),
                       ],
                     ),
                   ),
                   // Banner
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 32),
+                    padding: EdgeInsets.only(bottom: 32.h),
                     child: AppBanner(
                       text: 'Bingo Boards',
                       fillColor: AppColors.blueLight3,
                       borderColor: AppColors.deepBlue,
                       textStyle: AppTextStyle.textWithStroke(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         textColor: Colors.white,
                         strokeColor: AppColors.deepBlue,
-                        strokeWidth: 3,
+                        strokeWidth: 3.w,
                       ),
                     ),
                   ),
@@ -141,20 +142,20 @@ class BingoBoardsStoreModal extends StatelessWidget {
                     clipBehavior: Clip.none,
                     children: [
                       AppModalContainer(
-                        width: 380,
-                        height: 410,
+                        width: double.infinity,
+                        height: 305.h,
                         fillColor: Colors.white,
                         borderColor: AppColors.purplePrimary,
                         layerColor: AppColors.purpleDark,
-                        layerTopPosition: -4,
-                        borderRadius: 24,
+                        layerTopPosition: -4.h,
+                        borderRadius: 24.r,
                         showCloseButton: false,
                         onClose: () {},
                         child: GridView.count(
                           crossAxisCount: 2,
-                          mainAxisSpacing: 24,
-                          crossAxisSpacing: 24,
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                          mainAxisSpacing: 24.h,
+                          crossAxisSpacing: 24.w,
+                          padding: EdgeInsets.fromLTRB(26.w, 26.h, 26.w, 26.h),
                           childAspectRatio: 0.9,
                           children: purchaseOptions.map((option) {
                             return Stack(
@@ -170,23 +171,23 @@ class BingoBoardsStoreModal extends StatelessWidget {
                                   onGetPressed: () => handlePurchase(option),
                                 ),
                                 Positioned(
-                                  top: -4,
+                                  top: -4.h,
                                   left: 0,
                                   right: 0,
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                    decoration: const BoxDecoration(
+                                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+                                    decoration: BoxDecoration(
                                       color: AppColors.pinkLight2,
                                       borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(8),
-                                        topRight: Radius.circular(8),
+                                        topLeft: Radius.circular(8.r),
+                                        topRight: Radius.circular(8.r),
                                       ),
                                     ),
                                     child: Text(
                                       option['title']!,
                                       textAlign: TextAlign.center,
                                       style: AppTextStyle.mochiyPopOne(
-                                        fontSize: 12,
+                                        fontSize: 8.sp,
                                         color: Colors.white,
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -202,37 +203,37 @@ class BingoBoardsStoreModal extends StatelessWidget {
                   ),
                   // Boards amount
                   Padding(
-                    padding: const EdgeInsets.only(top: 36),
+                    padding: EdgeInsets.only(top: 36.h),
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
                           decoration: BoxDecoration(
                             color: AppColors.purplePrimary,
-                            borderRadius: BorderRadius.circular(100),
-                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(100.r),
+                            border: Border.all(color: Colors.white, width: 1.w),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 10),
+                            padding: EdgeInsets.only(left: 10.w),
                             child: Text(
                               state.gemBalance.toString(),
                               style: AppTextStyle.poppins(
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
                         ),
-                        const Positioned(
-                          left: -12,
+                        Positioned(
+                          left: -12.w,
                           top: 0,
                           bottom: 0,
                           child: Center(
                             child: AppIcons(
                               icon: AppIconData.gem,
-                              size: 32,
+                              size: 32.w,
                             ),
                           ),
                         ),
@@ -241,21 +242,21 @@ class BingoBoardsStoreModal extends StatelessWidget {
                   ),
                   // Diamond button
                   Padding(
-                    padding: const EdgeInsets.only(top: 36),
+                    padding: EdgeInsets.only(top: 36.h),
                     child: SizedBox(
-                      width: 200,
+                      width: 180.w,
                       child: AppButton(
                         text: 'Diamond',
                         textStyle: AppTextStyle.poppins(
-                          fontSize: 20,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w800,
                           color: Colors.white,
                         ),
                         fillColor: AppColors.pinkDark2,
                         layerColor: AppColors.pinkLight,
-                        height: 60,
-                        layerHeight: 50,
-                        layerTopPosition: -2,
+                        height: 50.h,
+                        layerHeight: 42.h,
+                        layerTopPosition: -2.h,
                         hasBorder: true,
                         borderColor: Colors.white,
                         onPressed: () {
@@ -271,7 +272,7 @@ class BingoBoardsStoreModal extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 36),
+                  SizedBox(height: 36.h),
                 ],
               ),
             ),
