@@ -10,6 +10,7 @@ import 'user_profile_modal.dart';
 import 'wallet_funding_modal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTopBar extends StatefulWidget {
   final String initials;
@@ -37,8 +38,8 @@ class _AppTopBarState extends State<AppTopBar> {
         children: [
           if (_selectedAvatar != null)
             Container(
-              width: 48,
-              height: 48,
+              width: 48.w,
+              height: 48.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -50,16 +51,16 @@ class _AppTopBarState extends State<AppTopBar> {
                 borderRadius: BorderRadius.circular(24),
                 child: AppImages(
                   imagePath: _selectedAvatar!,
-                  width: 48,
-                  height: 48,
+                  width: 48.w,
+                  height: 48.h,
                   fit: BoxFit.cover,
                 ),
               ),
             )
           else
             Container(
-              width: 48,
-              height: 48,
+              width: 48.w,
+              height: 48.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.primary,
@@ -72,8 +73,8 @@ class _AppTopBarState extends State<AppTopBar> {
                 child: Text(
                   widget.initials,
                   style: AppTextStyle.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
                 ),
@@ -83,8 +84,8 @@ class _AppTopBarState extends State<AppTopBar> {
             right: 0,
             bottom: 0,
             child: Container(
-              width: 12,
-              height: 12,
+              width: 12.w,
+              height: 12.h,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.teal,
@@ -106,43 +107,43 @@ class _AppTopBarState extends State<AppTopBar> {
       clipBehavior: Clip.none,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 4),
+          padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 4.h),
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(100),
+            borderRadius: BorderRadius.circular(100.r),
             border: Border.all(
               color: Colors.white,
-              width: 2,
+              width: 2.w,
             ),
           ),
           child: Text(
             amount,
             style: AppTextStyle.poppins(
-              fontSize: 16,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w700,
               color: Colors.white,
             ),
           ),
         ),
         Positioned(
-          left: -14,
+          left: -14.w,
           top: 0,
           bottom: 0,
           child: Center(
             child: AppIcons(
               icon: leftIcon,
-              size: 34,
+              size: 34.w,
             ),
           ),
         ),
         Positioned(
-          right: -8,
+          right: -8.w,
           top: 0,
           bottom: 0,
           child: Center(
             child: AppIcons(
               icon: rightIcon,
-              size: 24,
+              size: 24.w,
             ),
           ),
         ),
@@ -200,16 +201,16 @@ class _AppTopBarState extends State<AppTopBar> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          const AppImages(
+          AppImages(
             imagePath: AppImageData.notification,
-            height: 32,
+            height: 32.h,
           ),
           if (widget.notificationCount > 0)
             Positioned(
               right: -4,
               top: -4,
               child: Container(
-                padding: const EdgeInsets.all(4),
+                padding: EdgeInsets.all(6.h),
                 decoration: const BoxDecoration(
                   color: AppColors.accent,
                   shape: BoxShape.circle,
@@ -217,7 +218,7 @@ class _AppTopBarState extends State<AppTopBar> {
                 child: Text(
                   widget.notificationCount.toString(),
                   style: AppTextStyle.poppins(
-                    fontSize: 12,
+                    fontSize: 8.sp,
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                   ),
@@ -253,7 +254,7 @@ class _AppTopBarState extends State<AppTopBar> {
     return BlocBuilder<BalanceBloc, BalanceState>(
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.r),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -282,7 +283,7 @@ class _AppTopBarState extends State<AppTopBar> {
                       rightIcon: AppIconData.add,
                     ),
                   ),
-                  const SizedBox(width: 34),
+                  SizedBox(width: 34.w),
                   GestureDetector(
                     onTap: () {
                       _showWalletFundingModal();
