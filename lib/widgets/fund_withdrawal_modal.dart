@@ -8,6 +8,7 @@ import 'app_text_style.dart';
 import 'app_images.dart';
 import 'app_button.dart';
 import 'app_input.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FundWithdrawalModal extends StatefulWidget {
   final VoidCallback onClose;
@@ -52,7 +53,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
       return Text(
         'Withdrawal',
         style: AppTextStyle.poppins(
-          fontSize: 20,
+          fontSize: 20.sp,
           fontWeight: FontWeight.w800,
           color: Colors.white,
         ),
@@ -61,7 +62,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
     return Text(
       selectedOption == null ? 'Withdraw To' : 'Input Detail',
       style: AppTextStyle.poppins(
-        fontSize: 20,
+        fontSize: 20.sp,
         fontWeight: FontWeight.w800,
         color: Colors.white,
       ),
@@ -79,38 +80,38 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
           });
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 48,
-                    height: 48,
+                    width: 52.w,
+                    height: 52.h,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       image: DecorationImage(
                         image: AssetImage(option['icon']),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16.w),
                   Text(
                     title,
                     style: AppTextStyle.dmSans(
-                      fontSize: 18,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
                 ],
               ),
-              const AppIcons(
+              AppIcons(
                 icon: AppIconData.arrowRight,
                 color: Colors.black,
-                size: 24,
+                size: 24.w,
               ),
             ],
           ),
@@ -127,7 +128,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
         Text(
           'Platform',
           style: AppTextStyle.dmSans(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
@@ -139,21 +140,21 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
             Row(
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: 48.w,
+                  height: 48.h,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                     image: DecorationImage(
                       image: AssetImage(option['icon']),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16.w),
                 Text(
                   selectedOption!,
                   style: AppTextStyle.dmSans(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
@@ -170,7 +171,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.blueLight2,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 10.w, vertical: 1.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),
                   ),
@@ -178,7 +180,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                 child: Text(
                   'Change',
                   style: AppTextStyle.dmSans(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
@@ -187,27 +189,27 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
         Text(
           option['firstFieldLabel'],
           style: AppTextStyle.dmSans(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         AppInput(
           label: '',
           controller: _emailController,
           hintText: option['firstFieldHint'],
           showShadow: true,
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         Text(
           'Full Name',
           style: AppTextStyle.dmSans(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
@@ -229,9 +231,9 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
       children: [
         Center(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
                 color: AppColors.purplePrimary,
                 width: 3,
@@ -240,16 +242,16 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const AppImages(
+                AppImages(
                   imagePath: AppImageData.money,
-                  width: 24,
-                  height: 24,
+                  width: 24.w,
+                  height: 24.h,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Text(
                   '\$${widget.amount}',
                   style: AppTextStyle.poppins(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.w800,
                     color: Colors.black,
                   ),
@@ -258,7 +260,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
             ),
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
         _buildDetailRow(
           'Withdrawal',
           selectedOption!,
@@ -289,7 +291,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
           Text(
             label,
             style: AppTextStyle.dmSans(
-              fontSize: 12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w600,
               color: Colors.black,
             ),
@@ -308,12 +310,12 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
               ],
               Text(
                 value,
                 style: AppTextStyle.dmSans(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
@@ -332,13 +334,13 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AppModalContainer(
-                width: 340,
-                height: selectedOption == null ? 350 : 470,
+                width: double.infinity,
+                height: selectedOption == null ? 300.h : 400.h,
                 fillColor: AppColors.purplePrimary,
                 borderColor: AppColors.purpleLight,
                 layerColor: AppColors.purpleDark,
@@ -385,7 +387,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                                   'Please verify your account carefully to ensure we can transfer money successfully',
                                   textAlign: TextAlign.center,
                                   style: AppTextStyle.dmSans(
-                                    fontSize: 12,
+                                    fontSize: 12.sp,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -399,11 +401,11 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
               ),
               if (selectedOption != null || showSummary)
                 Padding(
-                  padding: const EdgeInsets.only(top: 24),
+                  padding: const EdgeInsets.only(top: 44),
                   child: AppButton(
                     text: 'Confirm',
                     textStyle: AppTextStyle.poppins(
-                      fontSize: 20,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w800,
                       color: Colors.white,
                     ),
