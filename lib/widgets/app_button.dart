@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_text_style.dart';
 import 'app_icons.dart';
 import 'app_images.dart';
@@ -131,19 +132,19 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
     if (widget.iconPath != null) {
       return AppIcons(
         icon: widget.iconPath!,
-        size: widget.iconSize!,
+        size: widget.iconSize!.w,
       );
     } else if (widget.imagePath != null) {
       return AppImages(
         imagePath: widget.imagePath!,
-        height: widget.imageHeight ?? widget.iconSize,
-        width: widget.imageWidth ?? widget.iconSize,
+        height: (widget.imageHeight ?? widget.iconSize)!.h,
+        width: (widget.imageWidth ?? widget.iconSize)!.w,
         fit: widget.imageFit,
       );
     } else if (widget.icon != null) {
       return AppIcons(
         icon: widget.icon!,
-        size: widget.iconSize!,
+        size: widget.iconSize!.w,
         color: widget.iconColor ?? widget.textColor,
       );
     }
@@ -163,7 +164,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
       children: [
         if (hasIcon && !widget.iconAfterText) ...[
           iconWidget!,
-          SizedBox(width: widget.iconSpacing),
+          SizedBox(width: widget.iconSpacing?.w ?? 12.w),
         ],
         Column(
           mainAxisSize: MainAxisSize.min,
@@ -182,14 +183,14 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                     style: widget.fontFamily != null
                         ? TextStyle(
                             fontFamily: widget.fontFamily,
-                            fontSize: widget.fontSize,
+                            fontSize: (widget.fontSize ?? 20).sp,
                             fontWeight: widget.fontWeight,
                             color: widget.disabled 
                                 ? effectiveTextColor?.withOpacity(0.5) 
                                 : effectiveTextColor,
                           )
                         : AppTextStyle.poppins(
-                            fontSize: widget.fontSize,
+                            fontSize: widget.fontSize ?? 20,
                             fontWeight: widget.fontWeight,
                             color: widget.disabled 
                                 ? effectiveTextColor?.withOpacity(0.5) 
@@ -197,38 +198,22 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                           ),
                   ),
             if (widget.subtitle != null) ...[
-              const SizedBox(height: 4),
-              widget.subtitleStyle != null
-                  ? Text(
-                      widget.subtitle!,
-                      style: widget.subtitleStyle?.copyWith(
-                        color: widget.disabled 
-                            ? effectiveTextColor?.withOpacity(0.5) 
-                            : effectiveTextColor,
-                      ),
-                    )
-                  : Text(
-                      widget.subtitle!,
-                      style: widget.fontFamily != null
-                          ? TextStyle(
-                              fontFamily: widget.fontFamily,
-                              fontSize: widget.subtitleFontSize,
-                              color: widget.disabled 
-                                  ? effectiveTextColor?.withOpacity(0.5) 
-                                  : effectiveTextColor,
-                            )
-                          : AppTextStyle.poppins(
-                              fontSize: widget.subtitleFontSize,
-                              color: widget.disabled 
-                                  ? effectiveTextColor?.withOpacity(0.5) 
-                                  : effectiveTextColor,
-                            ),
-                    ),
+              SizedBox(height: 4.h),
+              Text(
+                widget.subtitle!,
+                style: widget.subtitleStyle ?? AppTextStyle.poppins(
+                  fontSize: widget.subtitleFontSize ?? 14,
+                  fontWeight: FontWeight.w500,
+                  color: widget.disabled 
+                      ? effectiveTextColor?.withOpacity(0.5) 
+                      : effectiveTextColor,
+                ),
+              ),
             ],
           ],
         ),
         if (hasIcon && widget.iconAfterText) ...[
-          SizedBox(width: widget.iconSpacing),
+          SizedBox(width: widget.iconSpacing?.w ?? 12.w),
           iconWidget!,
         ],
       ],
@@ -244,13 +229,13 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          height: widget.height,
-          width: widget.width ?? MediaQuery.of(context).size.width,
+          height: widget.height.h,
+          width: widget.width?.w ?? MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(widget.borderRadius),
+            borderRadius: BorderRadius.circular(widget.borderRadius.r),
             border: widget.hasBorder ? Border.all(
               color: widget.borderColor,
-              width: widget.borderWidth,
+              width: widget.borderWidth.w,
             ) : null,
             color: widget.disabled ? widget.fillColor.withOpacity(0.5) : widget.fillColor,
           ),
@@ -260,11 +245,11 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                 Positioned(
                   left: 0,
                   right: 0,
-                  top: widget.layerTopPosition ?? 0,
-                  height: widget.layerHeight ?? widget.height * 0.65,
+                  top: (widget.layerTopPosition ?? 0).h,
+                  height: (widget.layerHeight ?? widget.height * 0.65).h,
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(widget.borderRadius),
+                      borderRadius: BorderRadius.circular(widget.borderRadius.r),
                       color: widget.disabled 
                           ? widget.layerColor!.withOpacity(0.5) 
                           : widget.layerColor,
