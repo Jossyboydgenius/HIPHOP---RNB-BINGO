@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppDimension {
   static late MediaQueryData mediaQuery;
@@ -9,9 +10,9 @@ class AppDimension {
 
   static void init(BuildContext context) {
     mediaQuery = MediaQuery.of(context);
-    height = mediaQuery.size.height;
-    width = mediaQuery.size.width;
-    isSmall = height < 700 && width < 400;
-    isTablet = width > 600;
+    height = 812.h;  // Match design height
+    width = 375.w;   // Match design width
+    isSmall = height < 700.h && width < 400.w;
+    isTablet = width > 600.w;
   }
 } 
