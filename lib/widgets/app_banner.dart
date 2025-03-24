@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_banner_painter.dart';
 
 class AppBanner extends StatelessWidget {
@@ -28,25 +29,23 @@ class AppBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
-      height: height,
+      width: width.w,
+      height: height.h,
       child: Stack(
         children: [
           CustomPaint(
-            size: Size(width, height),
+            size: Size(width.w, height.h),
             painter: AppBannerPainter(
               fillColor: fillColor,
               borderColor: borderColor,
               hasShadow: hasShadow,
               shadowColor: shadowColor,
-              shadowBlurRadius: shadowBlurRadius,
+              shadowBlurRadius: shadowBlurRadius.r,
             ),
           ),
-          // Center the text both horizontally and vertically
           Center(
             child: Padding(
-              // Add a slight padding to account for the banner's curved edges
-              padding: const EdgeInsets.only(bottom: 2),
+              padding: EdgeInsets.only(bottom: 2.h),
               child: Text(
                 text,
                 style: textStyle,
@@ -58,4 +57,4 @@ class AppBanner extends StatelessWidget {
       ),
     );
   }
-} 
+}
