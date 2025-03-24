@@ -5,6 +5,7 @@ import 'app_modal_container.dart';
 import 'app_colors.dart';
 import 'app_text_style.dart';
 import 'app_images.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PaymentOptionsModal extends StatelessWidget {
   final VoidCallback onClose;
@@ -22,7 +23,7 @@ class PaymentOptionsModal extends StatelessWidget {
     return Text(
       isInAppPurchase ? 'Fund from' : 'Pay Fees',
       style: AppTextStyle.poppins(
-        fontSize: 24,
+        fontSize: 20.sp,
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
@@ -38,38 +39,38 @@ class PaymentOptionsModal extends StatelessWidget {
           onClose();
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 48,
-                    height: 48,
+                    width: 48.w,
+                    height: 48.h,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       image: DecorationImage(
                         image: AssetImage(icon),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16.w),
                   Text(
                     title,
                     style: AppTextStyle.dmSans(
-                      fontSize: 18,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
                 ],
               ),
-              const AppIcons(
+              AppIcons(
                 icon: AppIconData.arrowRight,
                 color: Colors.black,
-                size: 24,
+                size: 24.w,
               ),
             ],
           ),
@@ -85,29 +86,30 @@ class PaymentOptionsModal extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Center(
             child: AppModalContainer(
-              width: 340,
-              height: 350,
+              width: double.infinity,
+              height: 300.h,
               fillColor: AppColors.purplePrimary,
               borderColor: AppColors.purpleLight,
               layerColor: AppColors.purpleDark,
-              layerTopPosition: -4,
-              borderRadius: 32,
+              layerTopPosition: -4.h,
+              borderRadius: 32.r,
               title: '',
               customTitle: _buildTitle(),
               onClose: onClose,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16.r),
                 child: Container(
-                  width: 320,
+                  width: 320.w,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 16.w, vertical: 16.h),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
