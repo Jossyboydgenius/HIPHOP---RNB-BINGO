@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/app_colors.dart';
 import '../widgets/app_images.dart';
 import '../widgets/app_text_style.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GameDetailsContainer extends StatelessWidget {
   final String host;
@@ -33,16 +34,16 @@ class GameDetailsContainer extends StatelessWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 120,
+            width: 120.w,
             child: Text(
               label,
               style: AppTextStyle.mochiyPopOne(
-                fontSize: 10,
+                fontSize: 8.sp,
                 color: Colors.grey[500],
                 fontWeight: FontWeight.w400,
               ),
@@ -52,7 +53,7 @@ class GameDetailsContainer extends StatelessWidget {
             child: Text(
               value,
               style: AppTextStyle.mochiyPopOne(
-                fontSize: 11,
+                fontSize: 10.sp,
                 fontWeight: FontWeight.w400,
                 color: Colors.black,
               ),
@@ -67,16 +68,16 @@ class GameDetailsContainer extends StatelessWidget {
     if (gameFee == null) return const SizedBox.shrink();
     
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 120,
+            width: 120.w,
             child: Text(
               'Game Fee',
               style: AppTextStyle.mochiyPopOne(
-                fontSize: 10,
+                fontSize: 8.sp,
                 color: Colors.grey[500],
                 fontWeight: FontWeight.w400,
               ),
@@ -85,31 +86,31 @@ class GameDetailsContainer extends StatelessWidget {
           Row(
             children: [
               if (showMoneyIcon) ...[
-                const AppImages(
+                AppImages(
                   imagePath: AppImageData.money,
-                  height: 20,
+                  height: 16.h,
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: 4.w),
               ],
               Text(
                 '\$$gameFee',
                 style: AppTextStyle.mochiyPopOne(
-                  fontSize: 11,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w400,
                   color: Colors.black,
                 ),
               ),
               if (showCardIcon && cardAmount != null) ...[
-                const SizedBox(width: 8),
-                const AppImages(
+                SizedBox(width: 8.w),
+                AppImages(
                   imagePath: AppImageData.card,
-                  height: 20,
+                  height: 16.h,
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 Text(
                   cardAmount!,
                   style: AppTextStyle.mochiyPopOne(
-                    fontSize: 11,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -124,16 +125,16 @@ class GameDetailsContainer extends StatelessWidget {
 
   Widget _buildGameStylesRow() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 120,
+            width: 120.w,
             child: Text(
               'Game Style',
               style: AppTextStyle.mochiyPopOne(
-                fontSize: 10,
+                fontSize: 8.sp,
                 color: Colors.grey[500],
                 fontWeight: FontWeight.w400,
               ),
@@ -159,12 +160,12 @@ class GameDetailsContainer extends StatelessWidget {
                     Text(
                       style,
                       style: AppTextStyle.mochiyPopOne(
-                        fontSize: 11,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w400,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 4.w),
                   ],
                 );
               }).toList(),
@@ -182,13 +183,13 @@ class GameDetailsContainer extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24.r),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(24.r),
             border: Border.all(
               color: AppColors.backgroundLight,
-              width: 3,
+              width: 3.w,
             ),
           ),
           child: Column(
@@ -199,16 +200,16 @@ class GameDetailsContainer extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const AppImages(
+                      AppImages(
                         imagePath: AppImageData.info,
-                        width: 20,
-                        height: 20,
+                        width: 20.w,
+                        height: 20.h,
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Text(
                         'Game Details',
                         style: AppTextStyle.mochiyPopOne(
-                          fontSize: 12,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w400,
                           color: AppColors.pinkDark,
                         ),
@@ -219,9 +220,9 @@ class GameDetailsContainer extends StatelessWidget {
                     clipBehavior: Clip.none,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 3,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 3.h,
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.yellowPrimary,
@@ -230,7 +231,7 @@ class GameDetailsContainer extends StatelessWidget {
                         child: Text(
                           timeRemaining,
                           style: AppTextStyle.poppins(
-                            fontSize: 12,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -251,7 +252,7 @@ class GameDetailsContainer extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14.h),
               _buildDetailRow('Host Name', host),
               _buildDetailRow('DJ Name', dj),
               _buildDetailRow('Rounds', rounds),
