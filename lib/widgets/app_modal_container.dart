@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_banner.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'app_text_style.dart';
@@ -118,51 +119,51 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                     Positioned(
                       left: 0,
                       right: 0,
-                      bottom: widget.layerTopPosition * 3,
-                      height: 100,
+                      bottom: widget.layerTopPosition * 3.h,
+                      height: 100.h,
                       child: Container(
                         decoration: BoxDecoration(
                           color: widget.layerColor,
-                          borderRadius: BorderRadius.circular(widget.borderRadius),
+                          borderRadius: BorderRadius.circular(widget.borderRadius.r),
                         ),
                       ),
                     ),
                   // Main container
                   Container(
-                    width: widget.width ?? double.infinity,
-                    height: widget.height,
+                    width: widget.width?.w ?? double.infinity,
+                    height: widget.height?.h,
                     decoration: BoxDecoration(
                       color: widget.fillColor,
-                      borderRadius: BorderRadius.circular(widget.borderRadius),
+                      borderRadius: BorderRadius.circular(widget.borderRadius.r),
                       border: Border.all(
                         color: widget.borderColor ?? Colors.transparent,
-                        width: widget.borderWidth,
+                        width: widget.borderWidth.w,
                       ),
                     ),
                     child: Column(
                       children: [
                         if (widget.showCloseButton)
                           Padding(
-                            padding: const EdgeInsets.all(16),
+                            padding: EdgeInsets.all(16.r),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const SizedBox(width: 40),
+                                SizedBox(width: 40.w),
                                 if (widget.customTitle != null)
                                   widget.customTitle!
                                 else if (widget.title != null)
                                   Text(
                                     widget.title!,
                                     style: widget.titleStyle ?? AppTextStyle.poppins(
-                                      fontSize: 24,
+                                      fontSize: 20.sp,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
                                   ),
                                 AppImages(
                                   imagePath: AppImageData.close,
-                                  height: 32,
-                                  width: 32,
+                                  height: 32.h,
+                                  width: 32.w,
                                   onPressed: _handleClose,
                                 ),
                               ],
@@ -175,7 +176,7 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                   // Banner on top
                   if (widget.banner != null)
                     Positioned(
-                      top: -20,  // Adjust this value to position the banner
+                      top: -20.h,  // Adjust this value to position the banner
                       left: 0,
                       right: 0,
                       child: Center(child: widget.banner!),
