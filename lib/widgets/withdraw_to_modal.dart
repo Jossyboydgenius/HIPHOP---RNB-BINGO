@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_icons.dart';
 import 'dart:ui';
 import 'app_modal_container.dart';
@@ -7,6 +8,7 @@ import 'app_text_style.dart';
 import 'app_images.dart';
 import 'app_input.dart';
 import 'app_button.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 
 class WithdrawToModal extends StatefulWidget {
   final VoidCallback onClose;
@@ -223,13 +225,15 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AppModalContainer(
-                width: 340,
-                height: selectedOption == null ? 350 : 470,
+                width: double.infinity,
+                height: selectedOption == null 
+                  ? (AppDimension.isSmall ? 580.h : 350.h)
+                  : (AppDimension.isSmall ? 780.h : 470.h),
                 fillColor: AppColors.purplePrimary,
                 borderColor: AppColors.purpleLight,
                 layerColor: AppColors.purpleDark,
-                layerTopPosition: -4,
-                borderRadius: 32,
+                layerTopPosition: -4.h,
+                borderRadius: AppDimension.isSmall ? 32.r : 24.r,
                 title: '',
                 customTitle: _buildTitle(),
                 onClose: widget.onClose,
@@ -237,19 +241,19 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(AppDimension.isSmall ? 24.r : 16.r),
                         child: Column(
                           children: [
                             Expanded(
                               child: Container(
-                                width: double.infinity,
+                               width: double.infinity,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
                                 ),
                                 child: SingleChildScrollView(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(16),
+                                    padding: EdgeInsets.all(AppDimension.isSmall ? 24.r : 16.r),
                                     child: selectedOption == null
                                         ? Column(
                                             children: paymentOptions.keys
@@ -263,12 +267,12 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
                             ),
                             if (selectedOption != null)
                               Padding(
-                                padding: const EdgeInsets.only(top: 16),
+                                padding: EdgeInsets.only(top: AppDimension.isSmall ? 24.h : 16.h),
                                 child: Text(
                                   'Please verify your account carefully to ensure we can transfer money successfully',
                                   textAlign: TextAlign.center,
                                   style: AppTextStyle.dmSans(
-                                    fontSize: 12,
+                                    fontSize: AppDimension.isSmall ? 12.sp : 12.sp,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),
@@ -283,20 +287,20 @@ class _WithdrawToModalState extends State<WithdrawToModal> {
               ),
               if (selectedOption != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: 24),
+                  padding: EdgeInsets.only(top: AppDimension.isSmall ? 46.h : 24.h),
                   child: AppButton(
                     text: 'Confirm',
                     textStyle: AppTextStyle.poppins(
-                      fontSize: 20,
+                      fontSize: AppDimension.isSmall ? 22.sp : 20.sp,
                       fontWeight: FontWeight.w800,
                       color: Colors.white,
                     ),
                     fillColor: AppColors.greenDark,
                     layerColor: AppColors.greenBright,
-                    height: 56,
-                    width: 200,
-                    layerHeight: 46,
-                    layerTopPosition: -2,
+                    height: AppDimension.isSmall ? 70.h : 56.h,
+                    width: AppDimension.isSmall ? 200.w : 200.w,
+                    layerHeight: AppDimension.isSmall ? 55.h : 46.h,
+                    layerTopPosition: -2.h,
                     hasBorder: true,
                     borderColor: Colors.white,
                     onPressed: () {
