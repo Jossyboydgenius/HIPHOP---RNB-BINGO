@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import '../routes/app_routes.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_button.dart';
@@ -8,6 +9,7 @@ import '../widgets/app_colors.dart';
 import '../widgets/app_modal_container.dart';
 import '../widgets/app_text_style.dart';
 import '../widgets/app_top_bar.dart';
+import '../widgets/app_pin_code.dart';
 
 class InputCodeScreen extends StatefulWidget {
   final bool isInPerson;
@@ -38,15 +40,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
       setState(() {});
     });
   }
-
-  @override
-  void dispose() {
-    _codeController.removeListener(() {});
-    _codeController.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
+  
   void _handleCodeSubmission() {
     if (_codeController.text.length == 4) {
       final code = _codeController.text;
@@ -89,14 +83,14 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         AppModalContainer(
-                          width: double.infinity,
-                          height: 180.h,
+                          width: AppDimension.isSmall ? 320.w : 260.w,
+                          height: AppDimension.isSmall ? 280.h : 160.h,
                           fillColor: AppColors.purplePrimary,
                           borderColor: AppColors.purpleLight,
                           layerColor: AppColors.purpleDark,
                           title: 'Input Code',
                           titleStyle: AppTextStyle.poppins(
-                            fontSize: 20.sp,
+                            fontSize: AppDimension.isSmall ? 24.sp : 20.sp,
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
                           ),
@@ -105,50 +99,23 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                             Navigator.pushReplacementNamed(context, AppRoutes.home);
                           },
                           child: Padding(
-                            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 26.h),
+                            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 20.h),
                             child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.all(16.r),
+                              width: AppDimension.isSmall ? 380.w : 320.w,
+                              // height: AppDimension.isSmall ? 160.h : 120.h,
+                              padding: EdgeInsets.symmetric(
+                                // horizontal: AppDimension.isSmall ? 16.w : 20.w,
+                                vertical: AppDimension.isSmall ? 16.h : 12.h,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(16.r),
                               ),
-                              child: Container(
-                                height: 56.h,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.r),
-                                  border: Border.all(
-                                    color: AppColors.purpleLight,
-                                    width: 3.w,
-                                  ),
-                                ),
-                                child: TextField(
+                              child: Center(
+                                child: AppPinCode(
                                   controller: _codeController,
-                                  focusNode: _focusNode,
-                                  textAlign: TextAlign.center,
-                                  style: AppTextStyle.poppins(
-                                    fontSize: 40.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ).copyWith(letterSpacing: 36.w),
-                                  obscureText: true,
-                                  obscuringCharacter: '●',
-                                  cursorColor: Colors.black,
-                                  cursorWidth: 2.w,
-                                  cursorHeight: 32.h,
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(4),
-                                    FilteringTextInputFormatter.digitsOnly,
-                                  ],
-                                  onSubmitted: (_) => _handleCodeSubmission(),
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: -1.w,
-                                      vertical: -10.h,
-                                    ),
-                                  ),
+                                  onCompleted: (_) => _handleCodeSubmission(),
+                                  onChanged: (value) => setState(() {}),
                                 ),
                               ),
                             ),
@@ -161,7 +128,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                               : 'Enter PIN code provided by the host',
                           textAlign: TextAlign.center,
                           style: AppTextStyle.poppins(
-                            fontSize: 14.sp,
+                            fontSize: AppDimension.isSmall ? 12.sp : 12.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
@@ -170,7 +137,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                         AppButton(
                           text: 'Enter',
                           textStyle: AppTextStyle.poppins(
-                            fontSize: 18.sp,
+                            fontSize: AppDimension.isSmall ? 18.sp : 18.sp,
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
                           ),
@@ -182,15 +149,16 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                             : AppColors.greenBright,
                           borderColor: Colors.white,
                           hasBorder: true,
-                          height: 50.h,
-                          width: 180.w,
-                          layerHeight: 42.h,
-                          layerTopPosition: -2.h,
-                          borderRadius: 16.r,
+                          height: AppDimension.isSmall ? 65.h : 50.h,
+                          width: AppDimension.isSmall ? 140.w : 140.w,
+                          layerHeight: AppDimension.isSmall ? 52.h : 42.h,
+                          layerTopPosition: -3.h,
+                          borderRadius: AppDimension.isSmall ? 26.r : 16.r,
+                          borderWidth: AppDimension.isSmall ? 3.w : 3.w,
                           nullTextColor: Colors.black,
                           onPressed: _codeController.text.length == 4 ? _handleCodeSubmission : null,
                         ),
-                        SizedBox(height: 110.h),
+                        SizedBox(height: AppDimension.isSmall ? 140.h : 110.h),
                       ],
                     ),
                   ),
