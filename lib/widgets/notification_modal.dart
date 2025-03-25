@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'dart:ui';
 import 'app_modal_container.dart';
@@ -42,38 +43,41 @@ class NotificationModal extends StatelessWidget {
           child: Center(
             child: AppModalContainer(
               width: double.infinity,
-              height: 580.h,
+              height: AppDimension.isSmall ? 900.h : 550.h,
               fillColor: AppColors.purplePrimary,
               borderColor: AppColors.purpleLight,
               layerColor: AppColors.purpleDark,
               layerTopPosition: -4.h,
-              borderRadius: 32.r,
+              borderRadius: AppDimension.isSmall ? 32.r : 24.r,
               onClose: onClose,
               banner: AppBanner(
                 text: 'Notification',
                 fillColor: AppColors.yellowLight,
                 borderColor: AppColors.yellowDark,
                 textStyle: AppTextStyle.mochiyPopOne(
-                  fontSize: 18.sp,
+                  fontSize: AppDimension.isSmall ? 20.sp : 18.sp,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
-                width: 180.w,
-                height: 35.h,
+                width: AppDimension.isSmall ? 200.w : 180.w,
+                height: AppDimension.isSmall ? 45.h : 35.h,
                 hasShadow: true,
                 shadowColor: Colors.black,
                 shadowBlurRadius: 15,
               ),
               child: Padding(
-                padding: EdgeInsets.all(16.r),
+                padding: EdgeInsets.all(AppDimension.isSmall ? 14.r : 16.r),
                 child: Container(
-                  width: 380.w,
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.r),
+                    borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
                   ),
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppDimension.isSmall ? 14.w : 16.w,
+                      vertical: AppDimension.isSmall ? 14.h : 16.h,
+                    ),
                     child: Column(
                       children: notifications.map((notification) {
                         return NotificationCard(
