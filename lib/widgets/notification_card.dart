@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'app_colors.dart';
 import 'app_text_style.dart';
 
@@ -58,7 +59,7 @@ class NotificationCard extends StatelessWidget {
                   child: Text(
                     buttonText!,
                     style: AppTextStyle.dmSans(
-                      fontSize: 10.sp,
+                      fontSize: AppDimension.isSmall ? 12.sp : 10.sp,
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
@@ -100,7 +101,7 @@ class NotificationCard extends StatelessWidget {
                 child: Text(
                   buttonText!,
                   style: AppTextStyle.dmSans(
-                    fontSize: 10.sp,
+                    fontSize: AppDimension.isSmall ? 12.sp : 10.sp,
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
