@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import '../routes/app_routes.dart';
 import '../widgets/app_background.dart';
 import '../widgets/app_button.dart';
@@ -238,18 +239,18 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                               ? AppButton(
                                   text: 'Start',
                                   textStyle: AppTextStyle.poppins(
-                                    fontSize: 18.sp,
+                                    fontSize: AppDimension.isSmall ? 18.sp : 18.sp,
                                     fontWeight: FontWeight.w800,
                                     color: Colors.white,
                                   ),
                                   fillColor: AppColors.greenBright,
                                   layerColor: AppColors.greenDark,
-                                  height: 50.h,
+                                  height: AppDimension.isSmall ? 70.h : 50.h,
                                   hasBorder: true,
                                   layerTopPosition: -2.h,
-                                  layerHeight: 42.h,
+                                  layerHeight: AppDimension.isSmall ? 54.h : 42.h,
                                   fontFamily: AppTextStyle.poppinsFont,
-                                  fontSize: 18.sp,
+                                  fontSize: AppDimension.isSmall ? 18.sp : 18.sp,
                                   onPressed: () {
                                     // Handle start game
                                   },
@@ -257,7 +258,7 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                               : AppButton(
                                   text: _isWaiting ? 'Waiting...' : 'Join Game',
                                   textStyle: AppTextStyle.poppins(
-                                    fontSize: 18.sp,
+                                    fontSize: AppDimension.isSmall ? 18.sp : 18.sp,
                                     fontWeight: FontWeight.w800,
                                     color: Colors.white,
                                   ),
@@ -267,12 +268,12 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
                                   layerColor: _isWaiting
                                       ? AppColors.yellowPrimary
                                       : AppColors.greenBright,
-                                  height: 50.h,
+                                  height: AppDimension.isSmall ? 70.h : 50.h,
                                   hasBorder: true,
                                   layerTopPosition: -2.h,
-                                  layerHeight: 42.h,
+                                  layerHeight: AppDimension.isSmall ? 54.h : 42.h,
                                   fontFamily: AppTextStyle.poppinsFont,
-                                  fontSize: 18.sp,
+                                  fontSize: AppDimension.isSmall ? 18.sp : 18.sp,
                                   onPressed: _isWaiting
                                       ? null
                                       : () {
