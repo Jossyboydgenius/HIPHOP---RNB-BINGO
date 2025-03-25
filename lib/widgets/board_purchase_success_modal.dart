@@ -7,6 +7,7 @@ import 'package:hiphop_rnb_bingo/widgets/app_modal_container.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 
 class BoardPurchaseSuccessModal extends StatefulWidget {
   final VoidCallback onClose;
@@ -53,18 +54,18 @@ class _BoardPurchaseSuccessModalState extends State<BoardPurchaseSuccessModal> w
             children: [
               AppModalContainer(
                 width: double.infinity,
-                height: 300.h,
+                height: AppDimension.isSmall ? 600.h : 300.h,
                 fillColor: AppColors.purplePrimary,
                 borderColor: AppColors.purpleLight,
                 layerColor: AppColors.purpleDark,
                 layerTopPosition: -4.h,
-                borderRadius: 24.r,
+                borderRadius: AppDimension.isSmall ? 32.r : 24.r,
                 showCloseButton: false,
                 onClose: () {},
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 20.h),
+                    SizedBox(height: AppDimension.isSmall ? 20.h : 20.h),
                     Stack(
                       alignment: Alignment.center,
                       children: [
@@ -72,27 +73,27 @@ class _BoardPurchaseSuccessModalState extends State<BoardPurchaseSuccessModal> w
                           turns: _controller,
                           child: AppIcons(
                             icon: AppIconData.glowing,
-                            size: 150.w,
+                            size: AppDimension.isSmall ? 150.w : 150.w,
                           ),
                         ),
                         AppImages(
                           imagePath: AppImageData.card,
-                          width: 90.w,
-                          height: 90.h,
+                          width: AppDimension.isSmall ? 90.w : 90.w,
+                          height: AppDimension.isSmall ? 90.h : 90.h,
                         ),
                       ],
                     ),
-                    SizedBox(height: 6.h),
+                    SizedBox(height: AppDimension.isSmall ? 6.h : 6.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           '+${widget.amount}',
                           style: AppTextStyle.textWithStroke(
-                            fontSize: 68.sp,
+                            fontSize: AppDimension.isSmall ? 78.sp : 68.sp,
                             textColor: AppColors.deepPurple,
                             strokeColor: Colors.white,
-                            strokeWidth: 6.w,
+                            strokeWidth: AppDimension.isSmall ? 8.w : 6.w,
                             fontFamily: AppTextStyle.poppinsFont,
                             fontWeight: FontWeight.w900,
                           ),
@@ -102,10 +103,10 @@ class _BoardPurchaseSuccessModalState extends State<BoardPurchaseSuccessModal> w
                     Text(
                       'Added',
                       style: AppTextStyle.textWithStroke(
-                        fontSize: 12.sp,
+                        fontSize: AppDimension.isSmall ? 16.sp : 12.sp,
                         textColor: Colors.white,
                         strokeColor: AppColors.darkPurple3,
-                        strokeWidth: 5.w,
+                        strokeWidth: AppDimension.isSmall ? 6.w : 5.w,
                         fontFamily: AppTextStyle.mochiyPopOneFont,
                         fontWeight: FontWeight.w400,
                       ),
@@ -113,20 +114,20 @@ class _BoardPurchaseSuccessModalState extends State<BoardPurchaseSuccessModal> w
                   ],
                 ),
               ),
-              SizedBox(height: 40.h),
+              SizedBox(height: AppDimension.isSmall ? 50.h : 40.h),
               SizedBox(
-                width: 180.w,
+                width: AppDimension.isSmall ? 180.w : 180.w,
                 child: AppButton(
                   text: 'Continue',
                   textStyle: AppTextStyle.poppins(
-                    fontSize: 16.sp,
+                    fontSize: AppDimension.isSmall ? 16.sp : 16.sp,
                     fontWeight: FontWeight.w800,
                     color: Colors.white,
                   ),
                   fillColor: AppColors.darkPurple,
                   layerColor: AppColors.darkPurple2,
-                  height: 50.h,
-                  layerHeight: 42.h,
+                  height: AppDimension.isSmall ? 70.h : 50.h,
+                  layerHeight: AppDimension.isSmall ? 55.h : 42.h,
                   layerTopPosition: -2.h,
                   hasBorder: true,
                   borderColor: Colors.white,
