@@ -6,6 +6,7 @@ import 'services/navigation_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,12 +30,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Wrap MaterialApp with ScreenUtilInit
     return ScreenUtilInit(
-      designSize: const Size(375, 812), // iOS design size
+      designSize: const Size(375, 812), // Base design size
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
+        // Initialize AppDimension after ScreenUtil
+        AppDimension.init(context);
+        
         return MaterialApp(
           title: 'HIPHOP & RNB BINGO',
           debugShowCheckedModeBanner: false,
@@ -43,8 +46,17 @@ class MyApp extends StatelessWidget {
           navigatorKey: NavigationService.navigatorKey,
           initialRoute: AppRoutes.initialRoute,
           routes: AppRoutes.routes,
+          builder: (context, widget) {
+            // Initialize AppDimension for each screen
+            AppDimension.init(context);
+            return MediaQuery(
+              // Prevent system text scaling from affecting our app
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              child: widget!,
+            );
+          },
         );
-      }
+      },
     );
   }
 }
