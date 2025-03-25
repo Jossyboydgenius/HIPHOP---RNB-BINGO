@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'dart:ui';
 import 'app_modal_container.dart';
 import 'app_colors.dart';
@@ -116,11 +117,11 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
       children: [
         Expanded(
           child: Container(
-            height: 62.h,
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
+            height: AppDimension.isSmall ? 72.h : 62.h,
+            padding: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 16.w : 12.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
             ),
             child: Material(
               color: Colors.transparent,
@@ -131,30 +132,30 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                     controller: _messageController,
                     maxLength: maxLength,
                     style: AppTextStyle.dmSans(
-                      fontSize: 14.sp,
+                      fontSize: AppDimension.isSmall ? 14.sp : 14.sp,
                       color: Colors.black,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Type Here',
                       hintStyle: AppTextStyle.dmSans(
-                        fontSize: 14.sp,
+                        fontSize: AppDimension.isSmall ? 14.sp : 14.sp,
                         fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.italic,
                         color: Colors.black54,
                       ),
                       border: InputBorder.none,
                       counterText: '',
-                      contentPadding: EdgeInsets.only(right: 2.w),
+                      contentPadding: EdgeInsets.only(right: AppDimension.isSmall ? 4.w : 2.w),
                     ),
                     onChanged: (_) => setState(() {}),
                   ),
                   Positioned(
                     right: 0,
-                    bottom: 4.h,
+                    bottom: AppDimension.isSmall ? 6.h : 4.h,
                     child: Text(
                       '${_messageController.text.length}/$maxLength',
                       style: AppTextStyle.dmSans(
-                        fontSize: 10.sp,
+                        fontSize: AppDimension.isSmall ? 12.sp : 10.sp,
                         fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.italic,
                         color: Colors.black54,
@@ -166,10 +167,10 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
             ),
           ),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: AppDimension.isSmall ? 12.w : 8.w),
         SizedBox(
-          width: 62.w,
-          height: 62.h,
+          width: AppDimension.isSmall ? 62.w : 62.w,
+          height: AppDimension.isSmall ? 72.h : 62.h,
           child: AppButton(
             text: '',
             onPressed: _messageController.text.isEmpty ? null : _handleSendMessage,
@@ -181,13 +182,13 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
               : AppColors.greenBright,
             borderColor: Colors.white,
             hasBorder: true,
-            borderWidth: 2.w,
-            height: 62.h,
-            layerHeight: 46.h,
-            layerTopPosition: -1.h,
-            borderRadius: 16.r,
+            borderWidth: AppDimension.isSmall ? 3.w : 2.w,
+            height: AppDimension.isSmall ? 72.h : 62.h,
+            layerHeight: AppDimension.isSmall ? 68.h : 46.h,
+            layerTopPosition: -3.h,
+            borderRadius: AppDimension.isSmall ? 22.r : 16.r,
             iconPath: AppIconData.send,
-            iconSize: 22.w,
+            iconSize: AppDimension.isSmall ? 24.w : 22.w,
             disabled: _messageController.text.isEmpty,
           ),
         ),
@@ -206,12 +207,12 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
           child: Center(
             child: AppModalContainer(
               width: double.infinity,
-              height: 580.h,
+              height: AppDimension.isSmall ? 900.h : 550.h,
               fillColor: AppColors.purplePrimary,
               borderColor: AppColors.purpleLight,
               layerColor: AppColors.purpleDark,
               layerTopPosition: -4.h,
-              borderRadius: 32.r,
+              borderRadius: AppDimension.isSmall ? 32.r : 24.r,
               maintainFocus: true,
               onClose: widget.onClose,
               banner: AppBanner(
@@ -219,12 +220,12 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                 fillColor: AppColors.yellowLight,
                 borderColor: AppColors.yellowDark,
                 textStyle: AppTextStyle.mochiyPopOne(
-                  fontSize: 18.sp,
+                  fontSize: AppDimension.isSmall ? 20.sp : 18.sp,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
-                width: 180.w,
-                height: 35.h,
+                width: AppDimension.isSmall ? 200.w : 180.w,
+                height: AppDimension.isSmall ? 45.h : 35.h,
                 hasShadow: true,
                 shadowColor: Colors.black,
                 shadowBlurRadius: 15,
@@ -232,17 +233,17 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    padding: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 14.w : 16.w),
                     child: _buildHeader(),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: AppDimension.isSmall ? 14.h : 16.h),
                   Expanded(
                     child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16.w),
-                      padding: EdgeInsets.all(16.r),
+                      margin: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 14.w : 16.w),
+                      padding: EdgeInsets.all(AppDimension.isSmall ? 14.r : 16.r),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(16.r),
+                        borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
                       ),
                       child: SingleChildScrollView(
                         controller: _scrollController,
@@ -252,11 +253,11 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                               'Click profile to report or mute a Player',
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 10.sp,
+                                fontSize: AppDimension.isSmall ? 10.sp : 10.sp,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(height: 16.h),
+                            SizedBox(height: AppDimension.isSmall ? 14.h : 16.h),
                             ...messages.map((message) {
                               return ChatMessageCard(
                                 message: message['message'],
@@ -276,12 +277,12 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      left: 16.w,
-                      right: 16.w,
-                      top: 16.h,
-                      bottom: MediaQuery.of(context).viewInsets.bottom + 10.h,
+                      left: AppDimension.isSmall ? 14.w : 16.w,
+                      right: AppDimension.isSmall ? 14.w : 16.w,
+                      top: AppDimension.isSmall ? 14.h : 16.h,
+                      bottom: MediaQuery.of(context).viewInsets.bottom + (AppDimension.isSmall ? 16.h : 10.h),
                     ),
-                    child: _buildChatInput(),
+                    child:  _buildChatInput(),
                   ),
                 ],
               ),
