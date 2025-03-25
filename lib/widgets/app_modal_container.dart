@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_banner.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'app_text_style.dart';
+import 'app_sizer.dart';
 
 class AppModalContainer extends StatefulWidget {
   final Widget child;
@@ -107,6 +108,13 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
+          final responsiveWidth = widget.width != null 
+              ? AppDimension.getResponsiveWidth(widget.width!.w)
+              : double.infinity;
+          final responsiveHeight = widget.height != null 
+              ? AppDimension.getResponsiveHeight(widget.height!.h)
+              : null;
+
           return Opacity(
             opacity: _opacityAnimation.value,
             child: Transform.scale(
@@ -114,56 +122,62 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  // Layer behind the main container
                   if (widget.layerColor != null)
                     Positioned(
                       left: 0,
                       right: 0,
-                      bottom: widget.layerTopPosition * 3.h,
-                      height: 100.h,
+                      bottom: AppDimension.getScaledSize(widget.layerTopPosition * 3).h,
+                      height: AppDimension.getResponsiveHeight(100).h,
                       child: Container(
                         decoration: BoxDecoration(
                           color: widget.layerColor,
-                          borderRadius: BorderRadius.circular(widget.borderRadius.r),
+                          borderRadius: BorderRadius.circular(
+                            AppDimension.getScaledSize(widget.borderRadius).r
+                          ),
                         ),
                       ),
                     ),
-                  // Main container
                   Container(
-                    width: widget.width?.w ?? double.infinity,
-                    height: widget.height?.h,
+                    width: responsiveWidth,
+                    height: responsiveHeight,
                     decoration: BoxDecoration(
                       color: widget.fillColor,
-                      borderRadius: BorderRadius.circular(widget.borderRadius.r),
+                      borderRadius: BorderRadius.circular(
+                        AppDimension.getScaledSize(widget.borderRadius).r
+                      ),
                       border: Border.all(
                         color: widget.borderColor ?? Colors.transparent,
-                        width: widget.borderWidth.w,
+                        width: AppDimension.getScaledSize(widget.borderWidth).w,
                       ),
                     ),
                     child: Column(
                       children: [
                         if (widget.showCloseButton)
                           Padding(
-                            padding: EdgeInsets.all(16.r),
+                            padding: AppDimension.getResponsivePadding(
+                              EdgeInsets.all(16.r)
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(width: 40.w),
+                                SizedBox(
+                                  width: AppDimension.getResponsiveWidth(40).w
+                                ),
                                 if (widget.customTitle != null)
                                   widget.customTitle!
                                 else if (widget.title != null)
                                   Text(
                                     widget.title!,
                                     style: widget.titleStyle ?? AppTextStyle.poppins(
-                                      fontSize: 20.sp,
+                                      fontSize: AppDimension.getFontSize(20),
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
                                   ),
                                 AppImages(
                                   imagePath: AppImageData.close,
-                                  height: 32.h,
-                                  width: 32.w,
+                                  height: AppDimension.getResponsiveHeight(32).h,
+                                  width: AppDimension.getResponsiveWidth(32).w,
                                   onPressed: _handleClose,
                                 ),
                               ],
@@ -173,10 +187,9 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                       ],
                     ),
                   ),
-                  // Banner on top
                   if (widget.banner != null)
                     Positioned(
-                      top: -20.h,  // Adjust this value to position the banner
+                      top: AppDimension.getScaledSize(-20).h,
                       left: 0,
                       right: 0,
                       child: Center(child: widget.banner!),
