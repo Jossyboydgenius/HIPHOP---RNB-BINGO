@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_icons.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'app_modal_container.dart';
 import 'app_colors.dart';
 import 'app_text_style.dart';
@@ -226,79 +227,64 @@ class _UserProfileModalState extends State<UserProfileModal> {
           child: Center(
             child: AppModalContainer(
               width: double.infinity,
-              height: 580.h,
+              height: AppDimension.isSmall ? 900.h : 550.h,
               fillColor: AppColors.purplePrimary,
               borderColor: AppColors.purpleLight,
               layerColor: AppColors.purpleDark,
-              borderRadius: 32.r,
+              layerTopPosition: -4.h,
+              borderRadius: AppDimension.isSmall ? 32.r : 24.r,
+              maintainFocus: true,
               onClose: widget.onClose,
               banner: AppBanner(
                 text: 'User Profile',
                 fillColor: AppColors.yellowLight,
                 borderColor: AppColors.yellowDark,
-                textStyle: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
+                textStyle: AppTextStyle.mochiyPopOne(
+                  fontSize: AppDimension.isSmall ? 20.sp : 18.sp,
                   color: Colors.white,
-                  fontFamily: 'MochiyPopOne',
+                  fontWeight: FontWeight.bold,
                 ),
-                width: 180.w,
-                height: 35.h,
+                width: AppDimension.isSmall ? 200.w : 180.w,
+                height: AppDimension.isSmall ? 45.h : 35.h,
                 hasShadow: true,
                 shadowColor: Colors.black,
                 shadowBlurRadius: 15,
               ),
-              child: Stack(
+              child: Column(
                 children: [
-                  // User info outside white container
-                  Positioned(
-                    top: 18.h,
-                    left: 24.w,
-                    child: Row(
-                      children: [
-                        _buildAvatar(isHeader: true),
-                        SizedBox(width: 16.w),
-                        Text(
-                          'John Doe',
-                          style: AppTextStyle.poppins(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // White container with form
                   Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 80.h, 16.w, 100.h),
+                    padding: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 18.w : 14.w),
+                    child: _buildHeader(),
+                  ),
+                  SizedBox(height: AppDimension.isSmall ? 14.h : 16.h),
+                  Expanded(
                     child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(24.r),
+                      margin: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 18.w : 14.w),
+                      padding: EdgeInsets.all(AppDimension.isSmall ? 24.r : 16.r),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(16.r),
+                        borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
                       ),
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
                             ..._inputFields.map((field) => Padding(
-                              padding: EdgeInsets.only(bottom: 8.h),
+                              padding: EdgeInsets.only(bottom: AppDimension.isSmall ? 12.h : 8.h),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   SizedBox(
-                                    width: 70.w,
+                                    width: AppDimension.isSmall ? 65.w : 70.w,
                                     child: Text(
                                       field['label'] as String,
                                       style: AppTextStyle.poppins(
-                                        fontSize: 10.sp,
+                                        fontSize: AppDimension.isSmall ? 10.sp : 9.sp,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.black,
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: 0),
+                                  SizedBox(width: AppDimension.isSmall ? 8.w : 0),
                                   Expanded(
                                     child: AppInput(
                                       label: '',
@@ -315,7 +301,7 @@ class _UserProfileModalState extends State<UserProfileModal> {
                                 ],
                               ),
                             )).toList(),
-                            SizedBox(height: 24.h),
+                            SizedBox(height: AppDimension.isSmall ? 22.h : 24.h),
                             Text(
                               'Profile Image',
                               style: AppTextStyle.poppins(
@@ -332,12 +318,33 @@ class _UserProfileModalState extends State<UserProfileModal> {
                       ),
                     ),
                   ),
-                  // Save button outside white container
-                  Positioned(
-                    left: 70.w,
-                    right: 70.w,
-                    bottom: 20.h,
-                    child: _buildSaveButton(),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: AppDimension.isSmall ? 80.w : 60.w,
+                      right: AppDimension.isSmall ? 80.w : 60.w,
+                      bottom: AppDimension.isSmall ? 30.h : 20.h,
+                      top: AppDimension.isSmall ? 24.h : 16.h,
+                    ),
+                    child: AppButton(
+                      text: 'Save',
+                      textStyle: AppTextStyle.poppins(
+                        fontSize: AppDimension.isSmall ? 20.sp : 18.sp,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                      fillColor: AppColors.greenDark,
+                      layerColor: AppColors.greenBright,
+                      height: AppDimension.isSmall ? 56.h : 46.h,
+                      layerHeight: AppDimension.isSmall ? 44.h : 40.h,
+                      layerTopPosition: -2.h,
+                      hasBorder: true,
+                      borderColor: Colors.white,
+                      borderWidth: AppDimension.isSmall ? 3.w : 2.w,
+                      onPressed: () {
+                        widget.onAvatarChanged(_selectedAvatar);
+                        widget.onClose();
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -392,26 +399,20 @@ class _UserProfileModalState extends State<UserProfileModal> {
     );
   }
 
-  Widget _buildSaveButton() {
-    return AppButton(
-      text: 'Save',
-      textStyle: AppTextStyle.poppins(
-        fontSize: 18.sp,
-        fontWeight: FontWeight.w800,
-        color: Colors.white,
-      ),
-      fillColor: AppColors.greenDark,
-      layerColor: AppColors.greenBright,
-      height: 46.h,
-      layerHeight: 40.h,
-      layerTopPosition: -2.r,
-      hasBorder: true,
-      borderColor: Colors.white,
-      borderWidth: 2.r,
-      onPressed: () {
-        widget.onAvatarChanged(_selectedAvatar);
-        widget.onClose();
-      },
+  Widget _buildHeader() {
+    return Row(
+      children: [
+        _buildAvatar(isHeader: true),
+        SizedBox(width: 16.w),
+        Text(
+          'John Doe',
+          style: AppTextStyle.poppins(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 } 
