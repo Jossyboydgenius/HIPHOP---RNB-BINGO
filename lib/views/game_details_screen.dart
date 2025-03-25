@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/routes/app_routes.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'dart:async';
 import '../widgets/app_background.dart';
 import '../widgets/app_button.dart';
@@ -181,14 +182,19 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                           child: _canStart
                               ? AppButton(
                                   text: 'Start',
+                                  textStyle: AppTextStyle.poppins(
+                                    fontSize: AppDimension.isSmall ? 18.sp : 18.sp,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
                                   fillColor: AppColors.greenDark,
                                   layerColor: AppColors.greenBright,
-                                  height: 50.h,
+                                  height: AppDimension.isSmall ? 70.h : 50.h,
                                   hasBorder: true,
                                   layerTopPosition: -2.h,
-                                  layerHeight: 42.h,
+                                  layerHeight: AppDimension.isSmall ? 54.h : 42.h,
                                   fontFamily: AppTextStyle.poppinsFont,
-                                  fontSize: 18.sp,
+                                  fontSize: AppDimension.isSmall ? 14.sp : 18.sp,
                                   onPressed: () {
                                     // Handle start game
                                   },
@@ -196,7 +202,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                               : AppButton(
                                   text: _isWaiting ? 'Waiting...' : 'Join Game',
                                   textStyle: AppTextStyle.poppins(
-                                    fontSize: 18.sp,
+                                    fontSize: AppDimension.isSmall ? 18.sp : 18.sp,
                                     fontWeight: FontWeight.w800,
                                     color: Colors.white,
                                   ),
@@ -206,12 +212,12 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                   layerColor: _isWaiting
                                       ? AppColors.yellowPrimary
                                       : AppColors.greenBright,
-                                  height: 50.h,
+                                  height: AppDimension.isSmall ? 70.h : 50.h,
                                   hasBorder: true,
                                   layerTopPosition: -2.h,
-                                  layerHeight: 42.h,
+                                  layerHeight: AppDimension.isSmall ? 54.h : 42.h,
                                   fontFamily: AppTextStyle.poppinsFont,
-                                  fontSize: 18.sp,
+                                  fontSize: AppDimension.isSmall ? 18.sp : 18.sp,
                                   fontWeight: FontWeight.w800,
                                   onPressed: _isWaiting ? null : _startCountdown,
                                 ),
