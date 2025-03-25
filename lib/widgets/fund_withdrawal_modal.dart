@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_icons.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui';
 import 'app_modal_container.dart';
@@ -340,12 +341,14 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
             children: [
               AppModalContainer(
                 width: double.infinity,
-                height: selectedOption == null ? 300.h : 400.h,
+                height: selectedOption == null 
+                  ? (AppDimension.isSmall ? 550.h : 300.h)
+                  : (AppDimension.isSmall ? 750.h : 400.h),
                 fillColor: AppColors.purplePrimary,
                 borderColor: AppColors.purpleLight,
                 layerColor: AppColors.purpleDark,
-                layerTopPosition: -4,
-                borderRadius: 32,
+                layerTopPosition: -4.h,
+                borderRadius: AppDimension.isSmall ? 32.r : 24.r,
                 title: '',
                 customTitle: _buildTitle(),
                 onClose: widget.onClose,
@@ -353,7 +356,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(AppDimension.isSmall ? 24.r : 16.r),
                         child: Column(
                           children: [
                             Expanded(
@@ -361,18 +364,17 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
                                 ),
                                 child: SingleChildScrollView(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(16),
+                                    padding: EdgeInsets.all(AppDimension.isSmall ? 24.r : 16.r),
                                     child: showSummary
                                         ? _buildSummary()
                                         : selectedOption == null
                                             ? Column(
                                                 children: paymentOptions.keys
-                                                    .map((title) =>
-                                                        _buildPaymentOption(title))
+                                                    .map((title) => _buildPaymentOption(title))
                                                     .toList(),
                                               )
                                             : _buildInputDetails(),
@@ -382,12 +384,12 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                             ),
                             if (selectedOption != null || showSummary)
                               Padding(
-                                padding: const EdgeInsets.only(top: 16),
+                                padding: EdgeInsets.only(top: AppDimension.isSmall ? 24.h : 16.h),
                                 child: Text(
                                   'Please verify your account carefully to ensure we can transfer money successfully',
                                   textAlign: TextAlign.center,
                                   style: AppTextStyle.dmSans(
-                                    fontSize: 12.sp,
+                                    fontSize: AppDimension.isSmall ? 12.sp : 12.sp,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -401,20 +403,20 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
               ),
               if (selectedOption != null || showSummary)
                 Padding(
-                  padding: const EdgeInsets.only(top: 44),
+                  padding: EdgeInsets.only(top: AppDimension.isSmall ? 46.h : 44.h),
                   child: AppButton(
                     text: 'Confirm',
                     textStyle: AppTextStyle.poppins(
-                      fontSize: 18.sp,
+                      fontSize: AppDimension.isSmall ? 22.sp : 18.sp,
                       fontWeight: FontWeight.w800,
                       color: Colors.white,
                     ),
                     fillColor: AppColors.greenDark,
                     layerColor: AppColors.greenBright,
-                    height: 56,
-                    width: 200,
-                    layerHeight: 46,
-                    layerTopPosition: -2,
+                    height: AppDimension.isSmall ? 70.h : 56.h,
+                    width: AppDimension.isSmall ? 200.w : 200.w,
+                    layerHeight: AppDimension.isSmall ? 55.h : 46.h,
+                    layerTopPosition: -2.h,
                     hasBorder: true,
                     borderColor: Colors.white,
                     onPressed: () {
