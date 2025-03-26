@@ -17,7 +17,7 @@ class AppRoutes {
   static const String remoteGameDetails = '/remoteGameDetails';
   static const String gameScreen = '/gameScreen';
 
-  static const String initialRoute = gameScreen;
+  static const String initialRoute = splash;
 
   static Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
