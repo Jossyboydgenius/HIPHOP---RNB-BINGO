@@ -5,12 +5,12 @@ import 'app_icons.dart';
 import 'app_images.dart';
 import 'app_text_style.dart';
 import 'notification_modal.dart';
-import 'chat_room_modal.dart';
 import 'user_profile_modal.dart';
 import 'wallet_funding_modal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'bingo_boards_store_modal.dart';
 
 class AppTopBar extends StatefulWidget {
   final String initials;
@@ -266,13 +266,8 @@ class _AppTopBarState extends State<AppTopBar> {
                       showDialog(
                         context: context,
                         barrierDismissible: false,
-                        builder: (BuildContext context) => ChatRoomModal(
-                          onClose: () {
-                            Navigator.of(context).pop();
-                          },
-                          userInitials: 'JD', // Replace with actual user initials
-                          activeUsers: 2500,
-                          isConnected: true,
+                        builder: (BuildContext context) => WalletFundingModal(
+                          onClose: () => Navigator.of(context).pop(),
                         ),
                       );
                     },
@@ -286,7 +281,13 @@ class _AppTopBarState extends State<AppTopBar> {
                   SizedBox(width: 34.w),
                   GestureDetector(
                     onTap: () {
-                      _showWalletFundingModal();
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) => BingoBoardsStoreModal(
+                          onClose: () => Navigator.of(context).pop(),
+                        ),
+                      );
                     },
                     child: _buildAmountContainer(
                       color: AppColors.yellowPrimary,
@@ -302,16 +303,6 @@ class _AppTopBarState extends State<AppTopBar> {
           ),
         );
       },
-    );
-  }
-
-  void _showWalletFundingModal() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) => WalletFundingModal(
-        onClose: () => Navigator.of(context).pop(),
-      ),
     );
   }
 } 
