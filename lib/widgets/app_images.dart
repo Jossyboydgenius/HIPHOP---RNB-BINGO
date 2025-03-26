@@ -18,6 +18,7 @@ class AppImageData {
   static const String treasure = '$_base/treasure.png';
   static const String won = '$_base/won.png';
   static const String chat = '$_base/chat.png';
+  static const String bingoCard = '$_base/bingo-card.png';
 
   // Payment options images
   static const String paypal = '$_base/paypal.png';
