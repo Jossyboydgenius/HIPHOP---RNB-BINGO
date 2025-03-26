@@ -67,9 +67,7 @@ class _GameScreenState extends State<GameScreen> {
               // Bingo Board Box Container
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: BingoBoardBoxContainer(
-                  child: Container(), // We'll add the grid here later
-                ),
+                child: const BingoBoardBoxContainer(),
               ),
             ],
           ),
