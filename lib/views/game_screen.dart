@@ -7,6 +7,7 @@ import 'package:hiphop_rnb_bingo/widgets/game_time_container.dart';
 import 'package:hiphop_rnb_bingo/widgets/game_player_container.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'package:hiphop_rnb_bingo/widgets/bingo_board_box_container.dart';
+import 'package:hiphop_rnb_bingo/widgets/bingo_button.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -21,53 +22,70 @@ class _GameScreenState extends State<GameScreen> {
     return Scaffold(
       body: AppBackground(
         child: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
-              // Top Bar
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: AppDimension.isSmall ? 12.h : 8.h,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Game Title
-                    Expanded(
-                      child: Text(
-                        'Hip-Hop Fire Round',
-                        style: AppTextStyle.mochiyPopOne(
-                          fontSize: AppDimension.isSmall ? 14.sp : 12.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400,
+              Column(
+                children: [
+                  // Top Bar
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: AppDimension.isSmall ? 12.h : 8.h,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Game Title
+                        Expanded(
+                          child: Text(
+                            'Hip-Hop Fire Round',
+                            style: AppTextStyle.mochiyPopOne(
+                              fontSize: AppDimension.isSmall ? 14.sp : 12.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                         ),
-                      ),
+                        // Time Container
+                        const GameTimeContainer(
+                          time: "00:00",
+                          round: 1,
+                        ),
+                        SizedBox(width: 12.w),
+                        // Player Container
+                        const GamePlayerContainer(
+                          playerCount: 120,
+                        ),
+                      ],
                     ),
-                    // Time Container
-                    const GameTimeContainer(
-                      time: "00:00",
-                      round: 1,
-                    ),
-                    SizedBox(width: 12.w),
-                    // Player Container
-                    const GamePlayerContainer(
-                      playerCount: 120,
-                    ),
-                  ],
+                  ),
+                  
+                  // Called Board Container
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: const CalledBoardsContainer(),
+                  ),
+                  
+                  SizedBox(height: 16.h),
+                  
+                  // Bingo Board Box Container
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: const BingoBoardBoxContainer(),
+                  ),
+                ],
+              ),
+              
+              // Positioned Bingo Button
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: -10.h,  // Changed from 80.h to -10.h
+                child: BingoButton(
+                  onPressed: () {
+                    // Handle bingo button press
+                  },
                 ),
-              ),
-              // Called Board Container
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: const CalledBoardsContainer(),
-              ),
-              
-              SizedBox(height: 16.h),
-              
-              // Bingo Board Box Container
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: const BingoBoardBoxContainer(),
               ),
             ],
           ),
