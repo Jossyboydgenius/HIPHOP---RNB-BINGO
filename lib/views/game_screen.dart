@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_background.dart';
@@ -94,7 +96,7 @@ class _GameScreenState extends State<GameScreen> {
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: 14.h,  // Reduced from 32.h to 14.h
+                bottom: 14.h,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Row(
@@ -109,16 +111,24 @@ class _GameScreenState extends State<GameScreen> {
                           showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder: (BuildContext context) => ChatRoomModal(
-                              onClose: () => Navigator.of(context).pop(),
-                              userInitials: 'JD', // Replace with actual user initials
-                              activeUsers: 2500,
-                              isConnected: true,
+                            barrierColor: Colors.black54,
+                            builder: (BuildContext context) => BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Dialog(
+                                backgroundColor: Colors.transparent,
+                                insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+                                child: ChatRoomModal(
+                                  onClose: () => Navigator.of(context).pop(),
+                                  userInitials: 'JD',
+                                  activeUsers: 2500,
+                                  isConnected: true,
+                                ),
+                              ),
                             ),
                           );
                         },
                       ),
-                      SizedBox(width: 32.w),  // Explicit spacing between icons
+                      SizedBox(width: 32.w),
                       
                       // Winning Pattern Icon
                       AppImages(
@@ -129,54 +139,37 @@ class _GameScreenState extends State<GameScreen> {
                           // Handle pattern press
                         },
                       ),
-                      SizedBox(width: 32.w),  // Explicit spacing between icons
+                      SizedBox(width: 32.w),
                       
-                      // Info Icon with Tooltip
-                      Tooltip(
-                        message: "Hit Bingo button only if you have Bingo.\nIf you call incorrectly more than twice,\nyou will be eliminated from the round.",
-                        preferBelow: false,
-                        verticalOffset: -16,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        textStyle: AppTextStyle.mochiyPopOne(
-                          fontSize: 12.sp,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            // Show the same message in a more prominent way
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Container(
-                                  padding: EdgeInsets.all(16.r),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12.r),
-                                  ),
-                                  child: Text(
-                                    "Hit Bingo button only if you have Bingo.\nIf you call incorrectly more than twice,\nyou will be eliminated from the round.",
-                                    style: AppTextStyle.mochiyPopOne(
-                                      fontSize: 12.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                      // Info Icon
+                      AppImages(
+                        imagePath: AppImageData.info1,
+                        width: 38.w,
+                        height: 38.w,
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Container(
+                                padding: EdgeInsets.all(16.r),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+                                child: Text(
+                                  "Hit Bingo button only if you have Bingo. If you call incorrectly more than twice, you will be eliminated from the round.",
+                                  style: AppTextStyle.poppins(
+                                    fontSize: 12.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                duration: const Duration(seconds: 3),
                               ),
-                            );
-                          },
-                          child: AppImages(
-                            imagePath: AppImageData.info1,
-                            width: 38.w,
-                            height: 38.w,
-                          ),
-                        ),
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
