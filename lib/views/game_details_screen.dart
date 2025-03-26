@@ -96,7 +96,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                               margin: EdgeInsets.only(top: 35.h),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 12.w,
-                                vertical: 2.h,
+                                vertical: 6.h,
                               ),
                               decoration: BoxDecoration(
                                 color: AppColors.pinkDark,
@@ -196,7 +196,7 @@ class _GameDetailsScreenState extends State<GameDetailsScreen> {
                                   fontFamily: AppTextStyle.poppinsFont,
                                   fontSize: AppDimension.isSmall ? 14.sp : 18.sp,
                                   onPressed: () {
-                                    // Handle start game
+                                    Navigator.pushReplacementNamed(context, AppRoutes.gameScreen);
                                   },
                                 )
                               : AppButton(
