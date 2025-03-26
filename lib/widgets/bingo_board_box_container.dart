@@ -70,7 +70,7 @@ class BingoBoardBoxContainer extends StatelessWidget {
           right: 0,
           top: 4.h,
           child: Container(
-            height: AppDimension.isSmall ? 440.h : 400.h,
+            height: AppDimension.isSmall ? 440.h : 390.h,
             decoration: BoxDecoration(
               color: Colors.grey.withOpacity(0.3),
               borderRadius: BorderRadius.circular(24.r),
@@ -80,7 +80,7 @@ class BingoBoardBoxContainer extends StatelessWidget {
         // Main container
         Container(
           width: double.infinity,
-          height: AppDimension.isSmall ? 440.h : 400.h,
+          height: AppDimension.isSmall ? 440.h : 390.h,
           padding: EdgeInsets.all(12.r),
           decoration: BoxDecoration(
             color: Colors.black,
