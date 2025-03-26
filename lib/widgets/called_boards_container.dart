@@ -53,7 +53,7 @@ class CalledBoardsContainer extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: -24.w,
+            left: AppDimension.isSmall ? -18.w : -14.w,
             top: -6.h,
             child: AppImages(
               imagePath: AppImageData.bingoCard,
@@ -135,7 +135,7 @@ class _CalledBoardItemState extends State<CalledBoardItem> with SingleTickerProv
         width: AppDimension.isSmall ? 80.w : 70.w,
         padding: EdgeInsets.symmetric(
           horizontal: 8.w,
-          vertical: 6.h,
+          vertical: 4.h,
         ),
         decoration: BoxDecoration(
           color: categoryColor.withOpacity(0.2),
@@ -160,7 +160,7 @@ class _CalledBoardItemState extends State<CalledBoardItem> with SingleTickerProv
             Text(
               widget.name,
               style: AppTextStyle.mochiyPopOne(
-                fontSize: 10.sp,
+                fontSize: 9.sp,
                 fontWeight: FontWeight.w400,
                 color: Colors.white,
               ),
