@@ -63,6 +63,7 @@ class _GameScreenState extends State<GameScreen> {
                       ],
                     ),
                   ),
+                  SizedBox(height: AppDimension.isSmall ? 10.h : 14.h),
                   
                   // Called Board Container
                   Padding(
@@ -84,7 +85,7 @@ class _GameScreenState extends State<GameScreen> {
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: -10.h,  // Changed from 80.h to -10.h
+                bottom: AppDimension.isSmall ? -6.h : 30.h,
                 child: BingoButton(
                   onPressed: () {
                     // Handle bingo button press
