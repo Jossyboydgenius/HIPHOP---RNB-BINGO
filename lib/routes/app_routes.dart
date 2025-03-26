@@ -6,7 +6,7 @@ import '../views/qr_code_scanner_screen.dart';
 import '../views/game_details_screen.dart';
 import '../views/input_code_screen.dart';
 import '../views/remote_game_details_screen.dart';
-
+import '../views/game_screen.dart';
 class AppRoutes {
   static const String splash = '/';
   static const String onboarding = '/onboarding';
@@ -15,8 +15,9 @@ class AppRoutes {
   static const String gameDetails = '/gameDetails';
   static const String inputCode = '/inputCode';
   static const String remoteGameDetails = '/remoteGameDetails';
+  static const String gameScreen = '/gameScreen';
 
-  static const String initialRoute = splash;
+  static const String initialRoute = gameScreen;
 
   static Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
@@ -34,6 +35,9 @@ class AppRoutes {
     remoteGameDetails: (context) {
       final args = ModalRoute.of(context)?.settings.arguments as String?;
       return RemoteGameDetailsScreen(code: args);
+    },
+    gameScreen: (context) {
+      return const GameScreen();
     },
   };
 } 
