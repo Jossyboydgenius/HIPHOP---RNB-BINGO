@@ -198,97 +198,90 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black54,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: Center(
-            child: AppModalContainer(
-              width: double.infinity,
-              height: AppDimension.isSmall ? 900.h : 550.h,
-              fillColor: AppColors.purplePrimary,
-              borderColor: AppColors.purpleLight,
-              layerColor: AppColors.purpleDark,
-              layerTopPosition: -4.h,
-              borderRadius: AppDimension.isSmall ? 32.r : 24.r,
-              maintainFocus: true,
-              onClose: widget.onClose,
-              banner: AppBanner(
-                text: 'Chat Room',
-                fillColor: AppColors.yellowLight,
-                borderColor: AppColors.yellowDark,
-                textStyle: AppTextStyle.mochiyPopOne(
-                  fontSize: AppDimension.isSmall ? 20.sp : 18.sp,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                width: AppDimension.isSmall ? 200.w : 180.w,
-                height: AppDimension.isSmall ? 45.h : 35.h,
-                hasShadow: true,
-                shadowColor: Colors.black,
-                shadowBlurRadius: 15,
+    return AppModalContainer(
+      width: double.infinity,
+      height: AppDimension.isSmall ? 900.h : 550.h,
+      fillColor: AppColors.purplePrimary,
+      borderColor: AppColors.purpleLight,
+      layerColor: AppColors.purpleDark,
+      layerTopPosition: -4.h,
+      borderRadius: AppDimension.isSmall ? 32.r : 24.r,
+      maintainFocus: true,
+      onClose: widget.onClose,
+      banner: AppBanner(
+        text: 'Chat Room',
+        fillColor: AppColors.yellowLight,
+        borderColor: AppColors.yellowDark,
+        textStyle: AppTextStyle.mochiyPopOne(
+          fontSize: AppDimension.isSmall ? 20.sp : 18.sp,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        width: AppDimension.isSmall ? 200.w : 180.w,
+        height: AppDimension.isSmall ? 45.h : 35.h,
+        hasShadow: true,
+        shadowColor: Colors.black,
+        shadowBlurRadius: 15,
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 14.w : 16.w),
+            child: _buildHeader(),
+          ),
+          SizedBox(height: AppDimension.isSmall ? 14.h : 16.h),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 14.w : 16.w),
+              padding: EdgeInsets.all(AppDimension.isSmall ? 14.r : 16.r),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
               ),
               child: Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 14.w : 16.w),
-                    child: _buildHeader(),
+                  Text(
+                    'Click profile to report or mute a Player',
+                    style: AppTextStyle.dmSans(
+                      fontSize: AppDimension.isSmall ? 10.sp : 10.sp,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   SizedBox(height: AppDimension.isSmall ? 14.h : 16.h),
                   Expanded(
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 14.w : 16.w),
-                      padding: EdgeInsets.all(AppDimension.isSmall ? 14.r : 16.r),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
-                      ),
-                      child: SingleChildScrollView(
-                        controller: _scrollController,
-                        child: Column(
-                          children: [
-                            Text(
-                              'Click profile to report or mute a Player',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: AppDimension.isSmall ? 10.sp : 10.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(height: AppDimension.isSmall ? 14.h : 16.h),
-                            ...messages.map((message) {
-                              return ChatMessageCard(
-                                message: message['message'],
-                                senderName: message['senderName'],
-                                senderInitials: message['senderInitials'],
-                                time: message['time'],
-                                isMe: message['isMe'],
-                                onProfileTap: message['isMe'] ? null : () {
-                                  // Handle profile tap for reporting/muting
-                                },
-                              );
-                            }).toList(),
-                          ],
-                        ),
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        children: messages.map((message) {
+                          return ChatMessageCard(
+                            message: message['message'],
+                            senderName: message['senderName'],
+                            senderInitials: message['senderInitials'],
+                            time: message['time'],
+                            isMe: message['isMe'],
+                            onProfileTap: message['isMe'] ? null : () {
+                              // Handle profile tap for reporting/muting
+                            },
+                          );
+                        }).toList(),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: AppDimension.isSmall ? 14.w : 16.w,
-                      right: AppDimension.isSmall ? 14.w : 16.w,
-                      top: AppDimension.isSmall ? 14.h : 16.h,
-                      bottom: MediaQuery.of(context).viewInsets.bottom + (AppDimension.isSmall ? 16.h : 10.h),
-                    ),
-                    child:  _buildChatInput(),
                   ),
                 ],
               ),
             ),
           ),
-        ),
+          Padding(
+            padding: EdgeInsets.only(
+              left: AppDimension.isSmall ? 14.w : 16.w,
+              right: AppDimension.isSmall ? 14.w : 16.w,
+              top: AppDimension.isSmall ? 14.h : 16.h,
+              bottom: MediaQuery.of(context).viewInsets.bottom + (AppDimension.isSmall ? 16.h : 10.h),
+            ),
+            child: _buildChatInput(),
+          ),
+        ],
       ),
     );
   }
