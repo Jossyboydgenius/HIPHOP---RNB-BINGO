@@ -34,12 +34,12 @@ class GamePlayerContainer extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(width: AppDimension.isSmall ? 14.w : 10.w),
+              SizedBox(width: AppDimension.isSmall ? 14.w : 14.w),
               Text(
                 playerCount.toString(),
                 style: AppTextStyle.mochiyPopOne(
                   fontSize: AppDimension.isSmall ? 10.sp : 10.sp,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
               ),
