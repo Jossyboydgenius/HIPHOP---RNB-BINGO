@@ -52,27 +52,56 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
   void _onCheckForWinningPattern(CheckForWinningPattern event, Emitter<BingoGameState> emit) {
     final selectedItems = state.selectedItems;
     bool hasWon = false;
+    String winningPatternFound = '';
     
+    // First check the current winning pattern
     switch (event.patternType) {
       case 'straightlineBingo':
         hasWon = _checkStraightLine(selectedItems);
+        if (hasWon) winningPatternFound = 'straightlineBingo';
         break;
       case 'blackoutBingo':
         hasWon = _checkBlackout(selectedItems);
+        if (hasWon) winningPatternFound = 'blackoutBingo';
         break;
       case 'fourCornersBingo':
         hasWon = _checkFourCorners(selectedItems);
+        if (hasWon) winningPatternFound = 'fourCornersBingo';
         break;
       case 'tShapeBingo':
         hasWon = _checkTShape(selectedItems);
+        if (hasWon) winningPatternFound = 'tShapeBingo';
         break;
       case 'xPatternBingo':
         hasWon = _checkXPattern(selectedItems);
+        if (hasWon) winningPatternFound = 'xPatternBingo';
+        break;
+      default:
+        // Check all patterns if no specific pattern is specified
+        if (_checkStraightLine(selectedItems)) {
+          hasWon = true;
+          winningPatternFound = 'straightlineBingo';
+        } else if (_checkFourCorners(selectedItems)) {
+          hasWon = true;
+          winningPatternFound = 'fourCornersBingo';
+        } else if (_checkTShape(selectedItems)) {
+          hasWon = true;
+          winningPatternFound = 'tShapeBingo';
+        } else if (_checkXPattern(selectedItems)) {
+          hasWon = true;
+          winningPatternFound = 'xPatternBingo';
+        } else if (_checkBlackout(selectedItems)) {
+          hasWon = true;
+          winningPatternFound = 'blackoutBingo';
+        }
         break;
     }
     
     if (hasWon) {
-      emit(state.copyWith(hasWon: true));
+      emit(state.copyWith(
+        hasWon: true,
+        winningPattern: winningPatternFound.isNotEmpty ? winningPatternFound : state.winningPattern
+      ));
     }
   }
 
