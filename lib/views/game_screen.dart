@@ -13,6 +13,10 @@ import 'package:hiphop_rnb_bingo/widgets/bingo_button.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/chat_room_modal.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -22,9 +26,6 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  // Define the current winning pattern type with explanation
-  final String _currentWinningPattern = 'straightlineBingo'; // Default pattern
-  
   Map<String, Map<String, dynamic>> get _winningPatterns => {
     'fourCornersBingo': {
       'image': AppImageData.fourCornersBingo,
@@ -54,7 +55,8 @@ class _GameScreenState extends State<GameScreen> {
   };
 
   void _showWinningPatternDetails() {
-    final pattern = _winningPatterns[_currentWinningPattern]!;
+    final currentPattern = context.read<BingoGameBloc>().state.winningPattern;
+    final pattern = _winningPatterns[currentPattern]!;
     
     showDialog(
       context: context,
@@ -217,9 +219,41 @@ class _GameScreenState extends State<GameScreen> {
                 left: 0,
                 right: 0,
                 bottom: AppDimension.isSmall ? -6.h : 30.h,
-                child: BingoButton(
-                  onPressed: () {
-                    // Handle bingo button press
+                child: BlocBuilder<BingoGameBloc, BingoGameState>(
+                  buildWhen: (previous, current) => previous.hasWon != current.hasWon,
+                  builder: (context, state) {
+                    return BingoButton(
+                      onPressed: () {
+                        final bingoBloc = context.read<BingoGameBloc>();
+                        bingoBloc.add(CheckForWinningPattern(
+                          patternType: bingoBloc.state.winningPattern
+                        ));
+                        
+                        if (!state.hasWon) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Container(
+                                padding: EdgeInsets.all(16.r),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12.r),
+                                ),
+                                child: Text(
+                                  "No bingo yet! Keep playing.",
+                                  style: AppTextStyle.mochiyPopOne(
+                                    fontSize: 12.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                            ),
+                          );
+                        }
+                      },
+                    );
                   },
                 ),
               ),
@@ -263,11 +297,17 @@ class _GameScreenState extends State<GameScreen> {
                       SizedBox(width: 32.w),
                       
                       // Winning Pattern Icon
-                      AppImages(
-                        imagePath: _getWinningPatternIcon(),
-                        width: 38.w,
-                        height: 38.w,
-                        onPressed: _showWinningPatternDetails,
+                      BlocBuilder<BingoGameBloc, BingoGameState>(
+                        buildWhen: (previous, current) => 
+                          previous.winningPattern != current.winningPattern,
+                        builder: (context, state) {
+                          return AppImages(
+                            imagePath: _winningPatterns[state.winningPattern]!['image'] as String,
+                            width: 38.w,
+                            height: 38.w,
+                            onPressed: _showWinningPatternDetails,
+                          );
+                        },
                       ),
                       SizedBox(width: 32.w),
                       
@@ -310,9 +350,5 @@ class _GameScreenState extends State<GameScreen> {
         ),
       ),
     );
-  }
-
-  String _getWinningPatternIcon() {
-    return _winningPatterns[_currentWinningPattern]!['image'] as String;
   }
 } 
