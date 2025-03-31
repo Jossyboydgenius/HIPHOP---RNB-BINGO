@@ -10,7 +10,7 @@ class BingoGameState extends Equatable {
     this.calledBoards = const [],
     this.selectedItems = const [],
     this.hasWon = false,
-    this.winningPattern = 'straightlineBingo',
+    this.winningPattern = '',
   });
 
   factory BingoGameState.initial() {
