@@ -13,14 +13,22 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
   void _onCallBoardItem(CallBoardItem event, Emitter<BingoGameState> emit) {
     final newCalledBoards = [...state.calledBoards];
     
+    // Check if this board has already been called and exists in the current list
+    final alreadyCalled = newCalledBoards.any((board) => board['name'] == event.name);
+    
+    if (alreadyCalled) {
+      // If already in the list, don't add it again
+      return;
+    }
+    
     // Add the new called board at the beginning of the list
     newCalledBoards.insert(0, {
       'name': event.name,
       'category': event.category,
     });
     
-    // Keep only the last 3 called boards
-    if (newCalledBoards.length > 3) {
+    // Keep only the last 8 called boards (increase from 3)
+    if (newCalledBoards.length > 8) {
       newCalledBoards.removeLast();
     }
     
