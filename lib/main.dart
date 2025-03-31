@@ -6,6 +6,7 @@ import 'services/navigation_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 
 void main() {
@@ -18,8 +19,11 @@ void main() {
   ]);
   
   runApp(
-    BlocProvider(
-      create: (context) => BalanceBloc(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => BalanceBloc()),
+        BlocProvider(create: (context) => BingoGameBloc()),
+      ],
       child: const MyApp(),
     ),
   );
