@@ -6,6 +6,10 @@ import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'package:hiphop_rnb_bingo/widgets/bingo_header_item.dart';
 import 'package:hiphop_rnb_bingo/widgets/bingo_board_item.dart';
 import 'package:hiphop_rnb_bingo/widgets/called_boards_container.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 
 class BingoBoardBoxContainer extends StatefulWidget {
   const BingoBoardBoxContainer({super.key});
@@ -15,7 +19,7 @@ class BingoBoardBoxContainer extends StatefulWidget {
 }
 
 class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> {
-  late List<BingoBoardItem> _shuffledItems;
+  late List<Map<String, dynamic>> _shuffledItems;
 
   @override
   void initState() {
@@ -33,46 +37,46 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> {
     ];
   }
 
-  List<BingoBoardItem> _generateShuffledBoardItems() {
+  List<Map<String, dynamic>> _generateShuffledBoardItems() {
     // Define all items by category
     final bItems = [
-      const BingoBoardItem(text: "Come and Talk to Me", category: BingoCategory.B),
-      const BingoBoardItem(text: "Real Love", category: BingoCategory.B),
-      const BingoBoardItem(text: "Fantasy", category: BingoCategory.B),
-      const BingoBoardItem(text: "Bad & Bougie / T Shirt", category: BingoCategory.B),
-      const BingoBoardItem(text: "Dazz Band", category: BingoCategory.B),
+      {'text': "Come and Talk to Me", 'category': BingoCategory.B, 'isCenter': false},
+      {'text': "Real Love", 'category': BingoCategory.B, 'isCenter': false},
+      {'text': "Fantasy", 'category': BingoCategory.B, 'isCenter': false},
+      {'text': "Bad & Bougie / T Shirt", 'category': BingoCategory.B, 'isCenter': false},
+      {'text': "Dazz Band", 'category': BingoCategory.B, 'isCenter': false},
     ];
     
     final iItems = [
-      const BingoBoardItem(text: "Forever my Lady", category: BingoCategory.I),
-      const BingoBoardItem(text: "Sweet Thing", category: BingoCategory.I),
-      const BingoBoardItem(text: "Without You", category: BingoCategory.I),
-      const BingoBoardItem(text: "Walk it Talk it / Fight Night", category: BingoCategory.I),
-      const BingoBoardItem(text: "Comodores", category: BingoCategory.I),
+      {'text': "Forever my Lady", 'category': BingoCategory.I, 'isCenter': false},
+      {'text': "Sweet Thing", 'category': BingoCategory.I, 'isCenter': false},
+      {'text': "Without You", 'category': BingoCategory.I, 'isCenter': false},
+      {'text': "Walk it Talk it / Fight Night", 'category': BingoCategory.I, 'isCenter': false},
+      {'text': "Comodores", 'category': BingoCategory.I, 'isCenter': false},
     ];
     
     final nItems = [
-      const BingoBoardItem(text: "Feenin", category: BingoCategory.N),
-      const BingoBoardItem(text: "I can Love You", category: BingoCategory.N),
-      const BingoBoardItem(text: "", category: BingoCategory.N, isCenter: true),
-      const BingoBoardItem(text: "Slippery", category: BingoCategory.N),
-      const BingoBoardItem(text: "Earth Wind and Fire", category: BingoCategory.N),
+      {'text': "Feenin", 'category': BingoCategory.N, 'isCenter': false},
+      {'text': "I can Love You", 'category': BingoCategory.N, 'isCenter': false},
+      {'text': "", 'category': BingoCategory.N, 'isCenter': true},
+      {'text': "Slippery", 'category': BingoCategory.N, 'isCenter': false},
+      {'text': "Earth Wind and Fire", 'category': BingoCategory.N, 'isCenter': false},
     ];
     
     final gItems = [
-      const BingoBoardItem(text: "Freek n You", category: BingoCategory.G),
-      const BingoBoardItem(text: "I'm going down", category: BingoCategory.G),
-      const BingoBoardItem(text: "Always Be My Baby", category: BingoCategory.G),
-      const BingoBoardItem(text: "Straightening", category: BingoCategory.G),
-      const BingoBoardItem(text: "Montel Jordan - This is How We..", category: BingoCategory.G),
+      {'text': "Freek n You", 'category': BingoCategory.G, 'isCenter': false},
+      {'text': "I'm going down", 'category': BingoCategory.G, 'isCenter': false},
+      {'text': "Always Be My Baby", 'category': BingoCategory.G, 'isCenter': false},
+      {'text': "Straightening", 'category': BingoCategory.G, 'isCenter': false},
+      {'text': "Montel Jordan - This is How We..", 'category': BingoCategory.G, 'isCenter': false},
     ];
     
     final oItems = [
-      const BingoBoardItem(text: "Cry for you", category: BingoCategory.O),
-      const BingoBoardItem(text: "Not Gon Cry", category: BingoCategory.O),
-      const BingoBoardItem(text: "We Belong Together", category: BingoCategory.O),
-      const BingoBoardItem(text: "Handsome & Wealthy", category: BingoCategory.O),
-      const BingoBoardItem(text: "Parliament-Funkadelic", category: BingoCategory.O),
+      {'text': "Cry for you", 'category': BingoCategory.O, 'isCenter': false},
+      {'text': "Not Gon Cry", 'category': BingoCategory.O, 'isCenter': false},
+      {'text': "We Belong Together", 'category': BingoCategory.O, 'isCenter': false},
+      {'text': "Handsome & Wealthy", 'category': BingoCategory.O, 'isCenter': false},
+      {'text': "Parliament-Funkadelic", 'category': BingoCategory.O, 'isCenter': false},
     ];
     
     // Shuffle each category separately
@@ -85,11 +89,11 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> {
     _shuffleList(oItems);
     
     // Create a list of all items
-    final allItems = <BingoBoardItem>[];
+    final allItems = <Map<String, dynamic>>[];
     
     // First part of the board (before the center)
     for (int i = 0; i < 12; i++) {
-      BingoBoardItem item;
+      Map<String, dynamic> item;
       if (i % 5 == 0) item = bItems[i ~/ 5];
       else if (i % 5 == 1) item = iItems[i ~/ 5];
       else if (i % 5 == 2) item = i ~/ 5 < 2 ? nonCenterNItems[i ~/ 5] : nonCenterNItems[i ~/ 5 - 1];
@@ -104,7 +108,7 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> {
     
     // Last part of the board (after the center)
     for (int i = 13; i < 25; i++) {
-      BingoBoardItem item;
+      Map<String, dynamic> item;
       if (i % 5 == 0) item = bItems[i ~/ 5];
       else if (i % 5 == 1) item = iItems[i ~/ 5];
       else if (i % 5 == 2) item = i ~/ 5 < 3 ? nonCenterNItems[i ~/ 5 - 1] : nonCenterNItems[i ~/ 5 - 2];
@@ -139,71 +143,134 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        // Layer behind the main container
-        Positioned(
-          left: 0,
-          right: 0,
-          top: 4.h,
-          child: Container(
-            height: AppDimension.isSmall ? 440.h : 390.h,
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(24.r),
-            ),
-          ),
-        ),
-        // Main container
-        Container(
-          width: double.infinity,
-          height: AppDimension.isSmall ? 440.h : 390.h,
-          padding: EdgeInsets.all(12.r),
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(
-              color: Colors.grey.withOpacity(0.5),
-              width: 2.w,
-            ),
-          ),
-          child: Column(
-            children: [
-              // BINGO Header Row
-              SizedBox(
-                height: 40.h,
-                child: Row(
-                  children: _buildBingoHeader()
-                      .map((item) => Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4.w),
-                              child: item,
-                            ),
-                          ))
-                      .toList(),
+    return BlocBuilder<BingoGameBloc, BingoGameState>(
+      builder: (context, state) {
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Layer behind the main container
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 4.h,
+              child: Container(
+                height: AppDimension.isSmall ? 440.h : 390.h,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(24.r),
                 ),
               ),
-              SizedBox(height: 8.h),
-              // Bingo Board Grid
-              Expanded(
-                child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5,
-                    mainAxisSpacing: 8.h,
-                    crossAxisSpacing: 8.w,
+            ),
+            // Main container
+            Container(
+              width: double.infinity,
+              height: AppDimension.isSmall ? 440.h : 390.h,
+              padding: EdgeInsets.all(12.r),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(24.r),
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.5),
+                  width: 2.w,
+                ),
+              ),
+              child: Column(
+                children: [
+                  // BINGO Header Row
+                  SizedBox(
+                    height: 40.h,
+                    child: Row(
+                      children: _buildBingoHeader()
+                          .map((item) => Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                  child: item,
+                                ),
+                              ))
+                          .toList(),
+                    ),
                   ),
-                  itemCount: 25,
-                  itemBuilder: (context, index) {
-                    return _shuffledItems[index];
-                  },
+                  SizedBox(height: 8.h),
+                  // Bingo Board Grid
+                  Expanded(
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 5,
+                        mainAxisSpacing: 8.h,
+                        crossAxisSpacing: 8.w,
+                      ),
+                      itemCount: 25,
+                      itemBuilder: (context, index) {
+                        final item = _shuffledItems[index];
+                        return BingoBoardItem(
+                          text: item['text'] as String,
+                          category: item['category'] as BingoCategory,
+                          isCenter: item['isCenter'] as bool,
+                          index: index,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Win overlay
+            if (state.hasWon)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(24.r),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'BINGO!',
+                          style: AppTextStyle.mochiyPopOne(
+                            fontSize: 32.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          'You won with a ${_getPatternName(state.winningPattern)}!',
+                          style: AppTextStyle.mochiyPopOne(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
+  }
+  
+  String _getPatternName(String patternType) {
+    switch (patternType) {
+      case 'straightlineBingo':
+        return 'Straight Line';
+      case 'blackoutBingo':
+        return 'Blackout';
+      case 'fourCornersBingo':
+        return 'Four Corners';
+      case 'tShapeBingo':
+        return 'T-Shape';
+      case 'xPatternBingo':
+        return 'X-Pattern';
+      default:
+        return 'Pattern';
+    }
   }
 } 
