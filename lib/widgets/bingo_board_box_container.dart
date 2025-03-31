@@ -1,13 +1,29 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'package:hiphop_rnb_bingo/widgets/bingo_header_item.dart';
 import 'package:hiphop_rnb_bingo/widgets/bingo_board_item.dart';
 import 'package:hiphop_rnb_bingo/widgets/called_boards_container.dart';
 
-class BingoBoardBoxContainer extends StatelessWidget {
+class BingoBoardBoxContainer extends StatefulWidget {
   const BingoBoardBoxContainer({super.key});
+
+  @override
+  State<BingoBoardBoxContainer> createState() => _BingoBoardBoxContainerState();
+}
+
+class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> {
+  late List<BingoBoardItem> _shuffledItems;
+
+  @override
+  void initState() {
+    super.initState();
+    _shuffledItems = _generateShuffledBoardItems();
+  }
 
   List<Widget> _buildBingoHeader() {
     return [
@@ -19,44 +35,108 @@ class BingoBoardBoxContainer extends StatelessWidget {
     ];
   }
 
-  List<List<BingoBoardItem>> _buildBoardItems() {
-    return [
-      [
-        const BingoBoardItem(text: "Come and Talk to Me", category: BingoCategory.B),
-        const BingoBoardItem(text: "Forever my Lady", category: BingoCategory.I),
-        const BingoBoardItem(text: "Feenin", category: BingoCategory.N),
-        const BingoBoardItem(text: "Freek n You", category: BingoCategory.G),
-        const BingoBoardItem(text: "Cry for you", category: BingoCategory.O),
-      ],
-      [
-        const BingoBoardItem(text: "Real Love", category: BingoCategory.B),
-        const BingoBoardItem(text: "Sweet Thing", category: BingoCategory.I),
-        const BingoBoardItem(text: "I can Love You", category: BingoCategory.N),
-        const BingoBoardItem(text: "I'm going down", category: BingoCategory.G),
-        const BingoBoardItem(text: "Not Gon Cry", category: BingoCategory.O),
-      ],
-      [
-        const BingoBoardItem(text: "Fantasy", category: BingoCategory.B),
-        const BingoBoardItem(text: "Without You", category: BingoCategory.I),
-        const BingoBoardItem(text: "", category: BingoCategory.N, isCenter: true),
-        const BingoBoardItem(text: "Always Be My Baby", category: BingoCategory.G),
-        const BingoBoardItem(text: "We Belong Together", category: BingoCategory.O),
-      ],
-      [
-        const BingoBoardItem(text: "Bad & Bougie / T Shirt", category: BingoCategory.B),
-        const BingoBoardItem(text: "Walk it Talk it / Fight Night", category: BingoCategory.I),
-        const BingoBoardItem(text: "Slippery", category: BingoCategory.N),
-        const BingoBoardItem(text: "Straightening", category: BingoCategory.G),
-        const BingoBoardItem(text: "Handsome & Wealthy", category: BingoCategory.O),
-      ],
-      [
-        const BingoBoardItem(text: "Dazz Band", category: BingoCategory.B),
-        const BingoBoardItem(text: "Comodores", category: BingoCategory.I),
-        const BingoBoardItem(text: "Earth Wind and Fire", category: BingoCategory.N),
-        const BingoBoardItem(text: "Montel Jordan - This is How We..", category: BingoCategory.G),
-        const BingoBoardItem(text: "Parliament-Funkadelic", category: BingoCategory.O),
-      ],
+  List<BingoBoardItem> _generateShuffledBoardItems() {
+    // Define all items by category
+    final bItems = [
+      const BingoBoardItem(text: "Come and Talk to Me", category: BingoCategory.B),
+      const BingoBoardItem(text: "Real Love", category: BingoCategory.B),
+      const BingoBoardItem(text: "Fantasy", category: BingoCategory.B),
+      const BingoBoardItem(text: "Bad & Bougie / T Shirt", category: BingoCategory.B),
+      const BingoBoardItem(text: "Dazz Band", category: BingoCategory.B),
     ];
+    
+    final iItems = [
+      const BingoBoardItem(text: "Forever my Lady", category: BingoCategory.I),
+      const BingoBoardItem(text: "Sweet Thing", category: BingoCategory.I),
+      const BingoBoardItem(text: "Without You", category: BingoCategory.I),
+      const BingoBoardItem(text: "Walk it Talk it / Fight Night", category: BingoCategory.I),
+      const BingoBoardItem(text: "Comodores", category: BingoCategory.I),
+    ];
+    
+    final nItems = [
+      const BingoBoardItem(text: "Feenin", category: BingoCategory.N),
+      const BingoBoardItem(text: "I can Love You", category: BingoCategory.N),
+      const BingoBoardItem(text: "", category: BingoCategory.N, isCenter: true),
+      const BingoBoardItem(text: "Slippery", category: BingoCategory.N),
+      const BingoBoardItem(text: "Earth Wind and Fire", category: BingoCategory.N),
+    ];
+    
+    final gItems = [
+      const BingoBoardItem(text: "Freek n You", category: BingoCategory.G),
+      const BingoBoardItem(text: "I'm going down", category: BingoCategory.G),
+      const BingoBoardItem(text: "Always Be My Baby", category: BingoCategory.G),
+      const BingoBoardItem(text: "Straightening", category: BingoCategory.G),
+      const BingoBoardItem(text: "Montel Jordan - This is How We..", category: BingoCategory.G),
+    ];
+    
+    final oItems = [
+      const BingoBoardItem(text: "Cry for you", category: BingoCategory.O),
+      const BingoBoardItem(text: "Not Gon Cry", category: BingoCategory.O),
+      const BingoBoardItem(text: "We Belong Together", category: BingoCategory.O),
+      const BingoBoardItem(text: "Handsome & Wealthy", category: BingoCategory.O),
+      const BingoBoardItem(text: "Parliament-Funkadelic", category: BingoCategory.O),
+    ];
+    
+    // Shuffle each category separately
+    _shuffleList(bItems);
+    _shuffleList(iItems);
+    // We need to keep the center item fixed
+    final nonCenterNItems = [nItems[0], nItems[1], nItems[3], nItems[4]];
+    _shuffleList(nonCenterNItems);
+    _shuffleList(gItems);
+    _shuffleList(oItems);
+    
+    // Create a list of all items
+    final allItems = <BingoBoardItem>[];
+    
+    // First part of the board (before the center)
+    for (int i = 0; i < 12; i++) {
+      BingoBoardItem item;
+      if (i % 5 == 0) item = bItems[i ~/ 5];
+      else if (i % 5 == 1) item = iItems[i ~/ 5];
+      else if (i % 5 == 2) item = i ~/ 5 < 2 ? nonCenterNItems[i ~/ 5] : nonCenterNItems[i ~/ 5 - 1];
+      else if (i % 5 == 3) item = gItems[i ~/ 5];
+      else item = oItems[i ~/ 5];
+      
+      allItems.add(item);
+    }
+    
+    // Add center item
+    allItems.add(nItems[2]); // Center is always fixed with the star
+    
+    // Last part of the board (after the center)
+    for (int i = 13; i < 25; i++) {
+      BingoBoardItem item;
+      if (i % 5 == 0) item = bItems[i ~/ 5];
+      else if (i % 5 == 1) item = iItems[i ~/ 5];
+      else if (i % 5 == 2) item = i ~/ 5 < 3 ? nonCenterNItems[i ~/ 5 - 1] : nonCenterNItems[i ~/ 5 - 2];
+      else if (i % 5 == 3) item = gItems[i ~/ 5];
+      else item = oItems[i ~/ 5];
+      
+      allItems.add(item);
+    }
+    
+    // Shuffle the entire board while keeping the center fixed
+    final centerItem = allItems[12];
+    final itemsWithoutCenter = [...allItems];
+    itemsWithoutCenter.removeAt(12);
+    _shuffleList(itemsWithoutCenter);
+    
+    // Reinsert the center item
+    final result = [...itemsWithoutCenter];
+    result.insert(12, centerItem);
+    
+    return result;
+  }
+  
+  void _shuffleList(List list) {
+    final random = Random();
+    for (int i = list.length - 1; i > 0; i--) {
+      final j = random.nextInt(i + 1);
+      final temp = list[i];
+      list[i] = list[j];
+      list[j] = temp;
+    }
   }
 
   @override
@@ -118,9 +198,7 @@ class BingoBoardBoxContainer extends StatelessWidget {
                   ),
                   itemCount: 25,
                   itemBuilder: (context, index) {
-                    final row = index ~/ 5;
-                    final col = index % 5;
-                    return _buildBoardItems()[row][col];
+                    return _shuffledItems[index];
                   },
                 ),
               ),
