@@ -197,7 +197,7 @@ class BingoBoardItem extends StatelessWidget {
                 ? AppIcons(
                     icon: categoryIcon,
                     size: 32.r,
-                    color: isWinningItem ? Colors.white : null,
+                    // color: isWinningItem ? Colors.white : null,
                   )
                 : Padding(
                     padding: EdgeInsets.all(4.r),
