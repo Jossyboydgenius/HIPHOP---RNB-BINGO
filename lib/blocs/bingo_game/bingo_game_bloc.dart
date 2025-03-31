@@ -1,13 +1,70 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:async';
+import 'dart:math';
 import 'bingo_game_event.dart';
 import 'bingo_game_state.dart';
 
 class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
-  BingoGameBloc() : super(BingoGameState.initial()) {
+  Timer? _patternShuffleTimer;
+  final Random _random = Random();
+  final List<String> _allPatterns = [
+    'straightlineBingo',
+    'fourCornersBingo',
+    'tShapeBingo',
+    'xPatternBingo',
+    'blackoutBingo',
+  ];
+
+  BingoGameBloc() : super(BingoGameState.initial().copyWith(
+    // Start with a random pattern instead of the default
+    winningPattern: _getRandomPattern()
+  )) {
     on<CallBoardItem>(_onCallBoardItem);
     on<SelectBingoItem>(_onSelectBingoItem);
     on<CheckForWinningPattern>(_onCheckForWinningPattern);
     on<ResetGame>(_onResetGame);
+    
+    // Start shuffling the winning pattern
+    _startPatternShuffling();
+  }
+
+  // Static method to get a random pattern for initial state
+  static String _getRandomPattern() {
+    final patterns = [
+      'straightlineBingo',
+      'fourCornersBingo',
+      'tShapeBingo',
+      'xPatternBingo',
+      'blackoutBingo',
+    ];
+    return patterns[Random().nextInt(patterns.length)];
+  }
+
+  @override
+  Future<void> close() {
+    _patternShuffleTimer?.cancel();
+    return super.close();
+  }
+
+  void _startPatternShuffling() {
+    // Set initial random pattern
+    _shuffleWinningPattern();
+    
+    // Change pattern every 30 seconds
+    _patternShuffleTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      _shuffleWinningPattern();
+    });
+  }
+  
+  void _shuffleWinningPattern() {
+    final newPattern = _allPatterns[_random.nextInt(_allPatterns.length)];
+    if (newPattern != state.winningPattern) {
+      emit(state.copyWith(winningPattern: newPattern));
+      print('Winning pattern changed to: $newPattern');
+    } else {
+      // Try again if we got the same pattern
+      _shuffleWinningPattern();
+    }
   }
 
   void _onCallBoardItem(CallBoardItem event, Emitter<BingoGameState> emit) {
@@ -63,46 +120,70 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
     String winningPatternFound = '';
     
     // First check the current winning pattern
-    switch (event.patternType) {
-      case 'straightlineBingo':
-        hasWon = _checkStraightLine(selectedItems);
-        if (hasWon) winningPatternFound = 'straightlineBingo';
-        break;
-      case 'blackoutBingo':
-        hasWon = _checkBlackout(selectedItems);
-        if (hasWon) winningPatternFound = 'blackoutBingo';
-        break;
-      case 'fourCornersBingo':
-        hasWon = _checkFourCorners(selectedItems);
-        if (hasWon) winningPatternFound = 'fourCornersBingo';
-        break;
-      case 'tShapeBingo':
-        hasWon = _checkTShape(selectedItems);
-        if (hasWon) winningPatternFound = 'tShapeBingo';
-        break;
-      case 'xPatternBingo':
-        hasWon = _checkXPattern(selectedItems);
-        if (hasWon) winningPatternFound = 'xPatternBingo';
-        break;
-      default:
-        // Check all patterns if no specific pattern is specified
-        if (_checkStraightLine(selectedItems)) {
-          hasWon = true;
-          winningPatternFound = 'straightlineBingo';
-        } else if (_checkFourCorners(selectedItems)) {
-          hasWon = true;
-          winningPatternFound = 'fourCornersBingo';
-        } else if (_checkTShape(selectedItems)) {
-          hasWon = true;
-          winningPatternFound = 'tShapeBingo';
-        } else if (_checkXPattern(selectedItems)) {
-          hasWon = true;
-          winningPatternFound = 'xPatternBingo';
-        } else if (_checkBlackout(selectedItems)) {
-          hasWon = true;
-          winningPatternFound = 'blackoutBingo';
-        }
-        break;
+    final patternType = event.patternType.isEmpty ? state.winningPattern : event.patternType;
+    
+    // If we still don't have a pattern, check all patterns
+    if (patternType.isEmpty) {
+      // Check all patterns
+      if (_checkStraightLine(selectedItems)) {
+        hasWon = true;
+        winningPatternFound = 'straightlineBingo';
+      } else if (_checkFourCorners(selectedItems)) {
+        hasWon = true;
+        winningPatternFound = 'fourCornersBingo';
+      } else if (_checkTShape(selectedItems)) {
+        hasWon = true;
+        winningPatternFound = 'tShapeBingo';
+      } else if (_checkXPattern(selectedItems)) {
+        hasWon = true;
+        winningPatternFound = 'xPatternBingo';
+      } else if (_checkBlackout(selectedItems)) {
+        hasWon = true;
+        winningPatternFound = 'blackoutBingo';
+      }
+    } else {
+      // Check specific pattern
+      switch (patternType) {
+        case 'straightlineBingo':
+          hasWon = _checkStraightLine(selectedItems);
+          if (hasWon) winningPatternFound = 'straightlineBingo';
+          break;
+        case 'blackoutBingo':
+          hasWon = _checkBlackout(selectedItems);
+          if (hasWon) winningPatternFound = 'blackoutBingo';
+          break;
+        case 'fourCornersBingo':
+          hasWon = _checkFourCorners(selectedItems);
+          if (hasWon) winningPatternFound = 'fourCornersBingo';
+          break;
+        case 'tShapeBingo':
+          hasWon = _checkTShape(selectedItems);
+          if (hasWon) winningPatternFound = 'tShapeBingo';
+          break;
+        case 'xPatternBingo':
+          hasWon = _checkXPattern(selectedItems);
+          if (hasWon) winningPatternFound = 'xPatternBingo';
+          break;
+        default:
+          // Check all patterns if no specific pattern is specified
+          if (_checkStraightLine(selectedItems)) {
+            hasWon = true;
+            winningPatternFound = 'straightlineBingo';
+          } else if (_checkFourCorners(selectedItems)) {
+            hasWon = true;
+            winningPatternFound = 'fourCornersBingo';
+          } else if (_checkTShape(selectedItems)) {
+            hasWon = true;
+            winningPatternFound = 'tShapeBingo';
+          } else if (_checkXPattern(selectedItems)) {
+            hasWon = true;
+            winningPatternFound = 'xPatternBingo';
+          } else if (_checkBlackout(selectedItems)) {
+            hasWon = true;
+            winningPatternFound = 'blackoutBingo';
+          }
+          break;
+      }
     }
     
     if (hasWon) {
@@ -114,7 +195,9 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
   }
 
   void _onResetGame(ResetGame event, Emitter<BingoGameState> emit) {
-    emit(BingoGameState.initial());
+    // Reset game state but keep the current winning pattern
+    final currentPattern = state.winningPattern;
+    emit(BingoGameState.initial().copyWith(winningPattern: currentPattern));
   }
   
   // Check if there is a straight line (horizontal, vertical, or diagonal)
