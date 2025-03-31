@@ -12,14 +12,15 @@ class AppImageData {
   static const String eliminated = '$_base/eliminated.png';
   static const String gem = '$_base/gem.png';
   static const String glowing = '$_base/glowing.png';
-  static const String magic = '$_base/magic.png';
   static const String medalGold = '$_base/medal-gold.png';
   static const String money = '$_base/money.png';
   static const String treasure = '$_base/treasure.png';
   static const String won = '$_base/won.png';
+  static const String lose = '$_base/lose.png';
   static const String chat = '$_base/chat.png';
   static const String bingoCard = '$_base/bingo-card.png';
   static const String bingoButton = '$_base/bingo-button.png';
+  static const String magic = '$_base/magic.png';
 
   // Payment options images
   static const String paypal = '$_base/paypal.png';
