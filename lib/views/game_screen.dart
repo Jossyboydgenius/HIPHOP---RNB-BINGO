@@ -12,6 +12,7 @@ import 'package:hiphop_rnb_bingo/widgets/bingo_board_box_container.dart';
 import 'package:hiphop_rnb_bingo/widgets/bingo_button.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/chat_room_modal.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -21,6 +22,136 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  // Define the current winning pattern type with explanation
+  final String _currentWinningPattern = 'straightlineBingo'; // Default pattern
+  
+  Map<String, Map<String, dynamic>> get _winningPatterns => {
+    'fourCornersBingo': {
+      'image': AppImageData.fourCornersBingo,
+      'title': 'Four Corners',
+      'description': 'Mark all four corners of the board to win.',
+    },
+    'blackoutBingo': {
+      'image': AppImageData.blackoutBingo,
+      'title': 'Blackout',
+      'description': 'Mark every square on the board to win.',
+    },
+    'straightlineBingo': {
+      'image': AppImageData.straightlineBingo,
+      'title': 'Straight Line',
+      'description': 'Mark 5 squares in a straight line (horizontal, vertical, or diagonal) to win.',
+    },
+    'tShapeBingo': {
+      'image': AppImageData.tShapeBingo,
+      'title': 'T-Shape',
+      'description': 'Mark squares in a T-shape pattern to win.',
+    },
+    'xPatternBingo': {
+      'image': AppImageData.xPatternBingo,
+      'title': 'X-Pattern',
+      'description': 'Mark squares in an X-pattern to win.',
+    },
+  };
+
+  void _showWinningPatternDetails() {
+    final pattern = _winningPatterns[_currentWinningPattern]!;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black54,
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(24.r),
+            decoration: BoxDecoration(
+              color: AppColors.purplePrimary,
+              borderRadius: BorderRadius.circular(24.r),
+              border: Border.all(
+                color: AppColors.purpleLight,
+                width: 3.w,
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Current Winning Pattern',
+                  style: AppTextStyle.mochiyPopOne(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 16.h),
+                // Pattern image
+                AppImages(
+                  imagePath: pattern['image'] as String,
+                  width: 200.w,
+                  height: 200.h,
+                ),
+                SizedBox(height: 16.h),
+                // Pattern title
+                Text(
+                  pattern['title'] as String,
+                  style: AppTextStyle.mochiyPopOne(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 8.h),
+                // Pattern description
+                Text(
+                  pattern['description'] as String,
+                  style: AppTextStyle.dmSans(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 24.h),
+                // Close button
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 36.w,
+                      vertical: 12.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.yellowPrimary,
+                      borderRadius: BorderRadius.circular(100.r),
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2.w,
+                      ),
+                    ),
+                    child: Text(
+                      'Got it',
+                      style: AppTextStyle.mochiyPopOne(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,9 +267,7 @@ class _GameScreenState extends State<GameScreen> {
                         imagePath: _getWinningPatternIcon(),
                         width: 38.w,
                         height: 38.w,
-                        onPressed: () {
-                          // Handle pattern press
-                        },
+                        onPressed: _showWinningPatternDetails,
                       ),
                       SizedBox(width: 32.w),
                       
@@ -158,7 +287,7 @@ class _GameScreenState extends State<GameScreen> {
                                 ),
                                 child: Text(
                                   "Hit Bingo button only if you have Bingo. If you call incorrectly more than twice, you will be eliminated from the round.",
-                                  style: AppTextStyle.poppins(
+                                  style: AppTextStyle.mochiyPopOne(
                                     fontSize: 12.sp,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w400,
@@ -184,26 +313,6 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   String _getWinningPatternIcon() {
-    // This will be dynamic based on game type from backend
-    // For now, returning one of the patterns as default
-    return AppImageData.straightlineBingo;
-    
-    // When implementing backend integration, you can use something like:
-    /*
-    switch (gameType) {
-      case 'fourCorners':
-        return AppImageData.fourCornersBingo;
-      case 'blackout':
-        return AppImageData.blackoutBingo;
-      case 'straightLine':
-        return AppImageData.straightlineBingo;
-      case 'tShape':
-        return AppImageData.tShapeBingo;
-      case 'xPattern':
-        return AppImageData.xPatternBingo;
-      default:
-        return AppImageData.straightlineBingo;
-    }
-    */
+    return _winningPatterns[_currentWinningPattern]!['image'] as String;
   }
 } 
