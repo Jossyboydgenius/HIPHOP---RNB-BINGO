@@ -120,6 +120,49 @@ class _GameScreenState extends State<GameScreen> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 24.h),
+                // Pattern selector
+                SizedBox(
+                  height: 60.h,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _winningPatterns.length,
+                    separatorBuilder: (context, index) => SizedBox(width: 12.w),
+                    itemBuilder: (context, index) {
+                      final patternKey = _winningPatterns.keys.elementAt(index);
+                      final patternData = _winningPatterns[patternKey]!;
+                      final isSelected = patternKey == currentPattern;
+                      
+                      return GestureDetector(
+                        onTap: () {
+                          // Update winning pattern
+                          context.read<BingoGameBloc>().add(
+                            CheckForWinningPattern(patternType: patternKey)
+                          );
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: 50.w,
+                          decoration: BoxDecoration(
+                            color: isSelected ? AppColors.yellowPrimary : AppColors.purplePrimary,
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2.w,
+                            ),
+                          ),
+                          child: Center(
+                            child: AppImages(
+                              imagePath: patternData['image'] as String,
+                              width: 40.w,
+                              height: 40.h,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 24.h),
                 // Close button
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
