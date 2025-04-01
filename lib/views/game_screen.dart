@@ -418,8 +418,9 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   }
 
   void _handleFullScreenTap() {
+    print("Full screen tap detected! Animation value: ${_patternChangeAnimation.value}");
     if (_patternChangeAnimation.isCompleted) {
-      print("Full screen tap detected!");
+      print("Pattern notification is fully visible, dismissing");
       _dismissPatternChange();
     }
   }
@@ -541,15 +542,17 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                     return Stack(
                       children: [
                         // Full screen gesture detector to dismiss when tapping anywhere
-                        Positioned.fill(
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: _handleFullScreenTap,
-                            child: Container(
-                              color: Colors.transparent,
+                        // Only show when pattern notification is visible
+                        if (_patternChangeAnimation.value > 0)
+                          Positioned.fill(
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: _handleFullScreenTap,
+                              child: Container(
+                                color: Colors.transparent,
+                              ),
                             ),
                           ),
-                        ),
                         
                         // Original pattern notification
                         Positioned(
