@@ -116,9 +116,9 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
     bool hasWon = false;
     String winningPatternFound = '';
     
+    // First, check the current winning pattern
     final patternType = state.winningPattern;
     
-    // Check the current winning pattern
     switch (patternType) {
       case 'straightlineBingo':
         hasWon = _checkStraightLine(selectedItems);
@@ -144,11 +144,17 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
         break;
     }
     
+    // Only update state if player has actually won
     if (hasWon) {
       emit(state.copyWith(
         hasWon: true,
         winningPattern: winningPatternFound.isNotEmpty ? winningPatternFound : state.winningPattern
       ));
+    } else {
+      // Optionally, we could add an incorrect claim count here to penalize
+      // players who press Bingo without having a valid pattern.
+      // For now, we just don't update the state.
+      print("Invalid bingo claim - no winning pattern found");
     }
   }
 
