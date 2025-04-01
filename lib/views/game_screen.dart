@@ -405,6 +405,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   void _dismissPatternChange() {
     _hideTimer?.cancel();
     _patternChangeController.reverse();
+    print("Pattern dismiss called!");
   }
 
   // Method to handle back button when tooltip is visible
@@ -414,6 +415,13 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
       return false;
     }
     return true;
+  }
+
+  void _handleFullScreenTap() {
+    if (_patternChangeAnimation.isCompleted) {
+      print("Full screen tap detected!");
+      _dismissPatternChange();
+    }
   }
 
   @override
@@ -534,14 +542,11 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                       children: [
                         // Full screen gesture detector to dismiss when tapping anywhere
                         Positioned.fill(
-                          child: IgnorePointer(
-                            ignoring: !_patternChangeAnimation.isCompleted,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: _dismissPatternChange,
-                              child: Container(
-                                color: Colors.transparent,
-                              ),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: _handleFullScreenTap,
+                            child: Container(
+                              color: Colors.transparent,
                             ),
                           ),
                         ),
