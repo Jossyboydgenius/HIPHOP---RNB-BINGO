@@ -48,6 +48,17 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
     super.dispose();
   }
   
+  // Public method to reset the timer
+  void resetTimer() {
+    _timer?.cancel();
+    setState(() {
+      _currentRound = widget.initialRound;
+      _secondsRemaining = widget.timePerRoundInSeconds;
+      _isTimerRunning = false;
+    });
+    _startTimer();
+  }
+  
   void _startTimer() {
     _isTimerRunning = true;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -181,11 +192,34 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BingoGameBloc, BingoGameState>(
-      listenWhen: (previous, current) => previous.hasWon != current.hasWon,
-      listener: (context, state) {
-        _checkForWin(state);
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<BingoGameBloc, BingoGameState>(
+          listenWhen: (previous, current) => previous.hasWon != current.hasWon,
+          listener: (context, state) {
+            _checkForWin(state);
+          },
+        ),
+        BlocListener<BingoGameBloc, BingoGameState>(
+          listenWhen: (_, __) => true, // Listen to all events
+          listener: (context, _) {
+            final BingoGameBloc bloc = context.read<BingoGameBloc>();
+            if (bloc.hasResetFromGameOver) {
+              // Reset the timer
+              _timer?.cancel();
+              setState(() {
+                _currentRound = widget.initialRound;
+                _secondsRemaining = widget.timePerRoundInSeconds;
+                _isTimerRunning = false;
+              });
+              _startTimer();
+              
+              // Reset the flag
+              bloc.resetGameOverFlag();
+            }
+          },
+        ),
+      ],
       child: Stack(
         clipBehavior: Clip.none,
         children: [
