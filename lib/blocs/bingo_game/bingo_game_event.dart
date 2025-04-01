@@ -47,4 +47,11 @@ class CheckForWinningPattern extends BingoGameEvent {
   List<Object?> get props => [patternType];
 }
 
-class ResetGame extends BingoGameEvent {} 
+class ResetGame extends BingoGameEvent {
+  final bool isGameOver;
+  
+  const ResetGame({this.isGameOver = false});
+  
+  @override
+  List<Object?> get props => [isGameOver];
+} 
