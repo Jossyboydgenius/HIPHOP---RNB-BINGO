@@ -155,6 +155,15 @@ class BingoBoardItem extends StatelessWidget {
     }
   }
 
+  /// Checks if the current index is part of a potential winning pattern (before user claims bingo)
+  bool _isPartOfPotentialWinningPattern(List<int> selectedItems, String patternType) {
+    if (!selectedItems.contains(index)) {
+      return false; // This cell isn't even selected, so it can't be part of a winning pattern
+    }
+    
+    return _isPartOfWinningPattern(selectedItems, patternType);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BingoGameBloc, BingoGameState>(
@@ -167,6 +176,13 @@ class BingoBoardItem extends StatelessWidget {
         final bool isSelected = state.isItemSelected(index);
         final bool isWinningItem = state.hasWon && isSelected && 
                                   _isPartOfWinningPattern(state.selectedItems, state.winningPattern);
+        
+        // Check if this is part of a potential winning pattern (before claiming bingo)
+        final bool isPotentialWinningItem = !state.hasWon && isSelected && 
+                                        _isPartOfPotentialWinningPattern(state.selectedItems, state.winningPattern);
+        
+        // Determine if we should show the star icon for this item
+        final bool showIcon = isCenter || isWinningItem || isPotentialWinningItem;
         
         // Create the item container without gesture detector
         Widget itemContainer = Container(
@@ -193,11 +209,10 @@ class BingoBoardItem extends StatelessWidget {
             ] : null,
           ),
           child: Center(
-            child: isCenter || isWinningItem
+            child: showIcon
                 ? AppIcons(
                     icon: categoryIcon,
                     size: 32.r,
-                    // color: isWinningItem ? Colors.white : null,
                   )
                 : Padding(
                     padding: EdgeInsets.all(4.r),
