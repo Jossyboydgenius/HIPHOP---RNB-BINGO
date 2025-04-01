@@ -51,6 +51,7 @@ dependencies:
   google_fonts: ^6.1.0
   flutter_svg: ^2.0.9
   cached_network_image: ^3.3.0
+  super_tooltip: ^2.0.9
   
   # Utils
   shared_preferences: ^2.2.2
