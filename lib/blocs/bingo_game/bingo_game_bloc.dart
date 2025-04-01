@@ -14,6 +14,17 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
     'xPatternBingo',
     'blackoutBingo',
   ];
+  
+  // Flag to indicate if game was reset from game over
+  bool _gameOverReset = false;
+  
+  // Getter for the game over reset flag
+  bool get hasResetFromGameOver => _gameOverReset;
+  
+  // Method to reset the game over flag
+  void resetGameOverFlag() {
+    _gameOverReset = false;
+  }
 
   BingoGameBloc() : super(BingoGameState.initial().copyWith(
     // Start with a random pattern instead of the default
@@ -198,6 +209,11 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
     // Reset game state but keep the current winning pattern
     final currentPattern = state.winningPattern;
     emit(BingoGameState.initial().copyWith(winningPattern: currentPattern));
+    
+    // Set the game over reset flag if this reset is from a game over
+    if (event.isGameOver) {
+      _gameOverReset = true;
+    }
   }
   
   // Check if there is a straight line (horizontal, vertical, or diagonal)
