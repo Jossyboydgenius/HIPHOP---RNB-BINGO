@@ -34,7 +34,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   // Number of rounds in the game
   final int _maxRounds = 3;
   // Time per round in seconds
-  final int _timePerRound = 120;
+  final int _timePerRound = 240; // 4 minutes
   
   // SuperTooltip controller
   final _tooltipController = SuperTooltipController();
@@ -728,6 +728,58 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                       ],
                     ),
                   ),
+                ),
+
+                // Loading Overlay when transitioning between rounds
+                BlocBuilder<BingoGameBloc, BingoGameState>(
+                  buildWhen: (previous, current) => previous.hasWon != current.hasWon,
+                  builder: (context, state) {
+                    if (state.hasWon) {
+                      return Positioned.fill(
+                        child: Container(
+                          color: Colors.black.withOpacity(0.7),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Winning message
+                                Text(
+                                  'BINGO!',
+                                  style: AppTextStyle.mochiyPopOne(
+                                    fontSize: 36.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 24.h),
+                                // Loading spinner
+                                SizedBox(
+                                  height: 60.h,
+                                  width: 60.w,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 8.w,
+                                    color: AppColors.yellowPrimary,
+                                  ),
+                                ),
+                                SizedBox(height: 24.h),
+                                // Loading message
+                                Text(
+                                  'Preparing next round...',
+                                  style: AppTextStyle.mochiyPopOne(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
                 ),
               ],
             ),
