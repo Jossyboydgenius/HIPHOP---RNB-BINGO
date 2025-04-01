@@ -54,4 +54,11 @@ class ResetGame extends BingoGameEvent {
   
   @override
   List<Object?> get props => [isGameOver];
+}
+
+class ClaimBingo extends BingoGameEvent {
+  const ClaimBingo();
+  
+  @override
+  List<Object?> get props => [];
 } 
