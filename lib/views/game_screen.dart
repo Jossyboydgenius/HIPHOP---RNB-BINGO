@@ -228,7 +228,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
             onPressed: () {
               Navigator.pop(context);
               // Reset game
-              context.read<BingoGameBloc>().add(ResetGame());
+              context.read<BingoGameBloc>().add(ResetGame(isGameOver: true));
             },
             child: Container(
               padding: EdgeInsets.symmetric(
