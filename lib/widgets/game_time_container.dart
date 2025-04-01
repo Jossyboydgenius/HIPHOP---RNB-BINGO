@@ -20,7 +20,7 @@ class GameTimeContainer extends StatefulWidget {
     super.key,
     this.initialRound = 1,
     this.maxRounds = 3,
-    this.timePerRoundInSeconds = 60, // 1 minute per round by default
+    this.timePerRoundInSeconds = 240, // 4 minutes per round
     this.onRoundComplete,
   });
 
@@ -33,6 +33,8 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
   late int _secondsRemaining;
   Timer? _timer;
   bool _isTimerRunning = false;
+  bool _isLoading = false; // New state to track loading spinner between rounds
+  Timer? _loadingTimer; // Timer for loading screen
   
   @override
   void initState() {
@@ -45,6 +47,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
   @override
   void dispose() {
     _timer?.cancel();
+    _loadingTimer?.cancel();
     super.dispose();
   }
   
@@ -111,26 +114,38 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       _timer?.cancel();
       _isTimerRunning = false;
       
-      if (_currentRound < widget.maxRounds) {
-        // Move to next round
-        setState(() {
-          _currentRound++;
-          _secondsRemaining = widget.timePerRoundInSeconds;
-        });
-        
-        // Reset the game state (keep the winning pattern)
-        context.read<BingoGameBloc>().add(ResetGame());
-        
-        // Show success message
-        _showRoundSuccessMessage();
-        
-        // Start the timer for next round
-        _startTimer();
-      } else {
-        // Player completed all rounds
-        widget.onRoundComplete?.call(true, _currentRound);
-        _showGameCompleteMessage();
-      }
+      // Show loading spinner for 3 seconds before advancing to next round
+      setState(() {
+        _isLoading = true;
+      });
+      
+      // Show success message first
+      _showRoundSuccessMessage();
+      
+      // After 3 seconds, advance to next round
+      _loadingTimer = Timer(const Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            
+            if (_currentRound < widget.maxRounds) {
+              // Move to next round
+              _currentRound++;
+              _secondsRemaining = widget.timePerRoundInSeconds;
+              
+              // Reset the game state (keep the winning pattern)
+              context.read<BingoGameBloc>().add(ResetGame());
+              
+              // Start the timer for next round
+              _startTimer();
+            } else {
+              // Player completed all rounds
+              widget.onRoundComplete?.call(true, _currentRound);
+              _showGameCompleteMessage();
+            }
+          });
+        }
+      });
     }
   }
   
@@ -144,7 +159,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Text(
-            "Round complete! Moving to round $_currentRound",
+            "Round complete! Moving to round ${_currentRound + 1}",
             style: AppTextStyle.mochiyPopOne(
               fontSize: 12.sp,
               color: Colors.black,
@@ -213,6 +228,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
                 _currentRound = widget.initialRound;
                 _secondsRemaining = widget.timePerRoundInSeconds;
                 _isTimerRunning = false;
+                _isLoading = false;
               });
               _startTimer();
               
@@ -242,14 +258,39 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(width: AppDimension.isSmall ? 14.w : 16.w),
-                Text(
-                  '$_timeString ($_currentRound)',
-                  style: AppTextStyle.mochiyPopOne(
-                    fontSize: AppDimension.isSmall ? 10.sp : 10.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
-                ),
+                _isLoading 
+                    ? SizedBox(
+                        width: 50.w,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              height: 10.h,
+                              width: 10.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.w,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(width: 8.w),
+                            Text(
+                              'Loading...',
+                              style: AppTextStyle.mochiyPopOne(
+                                fontSize: 8.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Text(
+                        '$_timeString ($_currentRound)',
+                        style: AppTextStyle.mochiyPopOne(
+                          fontSize: AppDimension.isSmall ? 10.sp : 10.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                        ),
+                      ),
               ],
             ),
           ),
