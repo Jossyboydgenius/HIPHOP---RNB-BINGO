@@ -5,7 +5,6 @@ import 'bingo_game_event.dart';
 import 'bingo_game_state.dart';
 
 class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
-  Timer? _patternShuffleTimer;
   final Random _random = Random();
   final List<String> _allPatterns = [
     'straightlineBingo',
@@ -34,9 +33,7 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
     on<SelectBingoItem>(_onSelectBingoItem);
     on<CheckForWinningPattern>(_onCheckForWinningPattern);
     on<ResetGame>(_onResetGame);
-    
-    // Start shuffling the winning pattern
-    _startPatternShuffling();
+    on<ClaimBingo>(_onClaimBingo);
   }
 
   // Static method to get a random pattern for initial state
@@ -53,29 +50,17 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
 
   @override
   Future<void> close() {
-    _patternShuffleTimer?.cancel();
     return super.close();
   }
 
-  void _startPatternShuffling() {
-    // Set initial random pattern
-    _shuffleWinningPattern();
+  // Shuffle to a new pattern different from the current one
+  String _shuffleWinningPattern() {
+    String newPattern;
+    do {
+      newPattern = _allPatterns[_random.nextInt(_allPatterns.length)];
+    } while (newPattern == state.winningPattern && _allPatterns.length > 1);
     
-    // Change pattern every 30 seconds
-    _patternShuffleTimer = Timer.periodic(const Duration(seconds: 30), (_) {
-      _shuffleWinningPattern();
-    });
-  }
-  
-  void _shuffleWinningPattern() {
-    final newPattern = _allPatterns[_random.nextInt(_allPatterns.length)];
-    if (newPattern != state.winningPattern) {
-      emit(state.copyWith(winningPattern: newPattern));
-      print('Winning pattern changed to: $newPattern');
-    } else {
-      // Try again if we got the same pattern
-      _shuffleWinningPattern();
-    }
+    return newPattern;
   }
 
   void _onCallBoardItem(CallBoardItem event, Emitter<BingoGameState> emit) {
@@ -121,80 +106,42 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
     
     emit(state.copyWith(selectedItems: selectedItems));
     
-    // Check for winning pattern after selection
-    add(CheckForWinningPattern(patternType: state.winningPattern));
+    // No longer automatically check for winning pattern after selection
+    // Now user must press the bingo button
   }
 
-  void _onCheckForWinningPattern(CheckForWinningPattern event, Emitter<BingoGameState> emit) {
+  // New method to handle when user claims bingo by pressing the button
+  void _onClaimBingo(ClaimBingo event, Emitter<BingoGameState> emit) {
     final selectedItems = state.selectedItems;
     bool hasWon = false;
     String winningPatternFound = '';
     
-    // First check the current winning pattern
-    final patternType = event.patternType.isEmpty ? state.winningPattern : event.patternType;
+    final patternType = state.winningPattern;
     
-    // If we still don't have a pattern, check all patterns
-    if (patternType.isEmpty) {
-      // Check all patterns
-      if (_checkStraightLine(selectedItems)) {
-        hasWon = true;
-        winningPatternFound = 'straightlineBingo';
-      } else if (_checkFourCorners(selectedItems)) {
-        hasWon = true;
-        winningPatternFound = 'fourCornersBingo';
-      } else if (_checkTShape(selectedItems)) {
-        hasWon = true;
-        winningPatternFound = 'tShapeBingo';
-      } else if (_checkXPattern(selectedItems)) {
-        hasWon = true;
-        winningPatternFound = 'xPatternBingo';
-      } else if (_checkBlackout(selectedItems)) {
-        hasWon = true;
-        winningPatternFound = 'blackoutBingo';
-      }
-    } else {
-      // Check specific pattern
-      switch (patternType) {
-        case 'straightlineBingo':
-          hasWon = _checkStraightLine(selectedItems);
-          if (hasWon) winningPatternFound = 'straightlineBingo';
-          break;
-        case 'blackoutBingo':
-          hasWon = _checkBlackout(selectedItems);
-          if (hasWon) winningPatternFound = 'blackoutBingo';
-          break;
-        case 'fourCornersBingo':
-          hasWon = _checkFourCorners(selectedItems);
-          if (hasWon) winningPatternFound = 'fourCornersBingo';
-          break;
-        case 'tShapeBingo':
-          hasWon = _checkTShape(selectedItems);
-          if (hasWon) winningPatternFound = 'tShapeBingo';
-          break;
-        case 'xPatternBingo':
-          hasWon = _checkXPattern(selectedItems);
-          if (hasWon) winningPatternFound = 'xPatternBingo';
-          break;
-        default:
-          // Check all patterns if no specific pattern is specified
-          if (_checkStraightLine(selectedItems)) {
-            hasWon = true;
-            winningPatternFound = 'straightlineBingo';
-          } else if (_checkFourCorners(selectedItems)) {
-            hasWon = true;
-            winningPatternFound = 'fourCornersBingo';
-          } else if (_checkTShape(selectedItems)) {
-            hasWon = true;
-            winningPatternFound = 'tShapeBingo';
-          } else if (_checkXPattern(selectedItems)) {
-            hasWon = true;
-            winningPatternFound = 'xPatternBingo';
-          } else if (_checkBlackout(selectedItems)) {
-            hasWon = true;
-            winningPatternFound = 'blackoutBingo';
-          }
-          break;
-      }
+    // Check the current winning pattern
+    switch (patternType) {
+      case 'straightlineBingo':
+        hasWon = _checkStraightLine(selectedItems);
+        if (hasWon) winningPatternFound = 'straightlineBingo';
+        break;
+      case 'blackoutBingo':
+        hasWon = _checkBlackout(selectedItems);
+        if (hasWon) winningPatternFound = 'blackoutBingo';
+        break;
+      case 'fourCornersBingo':
+        hasWon = _checkFourCorners(selectedItems);
+        if (hasWon) winningPatternFound = 'fourCornersBingo';
+        break;
+      case 'tShapeBingo':
+        hasWon = _checkTShape(selectedItems);
+        if (hasWon) winningPatternFound = 'tShapeBingo';
+        break;
+      case 'xPatternBingo':
+        hasWon = _checkXPattern(selectedItems);
+        if (hasWon) winningPatternFound = 'xPatternBingo';
+        break;
+      default:
+        break;
     }
     
     if (hasWon) {
@@ -205,10 +152,26 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
     }
   }
 
+  void _onCheckForWinningPattern(CheckForWinningPattern event, Emitter<BingoGameState> emit) {
+    // This is now only used for pattern changes, not for win checking
+    if (event.patternType != state.winningPattern) {
+      emit(state.copyWith(winningPattern: event.patternType));
+    }
+  }
+
   void _onResetGame(ResetGame event, Emitter<BingoGameState> emit) {
-    // Reset game state but keep the current winning pattern
-    final currentPattern = state.winningPattern;
-    emit(BingoGameState.initial().copyWith(winningPattern: currentPattern));
+    // Shuffle to a new pattern between rounds, but only if not resetting due to game over
+    final String newPattern;
+    if (!event.isGameOver) {
+      // If it's a normal round completion, get a new pattern
+      newPattern = _shuffleWinningPattern();
+    } else {
+      // If resetting due to game over, keep the current pattern
+      newPattern = state.winningPattern;
+    }
+    
+    // Reset game state with the appropriate winning pattern
+    emit(BingoGameState.initial().copyWith(winningPattern: newPattern));
     
     // Set the game over reset flag if this reset is from a game over
     if (event.isGameOver) {
