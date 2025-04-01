@@ -17,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
+import 'package:super_tooltip/super_tooltip.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -34,6 +35,9 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   final int _maxRounds = 3;
   // Time per round in seconds
   final int _timePerRound = 120;
+  
+  // SuperTooltip controller
+  final _tooltipController = SuperTooltipController();
 
   Map<String, Map<String, dynamic>> get _winningPatterns => {
     'fourCornersBingo': {
@@ -83,6 +87,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   void dispose() {
     _patternChangeController.dispose();
     _hideTimer?.cancel();
+    _tooltipController.dispose();
     super.dispose();
   }
 
@@ -402,275 +407,322 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
     _patternChangeController.reverse();
   }
 
+  // Method to handle back button when tooltip is visible
+  Future<bool> _willPopCallback() async {
+    if (_tooltipController.isVisible) {
+      await _tooltipController.hideTooltip();
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: AppBackground(
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  // Top Bar
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: AppDimension.isSmall ? 12.h : 8.h,
+    return WillPopScope(
+      onWillPop: _willPopCallback,
+      child: Scaffold(
+        body: AppBackground(
+          child: SafeArea(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    // Top Bar
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: AppDimension.isSmall ? 12.h : 8.h,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Game Title
+                          Expanded(
+                            child: Text(
+                              'Hip-Hop Fire Round',
+                              style: AppTextStyle.mochiyPopOne(
+                                fontSize: AppDimension.isSmall ? 14.sp : 12.sp,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          // Time Container
+                          GameTimeContainer(
+                            initialRound: 1,
+                            maxRounds: _maxRounds,
+                            timePerRoundInSeconds: _timePerRound,
+                            onRoundComplete: _onRoundComplete,
+                          ),
+                          SizedBox(width: 12.w),
+                          // Player Container
+                          const GamePlayerContainer(
+                            playerCount: 120,
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    SizedBox(height: AppDimension.isSmall ? 10.h : 14.h),
+                    
+                    // Called Board Container
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: const CalledBoardsContainer(),
+                    ),
+                    
+                    SizedBox(height: 16.h),
+                    
+                    // Bingo Board Box Container
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: const BingoBoardBoxContainer(),
+                    ),
+                  ],
+                ),
+                
+                // Positioned Bingo Button
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: AppDimension.isSmall ? -6.h : 30.h,
+                  child: BlocBuilder<BingoGameBloc, BingoGameState>(
+                    buildWhen: (previous, current) => previous.hasWon != current.hasWon,
+                    builder: (context, state) {
+                      return BingoButton(
+                        onPressed: () {
+                          final bingoBloc = context.read<BingoGameBloc>();
+                          bingoBloc.add(const ClaimBingo());
+                          
+                          if (!state.hasWon) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Container(
+                                  padding: EdgeInsets.all(16.r),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                  child: Text(
+                                    "No bingo yet! Keep playing.",
+                                    style: AppTextStyle.mochiyPopOne(
+                                      fontSize: 12.sp,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ),
+
+                // Pattern change notification with full screen dismissibility
+                BlocBuilder<BingoGameBloc, BingoGameState>(
+                  buildWhen: (previous, current) => 
+                    previous.winningPattern != current.winningPattern,
+                  builder: (context, state) {
+                    // Trigger animation when pattern changes
+                    _animatePatternChange(state.winningPattern);
+                    
+                    return Stack(
                       children: [
-                        // Game Title
-                        Expanded(
-                          child: Text(
-                            'Hip-Hop Fire Round',
-                            style: AppTextStyle.mochiyPopOne(
-                              fontSize: AppDimension.isSmall ? 14.sp : 12.sp,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
+                        // Full screen gesture detector to dismiss when tapping anywhere
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            ignoring: !_patternChangeAnimation.isCompleted,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: _dismissPatternChange,
+                              child: Container(
+                                color: Colors.transparent,
+                              ),
                             ),
                           ),
                         ),
-                        // Time Container
-                        GameTimeContainer(
-                          initialRound: 1,
-                          maxRounds: _maxRounds,
-                          timePerRoundInSeconds: _timePerRound,
-                          onRoundComplete: _onRoundComplete,
+                        
+                        // Original pattern notification
+                        Positioned(
+                          top: 180.h,
+                          left: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: _dismissPatternChange,
+                            child: FadeTransition(
+                              opacity: _patternChangeAnimation,
+                              child: ScaleTransition(
+                                scale: _patternChangeAnimation,
+                                child: Center(
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 20.w,
+                                      vertical: 12.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.purplePrimary,
+                                      borderRadius: BorderRadius.circular(24.r),
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 3.w,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.4),
+                                          blurRadius: 10,
+                                          spreadRadius: 3,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          'New Pattern',
+                                          style: AppTextStyle.mochiyPopOne(
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white.withOpacity(0.8),
+                                          ),
+                                        ),
+                                        SizedBox(height: 6.h),
+                                        AppImages(
+                                          imagePath: _winningPatterns[state.winningPattern]!['image'] as String,
+                                          width: 60.w,
+                                          height: 60.h,
+                                        ),
+                                        SizedBox(height: 8.h),
+                                        Text(
+                                          _winningPatterns[state.winningPattern]!['title'] as String,
+                                          style: AppTextStyle.mochiyPopOne(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        SizedBox(width: 12.w),
-                        // Player Container
-                        const GamePlayerContainer(
-                          playerCount: 120,
+                      ],
+                    );
+                  },
+                ),
+
+                // Bottom Navigation Icons
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 14.h,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Chat Icon
+                        AppImages(
+                          imagePath: AppImageData.chat,
+                          width: 38.w,
+                          height: 38.w,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              barrierColor: Colors.black54,
+                              builder: (BuildContext context) => BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                child: Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+                                  child: ChatRoomModal(
+                                    onClose: () => Navigator.of(context).pop(),
+                                    userInitials: 'JD',
+                                    activeUsers: 2500,
+                                    isConnected: true,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(width: 16.w),
+                        
+                        // Winning Pattern Icon
+                        BlocBuilder<BingoGameBloc, BingoGameState>(
+                          buildWhen: (previous, current) => 
+                            previous.winningPattern != current.winningPattern,
+                          builder: (context, state) {
+                            return AppImages(
+                              imagePath: _winningPatterns[state.winningPattern]!['image'] as String,
+                              width: 38.w,
+                              height: 38.w,
+                              onPressed: _showWinningPatternDetails,
+                            );
+                          },
+                        ),
+                        SizedBox(width: 16.w),
+                        
+                        // Info Icon with SuperTooltip
+                        GestureDetector(
+                          onTap: () async {
+                            await _tooltipController.showTooltip();
+                          },
+                          child: SuperTooltip(
+                            controller: _tooltipController,
+                            popupDirection: TooltipDirection.up,
+                            showBarrier: true,
+                            barrierColor: Colors.black.withOpacity(0.5),
+                            showDropBoxFilter: true,
+                            sigmaX: 10,
+                            sigmaY: 10,
+                            arrowLength: 10.h,
+                            arrowBaseWidth: 15.w,
+                            borderColor: Colors.transparent,
+                            backgroundColor: Colors.white,
+                            shadowColor: Colors.black54,
+                            borderWidth: 0,
+                            borderRadius: 16.r,
+                            touchThroughAreaShape: ClipAreaShape.rectangle,
+                            content: Material(
+                              color: Colors.transparent,
+                              child: Padding(
+                                padding: EdgeInsets.all(12.r),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.7,
+                                  child: Text(
+                                    "Hit Bingo button only if you have Bingo. If you call incorrectly more than twice, you will be eliminated from the round.",
+                                    style: AppTextStyle.poppins(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // The child of the SuperTooltip is the info icon
+                            child: AppImages(
+                              imagePath: AppImageData.info1,
+                              width: 40.w,
+                              height: 40.h,
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: AppDimension.isSmall ? 10.h : 14.h),
-                  
-                  // Called Board Container
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: const CalledBoardsContainer(),
-                  ),
-                  
-                  SizedBox(height: 16.h),
-                  
-                  // Bingo Board Box Container
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: const BingoBoardBoxContainer(),
-                  ),
-                ],
-              ),
-              
-              // Positioned Bingo Button
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: AppDimension.isSmall ? -6.h : 30.h,
-                child: BlocBuilder<BingoGameBloc, BingoGameState>(
-                  buildWhen: (previous, current) => previous.hasWon != current.hasWon,
-                  builder: (context, state) {
-                    return BingoButton(
-                      onPressed: () {
-                        final bingoBloc = context.read<BingoGameBloc>();
-                        // Use ClaimBingo instead of CheckForWinningPattern
-                        bingoBloc.add(const ClaimBingo());
-                        
-                        if (!state.hasWon) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Container(
-                                padding: EdgeInsets.all(16.r),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
-                                child: Text(
-                                  "No bingo yet! Keep playing.",
-                                  style: AppTextStyle.mochiyPopOne(
-                                    fontSize: 12.sp,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                            ),
-                          );
-                        }
-                      },
-                    );
-                  },
                 ),
-              ),
-
-              // Add winning pattern banner
-              BlocBuilder<BingoGameBloc, BingoGameState>(
-                buildWhen: (previous, current) => 
-                  previous.winningPattern != current.winningPattern,
-                builder: (context, state) {
-                  // Trigger animation when pattern changes
-                  _animatePatternChange(state.winningPattern);
-                  
-                  return Positioned(
-                    top: 180.h,
-                    left: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: _dismissPatternChange,
-                      child: FadeTransition(
-                        opacity: _patternChangeAnimation,
-                        child: ScaleTransition(
-                          scale: _patternChangeAnimation,
-                          child: Center(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20.w,
-                                vertical: 12.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.purplePrimary,
-                                borderRadius: BorderRadius.circular(24.r),
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 3.w,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.4),
-                                    blurRadius: 10,
-                                    spreadRadius: 3,
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'New Pattern',
-                                    style: AppTextStyle.mochiyPopOne(
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white.withOpacity(0.8),
-                                    ),
-                                  ),
-                                  SizedBox(height: 6.h),
-                                  AppImages(
-                                    imagePath: _winningPatterns[state.winningPattern]!['image'] as String,
-                                    width: 60.w,
-                                    height: 60.h,
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  Text(
-                                    _winningPatterns[state.winningPattern]!['title'] as String,
-                                    style: AppTextStyle.mochiyPopOne(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              // Bottom Navigation Icons
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 14.h,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Chat Icon
-                      AppImages(
-                        imagePath: AppImageData.chat,
-                        width: 38.w,
-                        height: 38.w,
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            barrierColor: Colors.black54,
-                            builder: (BuildContext context) => BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                              child: Dialog(
-                                backgroundColor: Colors.transparent,
-                                insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
-                                child: ChatRoomModal(
-                                  onClose: () => Navigator.of(context).pop(),
-                                  userInitials: 'JD',
-                                  activeUsers: 2500,
-                                  isConnected: true,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      SizedBox(width: 16.w),
-                      
-                      // Winning Pattern Icon
-                      BlocBuilder<BingoGameBloc, BingoGameState>(
-                        buildWhen: (previous, current) => 
-                          previous.winningPattern != current.winningPattern,
-                        builder: (context, state) {
-                          return AppImages(
-                            imagePath: _winningPatterns[state.winningPattern]!['image'] as String,
-                            width: 38.w,
-                            height: 38.w,
-                            onPressed: _showWinningPatternDetails,
-                          );
-                        },
-                      ),
-                      SizedBox(width: 16.w),
-                      
-                      // Info Icon
-                      AppImages(
-                        imagePath: AppImageData.info1,
-                        width: 38.w,
-                        height: 38.w,
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Container(
-                                padding: EdgeInsets.all(16.r),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
-                                child: Text(
-                                  "Hit Bingo button only if you have Bingo. If you call incorrectly more than twice, you will be eliminated from the round.",
-                                  style: AppTextStyle.mochiyPopOne(
-                                    fontSize: 12.sp,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                              backgroundColor: Colors.transparent,
-                              elevation: 0,
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
