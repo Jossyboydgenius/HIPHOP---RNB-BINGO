@@ -397,6 +397,11 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
     );
   }
 
+  void _dismissPatternChange() {
+    _hideTimer?.cancel();
+    _patternChangeController.reverse();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -470,9 +475,8 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                     return BingoButton(
                       onPressed: () {
                         final bingoBloc = context.read<BingoGameBloc>();
-                        bingoBloc.add(CheckForWinningPattern(
-                          patternType: bingoBloc.state.winningPattern
-                        ));
+                        // Use ClaimBingo instead of CheckForWinningPattern
+                        bingoBloc.add(const ClaimBingo());
                         
                         if (!state.hasWon) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -515,58 +519,61 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                     top: 180.h,
                     left: 0,
                     right: 0,
-                    child: FadeTransition(
-                      opacity: _patternChangeAnimation,
-                      child: ScaleTransition(
-                        scale: _patternChangeAnimation,
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 12.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.purplePrimary,
-                              borderRadius: BorderRadius.circular(24.r),
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 3.w,
+                    child: GestureDetector(
+                      onTap: _dismissPatternChange,
+                      child: FadeTransition(
+                        opacity: _patternChangeAnimation,
+                        child: ScaleTransition(
+                          scale: _patternChangeAnimation,
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20.w,
+                                vertical: 12.h,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.4),
-                                  blurRadius: 10,
-                                  spreadRadius: 3,
+                              decoration: BoxDecoration(
+                                color: AppColors.purplePrimary,
+                                borderRadius: BorderRadius.circular(24.r),
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 3.w,
                                 ),
-                              ],
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  'New Pattern',
-                                  style: AppTextStyle.mochiyPopOne(
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white.withOpacity(0.8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.4),
+                                    blurRadius: 10,
+                                    spreadRadius: 3,
                                   ),
-                                ),
-                                SizedBox(height: 6.h),
-                                AppImages(
-                                  imagePath: _winningPatterns[state.winningPattern]!['image'] as String,
-                                  width: 60.w,
-                                  height: 60.h,
-                                ),
-                                SizedBox(height: 8.h),
-                                Text(
-                                  _winningPatterns[state.winningPattern]!['title'] as String,
-                                  style: AppTextStyle.mochiyPopOne(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'New Pattern',
+                                    style: AppTextStyle.mochiyPopOne(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white.withOpacity(0.8),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 6.h),
+                                  AppImages(
+                                    imagePath: _winningPatterns[state.winningPattern]!['image'] as String,
+                                    width: 60.w,
+                                    height: 60.h,
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    _winningPatterns[state.winningPattern]!['title'] as String,
+                                    style: AppTextStyle.mochiyPopOne(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
