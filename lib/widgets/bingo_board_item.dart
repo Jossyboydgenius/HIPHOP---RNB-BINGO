@@ -224,6 +224,7 @@ class BingoBoardItem extends StatelessWidget {
         // For all other items, wrap in gesture detector
         return GestureDetector(
           onTap: () {
+            print("BingoBoardItem tapped: $text, isCalled: $isCalled");
             if (isCalled) {
               context.read<BingoGameBloc>().add(
                 SelectBingoItem(
