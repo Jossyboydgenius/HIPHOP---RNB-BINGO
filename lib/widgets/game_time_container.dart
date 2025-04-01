@@ -194,8 +194,10 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        // Only check for win after user has claimed bingo
         BlocListener<BingoGameBloc, BingoGameState>(
-          listenWhen: (previous, current) => previous.hasWon != current.hasWon,
+          listenWhen: (previous, current) => 
+              previous.hasWon != current.hasWon && current.hasWon,
           listener: (context, state) {
             _checkForWin(state);
           },
