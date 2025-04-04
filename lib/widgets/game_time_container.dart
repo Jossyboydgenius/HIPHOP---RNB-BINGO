@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
@@ -35,7 +36,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
   bool _isTimerRunning = false;
   bool _isLoading = false; // New state to track loading spinner between rounds
   Timer? _loadingTimer; // Timer for loading screen
-  
+
   @override
   void initState() {
     super.initState();
@@ -43,14 +44,14 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
     _secondsRemaining = widget.timePerRoundInSeconds;
     _startTimer();
   }
-  
+
   @override
   void dispose() {
     _timer?.cancel();
     _loadingTimer?.cancel();
     super.dispose();
   }
-  
+
   // Public method to reset the timer
   void resetTimer() {
     _timer?.cancel();
@@ -61,7 +62,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
     });
     _startTimer();
   }
-  
+
   void _startTimer() {
     _isTimerRunning = true;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -73,7 +74,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
         // Time's up for this round, user loses
         _timer?.cancel();
         _isTimerRunning = false;
-        
+
         // Only notify if at least one round was played
         if (_currentRound > 0) {
           widget.onRoundComplete?.call(false, _currentRound);
@@ -82,7 +83,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       }
     });
   }
-  
+
   void _showTimeUpMessage() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -107,35 +108,35 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       ),
     );
   }
-  
+
   void _checkForWin(BingoGameState state) {
     if (state.hasWon && _isTimerRunning) {
       // User won this round, advance to next round if not at max rounds
       _timer?.cancel();
       _isTimerRunning = false;
-      
+
       // Show loading spinner for 3 seconds before advancing to next round
       setState(() {
         _isLoading = true;
       });
-      
+
       // Show success message first
       _showRoundSuccessMessage();
-      
+
       // After 3 seconds, advance to next round
       _loadingTimer = Timer(const Duration(seconds: 3), () {
         if (mounted) {
           setState(() {
             _isLoading = false;
-            
+
             if (_currentRound < widget.maxRounds) {
               // Move to next round
               _currentRound++;
               _secondsRemaining = widget.timePerRoundInSeconds;
-              
+
               // Reset the game state (keep the winning pattern)
               context.read<BingoGameBloc>().add(ResetGame());
-              
+
               // Start the timer for next round
               _startTimer();
             } else {
@@ -148,7 +149,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       });
     }
   }
-  
+
   void _showRoundSuccessMessage() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -173,7 +174,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       ),
     );
   }
-  
+
   void _showGameCompleteMessage() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -198,7 +199,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       ),
     );
   }
-  
+
   String get _timeString {
     final minutes = _secondsRemaining ~/ 60;
     final seconds = _secondsRemaining % 60;
@@ -211,7 +212,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       listeners: [
         // Only check for win after user has claimed bingo
         BlocListener<BingoGameBloc, BingoGameState>(
-          listenWhen: (previous, current) => 
+          listenWhen: (previous, current) =>
               previous.hasWon != current.hasWon && current.hasWon,
           listener: (context, state) {
             _checkForWin(state);
@@ -231,7 +232,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
                 _isLoading = false;
               });
               _startTimer();
-              
+
               // Reset the flag
               bloc.resetGameOverFlag();
             }
@@ -247,7 +248,8 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
               vertical: AppDimension.isSmall ? 6.h : 4.h,
             ),
             decoration: BoxDecoration(
-              color: _secondsRemaining < 10 ? AppColors.pinkDark : AppColors.teal,
+              color:
+                  _secondsRemaining < 10 ? AppColors.pinkDark : AppColors.teal,
               borderRadius: BorderRadius.circular(100.r),
               border: Border.all(
                 color: Colors.white,
@@ -258,7 +260,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(width: AppDimension.isSmall ? 14.w : 16.w),
-                _isLoading 
+                _isLoading
                     ? SizedBox(
                         width: 50.w,
                         child: Row(
@@ -266,9 +268,9 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
                             SizedBox(
                               height: 10.h,
                               width: 10.w,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.w,
-                                color: Colors.white,
+                              child: SpinKitCubeGrid(
+                                size: 10.w,
+                                color: AppColors.yellowPrimary,
                               ),
                             ),
                             SizedBox(width: 8.w),
@@ -310,4 +312,4 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       ),
     );
   }
-} 
+}
