@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_background.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'package:hiphop_rnb_bingo/widgets/called_boards_container.dart';
@@ -26,7 +27,8 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateMixin {
+class _GameScreenState extends State<GameScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _patternChangeController;
   late Animation<double> _patternChangeAnimation;
   String _lastPattern = '';
@@ -35,54 +37,55 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   final int _maxRounds = 3;
   // Time per round in seconds
   final int _timePerRound = 240; // 4 minutes
-  
+
   // SuperTooltip controller
   final _tooltipController = SuperTooltipController();
 
   Map<String, Map<String, dynamic>> get _winningPatterns => {
-    'fourCornersBingo': {
-      'image': AppImageData.fourCornersBingo,
-      'title': 'Four Corners',
-      'description': 'Mark all four corners of the board to win.',
-    },
-    'blackoutBingo': {
-      'image': AppImageData.blackoutBingo,
-      'title': 'Blackout',
-      'description': 'Mark every square on the board to win.',
-    },
-    'straightlineBingo': {
-      'image': AppImageData.straightlineBingo,
-      'title': 'Straight Line',
-      'description': 'Mark 5 squares in a straight line (horizontal, vertical, or diagonal) to win.',
-    },
-    'tShapeBingo': {
-      'image': AppImageData.tShapeBingo,
-      'title': 'T-Shape',
-      'description': 'Mark squares in a T-shape pattern to win.',
-    },
-    'xPatternBingo': {
-      'image': AppImageData.xPatternBingo,
-      'title': 'X-Pattern',
-      'description': 'Mark squares in an X-pattern to win.',
-    },
-  };
+        'fourCornersBingo': {
+          'image': AppImageData.fourCornersBingo,
+          'title': 'Four Corners',
+          'description': 'Mark all four corners of the board to win.',
+        },
+        'blackoutBingo': {
+          'image': AppImageData.blackoutBingo,
+          'title': 'Blackout',
+          'description': 'Mark every square on the board to win.',
+        },
+        'straightlineBingo': {
+          'image': AppImageData.straightlineBingo,
+          'title': 'Straight Line',
+          'description':
+              'Mark 5 squares in a straight line (horizontal, vertical, or diagonal) to win.',
+        },
+        'tShapeBingo': {
+          'image': AppImageData.tShapeBingo,
+          'title': 'T-Shape',
+          'description': 'Mark squares in a T-shape pattern to win.',
+        },
+        'xPatternBingo': {
+          'image': AppImageData.xPatternBingo,
+          'title': 'X-Pattern',
+          'description': 'Mark squares in an X-pattern to win.',
+        },
+      };
 
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize animation controller for pattern changes
     _patternChangeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
-    
+
     _patternChangeAnimation = CurvedAnimation(
       parent: _patternChangeController,
       curve: Curves.elasticOut,
     );
   }
-  
+
   @override
   void dispose() {
     _patternChangeController.dispose();
@@ -97,7 +100,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
       _lastPattern = newPattern;
       _patternChangeController.reset();
       _patternChangeController.forward();
-      
+
       // Auto-hide after 5 seconds instead of 3
       _hideTimer?.cancel();
       _hideTimer = Timer(const Duration(seconds: 5), () {
@@ -118,7 +121,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
       _showFinalLoseMessage();
     }
   }
-  
+
   void _showFinalWinMessage() {
     showDialog(
       context: context,
@@ -188,7 +191,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
       ),
     );
   }
-  
+
   void _showFinalLoseMessage() {
     showDialog(
       context: context,
@@ -262,7 +265,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   void _showWinningPatternDetails() {
     final currentPattern = context.read<BingoGameBloc>().state.winningPattern;
     final pattern = _winningPatterns[currentPattern]!;
-    
+
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -336,19 +339,20 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                       final patternKey = _winningPatterns.keys.elementAt(index);
                       final patternData = _winningPatterns[patternKey]!;
                       final isSelected = patternKey == currentPattern;
-                      
+
                       return GestureDetector(
                         onTap: () {
                           // Update winning pattern
                           context.read<BingoGameBloc>().add(
-                            CheckForWinningPattern(patternType: patternKey)
-                          );
+                              CheckForWinningPattern(patternType: patternKey));
                           Navigator.pop(context);
                         },
                         child: Container(
                           width: 50.w,
                           decoration: BoxDecoration(
-                            color: isSelected ? AppColors.yellowPrimary : AppColors.purplePrimary,
+                            color: isSelected
+                                ? AppColors.yellowPrimary
+                                : AppColors.purplePrimary,
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
                               color: Colors.white,
@@ -418,7 +422,8 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
   }
 
   void _handleFullScreenTap() {
-    print("Full screen tap detected! Animation value: ${_patternChangeAnimation.value}");
+    print(
+        "Full screen tap detected! Animation value: ${_patternChangeAnimation.value}");
     if (_patternChangeAnimation.isCompleted) {
       print("Pattern notification is fully visible, dismissing");
       _dismissPatternChange();
@@ -472,15 +477,15 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     SizedBox(height: AppDimension.isSmall ? 10.h : 14.h),
-                    
+
                     // Called Board Container
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: const CalledBoardsContainer(),
                     ),
-                    
+
                     SizedBox(height: 16.h),
-                    
+
                     // Bingo Board Box Container
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -488,20 +493,21 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                     ),
                   ],
                 ),
-                
+
                 // Positioned Bingo Button
                 Positioned(
                   left: 0,
                   right: 0,
                   bottom: AppDimension.isSmall ? -6.h : 30.h,
                   child: BlocBuilder<BingoGameBloc, BingoGameState>(
-                    buildWhen: (previous, current) => previous.hasWon != current.hasWon,
+                    buildWhen: (previous, current) =>
+                        previous.hasWon != current.hasWon,
                     builder: (context, state) {
                       return BingoButton(
                         onPressed: () {
                           final bingoBloc = context.read<BingoGameBloc>();
                           bingoBloc.add(const ClaimBingo());
-                          
+
                           if (!state.hasWon) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -533,12 +539,12 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
 
                 // Pattern change notification with full screen dismissibility
                 BlocBuilder<BingoGameBloc, BingoGameState>(
-                  buildWhen: (previous, current) => 
-                    previous.winningPattern != current.winningPattern,
+                  buildWhen: (previous, current) =>
+                      previous.winningPattern != current.winningPattern,
                   builder: (context, state) {
                     // Trigger animation when pattern changes
                     _animatePatternChange(state.winningPattern);
-                    
+
                     return Stack(
                       children: [
                         // Full screen gesture detector to dismiss when tapping anywhere
@@ -553,7 +559,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                               ),
                             ),
                           ),
-                        
+
                         // Original pattern notification
                         Positioned(
                           top: 180.h,
@@ -594,18 +600,23 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                                           style: AppTextStyle.mochiyPopOne(
                                             fontSize: 10.sp,
                                             fontWeight: FontWeight.w400,
-                                            color: Colors.white.withOpacity(0.8),
+                                            color:
+                                                Colors.white.withOpacity(0.8),
                                           ),
                                         ),
                                         SizedBox(height: 6.h),
                                         AppImages(
-                                          imagePath: _winningPatterns[state.winningPattern]!['image'] as String,
+                                          imagePath: _winningPatterns[state
+                                                  .winningPattern]!['image']
+                                              as String,
                                           width: 60.w,
                                           height: 60.h,
                                         ),
                                         SizedBox(height: 8.h),
                                         Text(
-                                          _winningPatterns[state.winningPattern]!['title'] as String,
+                                          _winningPatterns[state
+                                                  .winningPattern]!['title']
+                                              as String,
                                           style: AppTextStyle.mochiyPopOne(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w400,
@@ -646,10 +657,12 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                               barrierDismissible: false,
                               barrierColor: Colors.black54,
                               builder: (BuildContext context) => BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                filter:
+                                    ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                 child: Dialog(
                                   backgroundColor: Colors.transparent,
-                                  insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+                                  insetPadding:
+                                      EdgeInsets.symmetric(horizontal: 24.w),
                                   child: ChatRoomModal(
                                     onClose: () => Navigator.of(context).pop(),
                                     userInitials: 'JD',
@@ -662,14 +675,15 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                           },
                         ),
                         SizedBox(width: 16.w),
-                        
+
                         // Winning Pattern Icon
                         BlocBuilder<BingoGameBloc, BingoGameState>(
-                          buildWhen: (previous, current) => 
-                            previous.winningPattern != current.winningPattern,
+                          buildWhen: (previous, current) =>
+                              previous.winningPattern != current.winningPattern,
                           builder: (context, state) {
                             return AppImages(
-                              imagePath: _winningPatterns[state.winningPattern]!['image'] as String,
+                              imagePath: _winningPatterns[
+                                  state.winningPattern]!['image'] as String,
                               width: 38.w,
                               height: 38.w,
                               onPressed: _showWinningPatternDetails,
@@ -677,7 +691,7 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                           },
                         ),
                         SizedBox(width: 16.w),
-                        
+
                         // Info Icon with SuperTooltip
                         GestureDetector(
                           onTap: () async {
@@ -704,7 +718,8 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                               child: Padding(
                                 padding: EdgeInsets.all(12.r),
                                 child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.7,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.7,
                                   child: Text(
                                     "Hit Bingo button only if you have Bingo. If you call incorrectly more than twice, you will be eliminated from the round.",
                                     style: AppTextStyle.poppins(
@@ -732,7 +747,8 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
 
                 // Loading Overlay when transitioning between rounds
                 BlocBuilder<BingoGameBloc, BingoGameState>(
-                  buildWhen: (previous, current) => previous.hasWon != current.hasWon,
+                  buildWhen: (previous, current) =>
+                      previous.hasWon != current.hasWon,
                   builder: (context, state) {
                     if (state.hasWon) {
                       return Positioned.fill(
@@ -754,11 +770,11 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
                                 SizedBox(height: 24.h),
                                 // Loading spinner
                                 SizedBox(
-                                  height: 60.h,
-                                  width: 60.w,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 8.w,
+                                  height: 40.h,
+                                  width: 40.w,
+                                  child: SpinKitCubeGrid(
                                     color: AppColors.yellowPrimary,
+                                    size: 40.w,
                                   ),
                                 ),
                                 SizedBox(height: 24.h),
@@ -788,4 +804,4 @@ class _GameScreenState extends State<GameScreen> with SingleTickerProviderStateM
       ),
     );
   }
-} 
+}
