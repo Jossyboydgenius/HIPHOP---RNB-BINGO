@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 
 class GameTimeContainer extends StatefulWidget {
   final int initialRound;
@@ -36,6 +37,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
   bool _isTimerRunning = false;
   bool _isLoading = false; // New state to track loading spinner between rounds
   Timer? _loadingTimer; // Timer for loading screen
+  final _soundService = GameSoundService(); // Add sound service instance
 
   @override
   void initState() {
@@ -85,6 +87,9 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
   }
 
   void _showTimeUpMessage() {
+    // Play wrong bingo sound
+    _soundService.playWrongBingo();
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Container(
@@ -115,6 +120,9 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       _timer?.cancel();
       _isTimerRunning = false;
 
+      // Play correct bingo sound
+      _soundService.playCorrectBingo();
+
       // Show loading spinner for 3 seconds before advancing to next round
       setState(() {
         _isLoading = true;
@@ -134,6 +142,9 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
               _currentRound++;
               _secondsRemaining = widget.timePerRoundInSeconds;
 
+              // Play new round sound
+              _soundService.playNewRound();
+
               // Reset the game state (keep the winning pattern)
               context.read<BingoGameBloc>().add(ResetGame());
 
@@ -141,6 +152,9 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
               _startTimer();
             } else {
               // Player completed all rounds
+              // Play prize win sound
+              _soundService.playPrizeWin();
+
               widget.onRoundComplete?.call(true, _currentRound);
               _showGameCompleteMessage();
             }
