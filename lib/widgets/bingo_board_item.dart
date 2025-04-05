@@ -80,7 +80,8 @@ class BingoBoardItem extends StatelessWidget {
         if (isColComplete) return true;
 
         // Diagonal check (top-left to bottom-right)
-        if (index % 6 == 0 && index < 25) { // Indexes 0, 6, 12, 18, 24
+        if (index % 6 == 0 && index < 25) {
+          // Indexes 0, 6, 12, 18, 24
           bool isDiag1Complete = true;
           for (int i = 0; i < 5; i++) {
             if (!selectedItems.contains(i * 5 + i)) {
@@ -92,7 +93,11 @@ class BingoBoardItem extends StatelessWidget {
         }
 
         // Diagonal check (top-right to bottom-left)
-        if ((index == 4) || (index == 8) || (index == 12) || (index == 16) || (index == 20)) {
+        if ((index == 4) ||
+            (index == 8) ||
+            (index == 12) ||
+            (index == 16) ||
+            (index == 20)) {
           bool isDiag2Complete = true;
           for (int i = 0; i < 5; i++) {
             if (!selectedItems.contains(i * 5 + (4 - i))) {
@@ -102,7 +107,7 @@ class BingoBoardItem extends StatelessWidget {
           }
           if (isDiag2Complete) return true;
         }
-        
+
         return false;
 
       case 'blackoutBingo':
@@ -111,43 +116,49 @@ class BingoBoardItem extends StatelessWidget {
 
       case 'fourCornersBingo':
         // Check if this is a corner and all corners are selected
-        final bool isFourCorners = selectedItems.contains(0) && 
-                                  selectedItems.contains(4) && 
-                                  selectedItems.contains(20) && 
-                                  selectedItems.contains(24);
-        
-        return isFourCorners && (index == 0 || index == 4 || index == 20 || index == 24);
+        final bool isFourCorners = selectedItems.contains(0) &&
+            selectedItems.contains(4) &&
+            selectedItems.contains(20) &&
+            selectedItems.contains(24);
+
+        return isFourCorners &&
+            (index == 0 || index == 4 || index == 20 || index == 24);
 
       case 'tShapeBingo':
         // Top row or middle column
         final bool isTopRow = index < 5;
         final bool isMiddleCol = index % 5 == 2;
-        final bool isTPattern = selectedItems.contains(0) && 
-                               selectedItems.contains(1) && 
-                               selectedItems.contains(2) && 
-                               selectedItems.contains(3) && 
-                               selectedItems.contains(4) &&
-                               selectedItems.contains(7) && 
-                               selectedItems.contains(12) && 
-                               selectedItems.contains(17) && 
-                               selectedItems.contains(22);
-        
+        final bool isTPattern = selectedItems.contains(0) &&
+            selectedItems.contains(1) &&
+            selectedItems.contains(2) &&
+            selectedItems.contains(3) &&
+            selectedItems.contains(4) &&
+            selectedItems.contains(7) &&
+            selectedItems.contains(12) &&
+            selectedItems.contains(17) &&
+            selectedItems.contains(22);
+
         return isTPattern && (isTopRow || isMiddleCol);
 
       case 'xPatternBingo':
         // Diagonals - check if index is part of either diagonal
-        final bool isDiag1 = index % 6 == 0 && index < 25; // Indexes 0, 6, 12, 18, 24
-        final bool isDiag2 = (index == 4) || (index == 8) || (index == 12) || (index == 16) || (index == 20);
-        final bool isXPattern = selectedItems.contains(0) && 
-                              selectedItems.contains(6) && 
-                              selectedItems.contains(12) && 
-                              selectedItems.contains(18) && 
-                              selectedItems.contains(24) &&
-                              selectedItems.contains(4) && 
-                              selectedItems.contains(8) && 
-                              selectedItems.contains(16) && 
-                              selectedItems.contains(20);
-        
+        final bool isDiag1 =
+            index % 6 == 0 && index < 25; // Indexes 0, 6, 12, 18, 24
+        final bool isDiag2 = (index == 4) ||
+            (index == 8) ||
+            (index == 12) ||
+            (index == 16) ||
+            (index == 20);
+        final bool isXPattern = selectedItems.contains(0) &&
+            selectedItems.contains(6) &&
+            selectedItems.contains(12) &&
+            selectedItems.contains(18) &&
+            selectedItems.contains(24) &&
+            selectedItems.contains(4) &&
+            selectedItems.contains(8) &&
+            selectedItems.contains(16) &&
+            selectedItems.contains(20);
+
         return isXPattern && (isDiag1 || isDiag2);
 
       default:
@@ -156,57 +167,62 @@ class BingoBoardItem extends StatelessWidget {
   }
 
   /// Checks if the current index is part of a potential winning pattern (before user claims bingo)
-  bool _isPartOfPotentialWinningPattern(List<int> selectedItems, String patternType) {
+  bool _isPartOfPotentialWinningPattern(
+      List<int> selectedItems, String patternType) {
     if (!selectedItems.contains(index)) {
       return false; // This cell isn't even selected, so it can't be part of a winning pattern
     }
-    
+
     return _isPartOfWinningPattern(selectedItems, patternType);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BingoGameBloc, BingoGameState>(
-      buildWhen: (previous, current) => 
-        previous.calledBoards != current.calledBoards ||
-        previous.selectedItems != current.selectedItems ||
-        previous.hasWon != current.hasWon,
+      buildWhen: (previous, current) =>
+          previous.calledBoards != current.calledBoards ||
+          previous.selectedItems != current.selectedItems ||
+          previous.hasWon != current.hasWon,
       builder: (context, state) {
         final bool isCalled = isCenter || state.isItemCalled(text);
-        final bool isSelected = state.isItemSelected(index);
-        final bool isWinningItem = state.hasWon && isSelected && 
-                                  _isPartOfWinningPattern(state.selectedItems, state.winningPattern);
-        
+        final bool isSelected = isCenter || state.isItemSelected(index);
+        final bool isWinningItem = state.hasWon &&
+            isSelected &&
+            _isPartOfWinningPattern(state.selectedItems, state.winningPattern);
+
         // Check if this is part of a potential winning pattern (before claiming bingo)
-        final bool isPotentialWinningItem = !state.hasWon && isSelected && 
-                                        _isPartOfPotentialWinningPattern(state.selectedItems, state.winningPattern);
-        
+        final bool isPotentialWinningItem = !state.hasWon &&
+            isSelected &&
+            _isPartOfPotentialWinningPattern(
+                state.selectedItems, state.winningPattern);
+
         // Determine if we should show the star icon for this item
-        final bool showIcon = isCenter || isWinningItem || isPotentialWinningItem;
-        
+        final bool showIcon =
+            isCenter || isWinningItem || isPotentialWinningItem;
+
         // Create the item container without gesture detector
         Widget itemContainer = Container(
           decoration: BoxDecoration(
-            color: isSelected 
-                ? categoryColor 
-                : categoryColor.withOpacity(0.2),
+            color: isSelected ? categoryColor : categoryColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
               color: isSelected ? Colors.white : categoryColor,
               width: 2.w,
             ),
-            boxShadow: isSelected ? [
-              BoxShadow(
-                color: categoryColor.withOpacity(0.5),
-                blurRadius: 8,
-                spreadRadius: 2,
-              ),
-              BoxShadow(
-                color: categoryColor.withOpacity(0.3),
-                blurRadius: 12,
-                spreadRadius: 4,
-              ),
-            ] : null,
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: categoryColor.withOpacity(0.5),
+                      blurRadius: 8,
+                      spreadRadius: 2,
+                    ),
+                    BoxShadow(
+                      color: categoryColor.withOpacity(0.3),
+                      blurRadius: 12,
+                      spreadRadius: 4,
+                    ),
+                  ]
+                : null,
           ),
           child: Center(
             child: showIcon
@@ -230,24 +246,24 @@ class BingoBoardItem extends StatelessWidget {
                   ),
           ),
         );
-        
+
         // If it's the center item, return it directly without gesture detector
         if (isCenter) {
           return itemContainer;
         }
-        
+
         // For all other items, wrap in gesture detector
         return GestureDetector(
           onTap: () {
             print("BingoBoardItem tapped: $text, isCalled: $isCalled");
             if (isCalled) {
               context.read<BingoGameBloc>().add(
-                SelectBingoItem(
-                  text: text,
-                  category: category,
-                  index: index,
-                ),
-              );
+                    SelectBingoItem(
+                      text: text,
+                      category: category,
+                      index: index,
+                    ),
+                  );
             }
           },
           child: itemContainer,
