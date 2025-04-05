@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 import 'app_images.dart';
 
 class SoundVibrateControls extends StatefulWidget {
@@ -15,8 +16,8 @@ class SoundVibrateControls extends StatefulWidget {
 }
 
 class _SoundVibrateControlsState extends State<SoundVibrateControls> {
-  bool _isSoundOn = false;
-  bool _isVibrateOn = false;
+  // Use the GameSoundService instance
+  final _soundService = GameSoundService();
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +28,15 @@ class _SoundVibrateControlsState extends State<SoundVibrateControls> {
         children: [
           GestureDetector(
             onTap: () {
-              // TODO: Handle sound toggle
               setState(() {
-                _isSoundOn = !_isSoundOn;
+                _soundService.toggleSound();
+                // Note: vibration feedback is already handled in toggleSound()
               });
             },
             child: AppImages(
-              imagePath:
-                  _isSoundOn ? AppImageData.soundOn : AppImageData.soundOff,
+              imagePath: _soundService.isSoundEnabled
+                  ? AppImageData.soundOn
+                  : AppImageData.soundOff,
               width: 32.w,
               height: 32.h,
             ),
@@ -42,13 +44,13 @@ class _SoundVibrateControlsState extends State<SoundVibrateControls> {
           SizedBox(height: 8.h),
           GestureDetector(
             onTap: () {
-              // TODO: Handle vibration toggle
               setState(() {
-                _isVibrateOn = !_isVibrateOn;
+                _soundService.toggleVibrate();
+                // Note: vibration feedback is already handled in toggleVibrate()
               });
             },
             child: AppImages(
-              imagePath: _isVibrateOn
+              imagePath: _soundService.isVibrateEnabled
                   ? AppImageData.vibrateOn
                   : AppImageData.vibrateOff,
               width: 32.w,
