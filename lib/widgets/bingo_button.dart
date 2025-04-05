@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sounds.dart';
 
 class BingoButton extends StatefulWidget {
   final VoidCallback onPressed;
@@ -15,7 +17,8 @@ class BingoButton extends StatefulWidget {
   State<BingoButton> createState() => _BingoButtonState();
 }
 
-class _BingoButtonState extends State<BingoButton> with SingleTickerProviderStateMixin {
+class _BingoButtonState extends State<BingoButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -47,6 +50,8 @@ class _BingoButtonState extends State<BingoButton> with SingleTickerProviderStat
 
   void _handleTapUp(TapUpDetails details) {
     _controller.reverse();
+    // Play button click sound and vibrate
+    GameSoundService().playButtonClick();
     widget.onPressed();
   }
 
@@ -74,4 +79,4 @@ class _BingoButtonState extends State<BingoButton> with SingleTickerProviderStat
       ),
     );
   }
-} 
+}
