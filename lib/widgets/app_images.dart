@@ -21,6 +21,10 @@ class AppImageData {
   static const String bingoCard = '$_base/bingo-card.png';
   static const String bingoButton = '$_base/bingo-button.png';
   static const String magic = '$_base/magic.png';
+  static const String soundOn = '$_base/sound-on.png';
+  static const String soundOff = '$_base/sound-off.png';
+  static const String vibrateOn = '$_base/vibrate-on.png';
+  static const String vibrateOff = '$_base/vibrate-off.png';
 
   // Payment options images
   static const String paypal = '$_base/paypal.png';
@@ -141,4 +145,4 @@ class AppImages extends StatelessWidget {
       ),
     );
   }
-} 
+}
