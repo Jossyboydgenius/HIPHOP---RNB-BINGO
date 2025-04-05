@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 
 class BingoBoardItem extends StatelessWidget {
   final String text;
@@ -255,6 +256,9 @@ class BingoBoardItem extends StatelessWidget {
         // For all other items, wrap in gesture detector
         return GestureDetector(
           onTap: () {
+            // Play board tap sound with haptic feedback
+            GameSoundService().playBoardTap();
+
             print("BingoBoardItem tapped: $text, isCalled: $isCalled");
             if (isCalled) {
               context.read<BingoGameBloc>().add(
