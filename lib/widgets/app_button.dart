@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_text_style.dart';
 import 'app_icons.dart';
 import 'app_images.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 
 class AppButton extends StatefulWidget {
   final String text;
@@ -80,7 +81,8 @@ class AppButton extends StatefulWidget {
   State<AppButton> createState() => _AppButtonState();
 }
 
-class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMixin {
+class _AppButtonState extends State<AppButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -118,6 +120,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   void _handleTapUp(TapUpDetails details) {
     if (!widget.disabled && widget.onPressed != null) {
       _controller.reverse();
+      GameSoundService().playButtonClick();
       widget.onPressed?.call();
     }
   }
@@ -152,11 +155,14 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   }
 
   Widget _buildContent() {
-    final hasIcon = widget.iconPath != null || widget.imagePath != null || widget.icon != null;
+    final hasIcon = widget.iconPath != null ||
+        widget.imagePath != null ||
+        widget.icon != null;
     final iconWidget = hasIcon ? _buildIcon() : null;
-    final effectiveTextColor = widget.onPressed == null && widget.nullTextColor != null 
-        ? widget.nullTextColor 
-        : widget.textColor;
+    final effectiveTextColor =
+        widget.onPressed == null && widget.nullTextColor != null
+            ? widget.nullTextColor
+            : widget.textColor;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -173,8 +179,8 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                 ? Text(
                     widget.text,
                     style: widget.textStyle?.copyWith(
-                      color: widget.disabled 
-                          ? effectiveTextColor?.withOpacity(0.5) 
+                      color: widget.disabled
+                          ? effectiveTextColor?.withOpacity(0.5)
                           : effectiveTextColor,
                     ),
                   )
@@ -185,15 +191,15 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                             fontFamily: widget.fontFamily,
                             fontSize: (widget.fontSize ?? 20).sp,
                             fontWeight: widget.fontWeight,
-                            color: widget.disabled 
-                                ? effectiveTextColor?.withOpacity(0.5) 
+                            color: widget.disabled
+                                ? effectiveTextColor?.withOpacity(0.5)
                                 : effectiveTextColor,
                           )
                         : AppTextStyle.poppins(
                             fontSize: widget.fontSize ?? 20,
                             fontWeight: widget.fontWeight,
-                            color: widget.disabled 
-                                ? effectiveTextColor?.withOpacity(0.5) 
+                            color: widget.disabled
+                                ? effectiveTextColor?.withOpacity(0.5)
                                 : effectiveTextColor,
                           ),
                   ),
@@ -201,13 +207,14 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
               SizedBox(height: 4.h),
               Text(
                 widget.subtitle!,
-                style: widget.subtitleStyle ?? AppTextStyle.poppins(
-                  fontSize: widget.subtitleFontSize ?? 14,
-                  fontWeight: FontWeight.w500,
-                  color: widget.disabled 
-                      ? effectiveTextColor?.withOpacity(0.5) 
-                      : effectiveTextColor,
-                ),
+                style: widget.subtitleStyle ??
+                    AppTextStyle.poppins(
+                      fontSize: widget.subtitleFontSize ?? 14,
+                      fontWeight: FontWeight.w500,
+                      color: widget.disabled
+                          ? effectiveTextColor?.withOpacity(0.5)
+                          : effectiveTextColor,
+                    ),
               ),
             ],
           ],
@@ -233,11 +240,15 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
           width: widget.width?.w ?? MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(widget.borderRadius.r),
-            border: widget.hasBorder ? Border.all(
-              color: widget.borderColor,
-              width: widget.borderWidth.w,
-            ) : null,
-            color: widget.disabled ? widget.fillColor.withOpacity(0.5) : widget.fillColor,
+            border: widget.hasBorder
+                ? Border.all(
+                    color: widget.borderColor,
+                    width: widget.borderWidth.w,
+                  )
+                : null,
+            color: widget.disabled
+                ? widget.fillColor.withOpacity(0.5)
+                : widget.fillColor,
           ),
           child: Stack(
             children: [
@@ -249,9 +260,10 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                   height: (widget.layerHeight ?? widget.height * 0.65).h,
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(widget.borderRadius.r),
-                      color: widget.disabled 
-                          ? widget.layerColor!.withOpacity(0.5) 
+                      borderRadius:
+                          BorderRadius.circular(widget.borderRadius.r),
+                      color: widget.disabled
+                          ? widget.layerColor!.withOpacity(0.5)
                           : widget.layerColor,
                     ),
                   ),
@@ -264,4 +276,4 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
       ),
     );
   }
-} 
+}
