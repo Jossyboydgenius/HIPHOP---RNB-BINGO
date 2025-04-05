@@ -19,6 +19,7 @@ import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
 import 'package:super_tooltip/super_tooltip.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -40,6 +41,9 @@ class _GameScreenState extends State<GameScreen>
 
   // SuperTooltip controller
   final _tooltipController = SuperTooltipController();
+
+  // Add sound service as a class member in _GameScreenState
+  final _soundService = GameSoundService();
 
   Map<String, Map<String, dynamic>> get _winningPatterns => {
         'fourCornersBingo': {
@@ -101,6 +105,9 @@ class _GameScreenState extends State<GameScreen>
       _patternChangeController.reset();
       _patternChangeController.forward();
 
+      // Play alert sound for new pattern
+      _soundService.playAlertPopup();
+
       // Auto-hide after 5 seconds instead of 3
       _hideTimer?.cancel();
       _hideTimer = Timer(const Duration(seconds: 5), () {
@@ -123,6 +130,9 @@ class _GameScreenState extends State<GameScreen>
   }
 
   void _showFinalWinMessage() {
+    // Play prize win sound
+    _soundService.playPrizeWin();
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -193,6 +203,9 @@ class _GameScreenState extends State<GameScreen>
   }
 
   void _showFinalLoseMessage() {
+    // Play wrong bingo sound
+    _soundService.playWrongBingo();
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -263,6 +276,9 @@ class _GameScreenState extends State<GameScreen>
   }
 
   void _showWinningPatternDetails() {
+    // Play button click sound
+    _soundService.playButtonClick();
+
     final currentPattern = context.read<BingoGameBloc>().state.winningPattern;
     final pattern = _winningPatterns[currentPattern]!;
 
@@ -408,6 +424,8 @@ class _GameScreenState extends State<GameScreen>
 
   void _dismissPatternChange() {
     _hideTimer?.cancel();
+    // Play button click sound when dismissing
+    _soundService.playButtonClick();
     _patternChangeController.reverse();
     print("Pattern dismiss called!");
   }
