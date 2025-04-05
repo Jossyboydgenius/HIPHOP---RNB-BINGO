@@ -33,13 +33,13 @@ class AppColors {
   static const Color grayLight = Color(0xFFF0F0F0);
   static const Color grayDark = Color(0xFFA5A5A5);
   static const Color grayTransparent = Color(0xFFD9D9D9);
- 
 
   // Green shades
   static const Color greenBright = Color(0xFF67EB00);
   static const Color greenLight = Color(0xFFF4FFE4);
   static const Color greenDark = Color(0xFF4EC307);
   static const Color deepGreen = Color(0xFF52B342);
+  static const Color green = Color(0xFF35CB83);
   static const Color teal = Color(0xFF3FD6B3);
 
   // Background colors
@@ -47,7 +47,7 @@ class AppColors {
   static const Color backgroundLight = Color(0xFFF0F0F0);
   static const Color backgroundGrey = Color(0xFFD9D9D9);
 
- // Pink/Red shades
+  // Pink/Red shades
   static const Color pinkPrimary = Color(0xFFFF4672);
   static const Color pinkDark = Color(0xFFE90038);
   static const Color pinkDark2 = Color(0xFFE530B6);
