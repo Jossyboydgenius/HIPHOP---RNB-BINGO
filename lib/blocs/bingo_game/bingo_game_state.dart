@@ -14,7 +14,12 @@ class BingoGameState extends Equatable {
   });
 
   factory BingoGameState.initial() {
-    return const BingoGameState();
+    return const BingoGameState(
+      calledBoards: [],
+      selectedItems: [12],
+      hasWon: false,
+      winningPattern: '',
+    );
   }
 
   bool isItemCalled(String text) {
@@ -40,5 +45,6 @@ class BingoGameState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [calledBoards, selectedItems, hasWon, winningPattern];
-} 
+  List<Object?> get props =>
+      [calledBoards, selectedItems, hasWon, winningPattern];
+}
