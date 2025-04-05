@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart' as qr;
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:image_picker/image_picker.dart';
-import '../widgets/app_colors.dart';
 import '../widgets/app_icons.dart';
 import '../widgets/app_images.dart';
 import '../widgets/app_text_style.dart';
@@ -22,12 +21,14 @@ class QRCodeScannerScreen extends StatefulWidget {
   State<QRCodeScannerScreen> createState() => _QRCodeScannerScreenState();
 }
 
-class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsBindingObserver {
+class _QRCodeScannerScreenState extends State<QRCodeScannerScreen>
+    with WidgetsBindingObserver {
   bool _isTorchOn = false;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  qr.QRViewController? controller;
+  final MobileScannerController cameraController = MobileScannerController();
   final ImagePicker _imagePicker = ImagePicker();
-  final ml_kit.BarcodeScanner _barcodeScanner = ml_kit.GoogleMlKit.vision.barcodeScanner();
+  final ml_kit.BarcodeScanner _barcodeScanner =
+      ml_kit.GoogleMlKit.vision.barcodeScanner();
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
 
   @override
   void dispose() {
-    controller?.dispose();
+    cameraController.dispose();
     _barcodeScanner.close();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -45,38 +46,36 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && controller != null) {
-      controller!.resumeCamera();
+    if (state == AppLifecycleState.resumed) {
+      cameraController.start();
     }
     if (state == AppLifecycleState.inactive) {
-      controller?.pauseCamera();
+      cameraController.stop();
     }
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    if (controller != null) {
-      if (Theme.of(context).platform == TargetPlatform.android) {
-        controller!.pauseCamera();
-      }
-      Future.delayed(const Duration(milliseconds: 100), () {
-        controller!.resumeCamera();
-      });
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      cameraController.stop();
     }
+    Future.delayed(const Duration(milliseconds: 100), () {
+      cameraController.start();
+    });
   }
 
   void _handleScannedCode(String? code) {
     if (code != null) {
       debugPrint('QR Code found: $code');
-      
+
       // Show custom toast with info icon but no close button
       AppToast.show(
         context,
         'QR Code detected! Processing game information...',
         showCloseIcon: false,
       );
-      
+
       // Navigate to appropriate screen based on mode
       if (widget.isInPerson) {
         Navigator.pushReplacementNamed(
@@ -96,11 +95,13 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
 
   Future<void> _pickImage() async {
     try {
-      final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
+      final XFile? image =
+          await _imagePicker.pickImage(source: ImageSource.gallery);
       if (image != null) {
         final inputImage = ml_kit.InputImage.fromFilePath(image.path);
-        final List<ml_kit.Barcode> barcodes = await _barcodeScanner.processImage(inputImage);
-        
+        final List<ml_kit.Barcode> barcodes =
+            await _barcodeScanner.processImage(inputImage);
+
         if (barcodes.isNotEmpty) {
           for (final barcode in barcodes) {
             if (!mounted) return;
@@ -127,40 +128,11 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
     }
   }
 
-  void _onQRViewCreated(qr.QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
-    
-    // Ensure camera is started after initialization
-    Future.delayed(const Duration(milliseconds: 100), () {
-      controller.resumeCamera();
-    });
-
-    controller.scannedDataStream.listen((scanData) {
-      if (scanData.code != null) {
-        _handleScannedCode(scanData.code);
-      }
-    });
-  }
-
-  Widget _buildScannerOverlay() {
-    return Center(
-      child: CustomPaint(
-        painter: ScannerOverlayPainter(color: AppColors.purpleDark2),
-        child: const SizedBox(
-          width: 280,
-          height: 280,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        controller?.pauseCamera();
+        cameraController.stop();
         Navigator.pop(context);
         return false;
       },
@@ -170,18 +142,17 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
           child: Stack(
             children: [
               // QR Scanner with overlay
-              qr.QRView(
-                key: qrKey,
-                onQRViewCreated: _onQRViewCreated,
-                overlay: qr.QrScannerOverlayShape(
-                  borderColor: Colors.transparent,
-                  borderRadius: 24,
-                  borderLength: 0,
-                  borderWidth: 0,
-                  cutOutSize: 280,
-                ),
+              MobileScanner(
+                controller: cameraController,
+                onDetect: (capture) {
+                  final List<Barcode> barcodes = capture.barcodes;
+                  for (final barcode in barcodes) {
+                    if (!mounted) return;
+                    _handleScannedCode(barcode.rawValue);
+                    return;
+                  }
+                },
               ),
-              _buildScannerOverlay(),
 
               // Top Bar
               Padding(
@@ -223,7 +194,8 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
                 right: 0,
                 child: Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 44, vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(16),
@@ -251,7 +223,7 @@ class _QRCodeScannerScreenState extends State<QRCodeScannerScreen> with WidgetsB
                         GestureDetector(
                           onTap: () async {
                             try {
-                              await controller?.toggleFlash();
+                              await cameraController.toggleTorch();
                               setState(() => _isTorchOn = !_isTorchOn);
                             } catch (e) {
                               debugPrint('Error toggling torch: $e');
@@ -329,7 +301,8 @@ class ScannerOverlayPainter extends CustomPainter {
       Path()
         ..moveTo(size.width, size.height - cornerLength)
         ..lineTo(size.width, size.height - radius)
-        ..quadraticBezierTo(size.width, size.height, size.width - radius, size.height)
+        ..quadraticBezierTo(
+            size.width, size.height, size.width - radius, size.height)
         ..lineTo(size.width - cornerLength, size.height),
       paint,
     );
@@ -337,4 +310,4 @@ class ScannerOverlayPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-} 
+}
