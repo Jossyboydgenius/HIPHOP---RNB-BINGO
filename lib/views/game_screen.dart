@@ -545,103 +545,108 @@ class _GameScreenState extends State<GameScreen>
                     // Trigger animation when pattern changes
                     _animatePatternChange(state.winningPattern);
 
-                    return Stack(
-                      children: [
-                        // Full screen gesture detector to dismiss when tapping anywhere
-                        // Only show when pattern notification is visible
-                        if (_patternChangeAnimation.value > 0)
-                          Positioned.fill(
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: _handleFullScreenTap,
-                              child: Container(
-                                color: Colors.transparent,
-                              ),
-                            ),
-                          ),
+                    return AnimatedBuilder(
+                      animation: _patternChangeAnimation,
+                      builder: (context, child) {
+                        // Ensure opacity is always between 0.0 and 1.0
+                        final opacity =
+                            _patternChangeAnimation.value.clamp(0.0, 1.0);
 
-                        // Original pattern notification
-                        Positioned(
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: _dismissPatternChange,
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: () {
-                                  // Dismiss the pattern change when tapped
-                                  _dismissPatternChange();
-                                },
-                                child: FadeTransition(
-                                  opacity: _patternChangeAnimation,
-                                  child: ScaleTransition(
-                                    scale: _patternChangeAnimation,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 20.w,
-                                        vertical: 12.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.purplePrimary,
-                                        borderRadius:
-                                            BorderRadius.circular(24.r),
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 3.w,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.4),
-                                            blurRadius: 10,
-                                            spreadRadius: 3,
+                        return Visibility(
+                          visible: opacity > 0,
+                          child: Stack(
+                            children: [
+                              // Full screen tap detector
+                              Positioned.fill(
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: _dismissPatternChange,
+                                  child: Container(
+                                    color: Colors.transparent,
+                                  ),
+                                ),
+                              ),
+
+                              // Pattern notification
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                child: Center(
+                                  child: Opacity(
+                                    opacity: opacity,
+                                    child: Transform.scale(
+                                      scale: 1.0 + (1 - opacity) * 0.2,
+                                      child: GestureDetector(
+                                        onTap: _dismissPatternChange,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 20.w,
+                                            vertical: 12.h,
                                           ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            'New Pattern',
-                                            style: AppTextStyle.mochiyPopOne(
-                                              fontSize: 10.sp,
-                                              fontWeight: FontWeight.w400,
-                                              color:
-                                                  Colors.white.withOpacity(0.8),
-                                            ),
-                                          ),
-                                          SizedBox(height: 6.h),
-                                          AppImages(
-                                            imagePath: _winningPatterns[state
-                                                    .winningPattern]!['image']
-                                                as String,
-                                            width: 60.w,
-                                            height: 60.h,
-                                          ),
-                                          SizedBox(height: 8.h),
-                                          Text(
-                                            _winningPatterns[state
-                                                    .winningPattern]!['title']
-                                                as String,
-                                            style: AppTextStyle.mochiyPopOne(
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w400,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.purplePrimary,
+                                            borderRadius:
+                                                BorderRadius.circular(24.r),
+                                            border: Border.all(
                                               color: Colors.white,
+                                              width: 3.w,
                                             ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                blurRadius: 10,
+                                                spreadRadius: 3,
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                'New Pattern',
+                                                style:
+                                                    AppTextStyle.mochiyPopOne(
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.white
+                                                      .withOpacity(0.8),
+                                                ),
+                                              ),
+                                              SizedBox(height: 6.h),
+                                              AppImages(
+                                                imagePath: _winningPatterns[
+                                                        state.winningPattern]![
+                                                    'image'] as String,
+                                                width: 60.w,
+                                                height: 60.h,
+                                              ),
+                                              SizedBox(height: 8.h),
+                                              Text(
+                                                _winningPatterns[
+                                                        state.winningPattern]![
+                                                    'title'] as String,
+                                                style:
+                                                    AppTextStyle.mochiyPopOne(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     );
                   },
                 ),
