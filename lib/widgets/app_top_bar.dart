@@ -28,6 +28,7 @@ class AppTopBar extends StatefulWidget {
 
 class _AppTopBarState extends State<AppTopBar> {
   String? _selectedAvatar;
+  bool _isMoneyExpanded = false;
 
   Widget _buildUserAvatar(BuildContext context) {
     return GestureDetector(
@@ -101,7 +102,9 @@ class _AppTopBarState extends State<AppTopBar> {
     required Color color,
     required String amount,
     required String leftIcon,
-    required String rightIcon,
+    String? rightIcon,
+    bool isCollapsed = false,
+    bool isIconImage = true,
   }) {
     return Stack(
       clipBehavior: Clip.none,
@@ -117,7 +120,7 @@ class _AppTopBarState extends State<AppTopBar> {
             ),
           ),
           child: Text(
-            amount,
+            isCollapsed ? '..' : amount,
             style: AppTextStyle.poppins(
               fontSize: 12.sp,
               fontWeight: FontWeight.w700,
@@ -130,23 +133,30 @@ class _AppTopBarState extends State<AppTopBar> {
           top: 0,
           bottom: 0,
           child: Center(
-            child: AppIcons(
-              icon: leftIcon,
-              size: 34.w,
-            ),
+            child: isIconImage
+                ? AppImages(
+                    imagePath: leftIcon,
+                    width: 34.w,
+                    height: 34.h,
+                  )
+                : AppIcons(
+                    icon: leftIcon,
+                    size: 34.w,
+                  ),
           ),
         ),
-        Positioned(
-          right: -8.w,
-          top: 0,
-          bottom: 0,
-          child: Center(
-            child: AppIcons(
-              icon: rightIcon,
-              size: 24.w,
+        if (rightIcon != null)
+          Positioned(
+            right: -8.w,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: AppIcons(
+                icon: rightIcon,
+                size: 24.w,
+              ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -164,7 +174,8 @@ class _AppTopBarState extends State<AppTopBar> {
             notifications: [
               {
                 'title': 'Congratulations! You Won!',
-                'subtitle': 'Your Bingo win has been confirmed! Click below to withdraw your prize: \$50',
+                'subtitle':
+                    'Your Bingo win has been confirmed! Click below to withdraw your prize: \$50',
                 'buttonText': 'Claim Prize',
                 'onButtonPressed': () {
                   // TODO: Handle claim prize
@@ -173,7 +184,8 @@ class _AppTopBarState extends State<AppTopBar> {
               },
               {
                 'title': 'DJ Ray invited you to play!',
-                'subtitle': 'Game: Hip-Hop Fire Round\nGame Code: 9823\nStarts in 10 minutes!',
+                'subtitle':
+                    'Game: Hip-Hop Fire Round\nGame Code: 9823\nStarts in 10 minutes!',
                 'buttonText': 'Join Game',
                 'onButtonPressed': () {
                   // TODO: Handle join game
@@ -182,7 +194,8 @@ class _AppTopBarState extends State<AppTopBar> {
               },
               {
                 'title': 'Congratulations! You Won!',
-                'subtitle': 'Your Bingo win has been confirmed! Click below to withdraw your prize: \$10',
+                'subtitle':
+                    'Your Bingo win has been confirmed! Click below to withdraw your prize: \$10',
                 'buttonText': 'Claim Prize',
                 'onButtonPressed': () {
                   // TODO: Handle claim prize
@@ -191,7 +204,8 @@ class _AppTopBarState extends State<AppTopBar> {
               },
               const {
                 'title': 'Purchase of \$20 Bingo Board',
-                'subtitle': "You've successfully purchased a 5 Bingo Board for \$20",
+                'subtitle':
+                    "You've successfully purchased a 5 Bingo Board for \$20",
                 'isRead': true,
               },
             ],
@@ -261,30 +275,61 @@ class _AppTopBarState extends State<AppTopBar> {
               _buildUserAvatar(context),
               Row(
                 children: [
+                  // Money container (collapsible)
                   GestureDetector(
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) => WalletFundingModal(
-                          onClose: () => Navigator.of(context).pop(),
-                        ),
-                      );
+                      setState(() {
+                        _isMoneyExpanded = !_isMoneyExpanded;
+                      });
+                    },
+                    child: _buildAmountContainer(
+                      color: AppColors.green,
+                      amount: state.moneyBalance.toString(),
+                      leftIcon: AppImageData.money,
+                      isCollapsed: !_isMoneyExpanded,
+                      isIconImage: true,
+                    ),
+                  ),
+                  SizedBox(width: 12.w), // Reduced spacing
+                  // Gem container (also triggers money expansion on tap)
+                  GestureDetector(
+                    onTap: () {
+                      // Toggle money expansion when clicking on gem
+                      setState(() {
+                        _isMoneyExpanded = !_isMoneyExpanded;
+                      });
+
+                      // Only show the funding modal if we're collapsing money
+                      if (!_isMoneyExpanded) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) => WalletFundingModal(
+                            onClose: () => Navigator.of(context).pop(),
+                          ),
+                        );
+                      }
                     },
                     child: _buildAmountContainer(
                       color: AppColors.purplePrimary,
                       amount: state.gemBalance.toString(),
                       leftIcon: AppIconData.gem,
                       rightIcon: AppIconData.add,
+                      isCollapsed: _isMoneyExpanded,
+                      isIconImage: false,
                     ),
                   ),
-                  SizedBox(width: 34.w),
+                  SizedBox(
+                      width:
+                          22.w), // Reduced spacing (shifted board to the left)
+                  // Board container (never collapses)
                   GestureDetector(
                     onTap: () {
                       showDialog(
                         context: context,
                         barrierDismissible: false,
-                        builder: (BuildContext context) => BingoBoardsStoreModal(
+                        builder: (BuildContext context) =>
+                            BingoBoardsStoreModal(
                           onClose: () => Navigator.of(context).pop(),
                         ),
                       );
@@ -294,6 +339,7 @@ class _AppTopBarState extends State<AppTopBar> {
                       amount: state.boardBalance.toString(),
                       leftIcon: AppIconData.card,
                       rightIcon: AppIconData.add2,
+                      isIconImage: false,
                     ),
                   ),
                 ],
@@ -305,4 +351,4 @@ class _AppTopBarState extends State<AppTopBar> {
       },
     );
   }
-} 
+}
