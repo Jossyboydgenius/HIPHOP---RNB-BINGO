@@ -174,6 +174,9 @@ class _GameScreenState extends State<GameScreen>
         actions: [
           TextButton(
             onPressed: () {
+              // Play board tap sound with haptic feedback
+              _soundService.playBoardTap();
+
               Navigator.pop(context);
               // Optionally reset game here if you want
               context.read<BingoGameBloc>().add(ResetGame());
@@ -247,6 +250,9 @@ class _GameScreenState extends State<GameScreen>
         actions: [
           TextButton(
             onPressed: () {
+              // Play board tap sound with haptic feedback
+              _soundService.playBoardTap();
+
               Navigator.pop(context);
               // Reset game
               context.read<BingoGameBloc>().add(ResetGame(isGameOver: true));
@@ -358,6 +364,9 @@ class _GameScreenState extends State<GameScreen>
 
                       return GestureDetector(
                         onTap: () {
+                          // Play board tap sound with haptic feedback
+                          _soundService.playBoardTap();
+
                           // Update winning pattern
                           context.read<BingoGameBloc>().add(
                               CheckForWinningPattern(patternType: patternKey));
@@ -390,7 +399,11 @@ class _GameScreenState extends State<GameScreen>
                 SizedBox(height: 24.h),
                 // Close button
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () {
+                    // Play board tap sound with haptic feedback
+                    _soundService.playBoardTap();
+                    Navigator.pop(context);
+                  },
                   child: Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 36.w,
@@ -439,14 +452,14 @@ class _GameScreenState extends State<GameScreen>
     return true;
   }
 
-  void _handleFullScreenTap() {
-    print(
-        "Full screen tap detected! Animation value: ${_patternChangeAnimation.value}");
-    if (_patternChangeAnimation.isCompleted) {
-      print("Pattern notification is fully visible, dismissing");
-      _dismissPatternChange();
-    }
-  }
+  // void _handleFullScreenTap() {
+  //   print(
+  //       "Full screen tap detected! Animation value: ${_patternChangeAnimation.value}");
+  //   if (_patternChangeAnimation.isCompleted) {
+  //     print("Pattern notification is fully visible, dismissing");
+  //     _dismissPatternChange();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
