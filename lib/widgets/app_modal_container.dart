@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_banner.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 import 'app_text_style.dart';
 import 'app_sizer.dart';
 
@@ -49,10 +50,12 @@ class AppModalContainer extends StatefulWidget {
   State<AppModalContainer> createState() => _AppModalContainerState();
 }
 
-class _AppModalContainerState extends State<AppModalContainer> with SingleTickerProviderStateMixin {
+class _AppModalContainerState extends State<AppModalContainer>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
+  final _soundService = GameSoundService();
 
   @override
   void initState() {
@@ -94,6 +97,8 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
   }
 
   void _handleClose() async {
+    _soundService.playBoardTap();
+
     await _controller.reverse();
     if (widget.handleBackNavigation) {
       Navigator.pop(context);
@@ -104,14 +109,15 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.maintainFocus ? null : () => FocusScope.of(context).unfocus(),
+      onTap:
+          widget.maintainFocus ? null : () => FocusScope.of(context).unfocus(),
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
-          final responsiveWidth = widget.width != null 
+          final responsiveWidth = widget.width != null
               ? AppDimension.getResponsiveWidth(widget.width!.w)
               : double.infinity;
-          final responsiveHeight = widget.height != null 
+          final responsiveHeight = widget.height != null
               ? AppDimension.getResponsiveHeight(widget.height!.h)
               : null;
 
@@ -126,14 +132,16 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                     Positioned(
                       left: 0,
                       right: 0,
-                      bottom: AppDimension.getScaledSize(widget.layerTopPosition * 3).h,
+                      bottom: AppDimension.getScaledSize(
+                              widget.layerTopPosition * 3)
+                          .h,
                       height: AppDimension.getResponsiveHeight(100).h,
                       child: Container(
                         decoration: BoxDecoration(
                           color: widget.layerColor,
                           borderRadius: BorderRadius.circular(
-                            AppDimension.getScaledSize(widget.borderRadius).r
-                          ),
+                              AppDimension.getScaledSize(widget.borderRadius)
+                                  .r),
                         ),
                       ),
                     ),
@@ -143,8 +151,7 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                     decoration: BoxDecoration(
                       color: widget.fillColor,
                       borderRadius: BorderRadius.circular(
-                        AppDimension.getScaledSize(widget.borderRadius).r
-                      ),
+                          AppDimension.getScaledSize(widget.borderRadius).r),
                       border: Border.all(
                         color: widget.borderColor ?? Colors.transparent,
                         width: AppDimension.getScaledSize(widget.borderWidth).w,
@@ -155,28 +162,30 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
                         if (widget.showCloseButton)
                           Padding(
                             padding: AppDimension.getResponsivePadding(
-                              EdgeInsets.all(16.r)
-                            ),
+                                EdgeInsets.all(16.r)),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 SizedBox(
-                                  width: AppDimension.getResponsiveWidth(40).w
-                                ),
+                                    width:
+                                        AppDimension.getResponsiveWidth(40).w),
                                 if (widget.customTitle != null)
                                   widget.customTitle!
                                 else if (widget.title != null)
                                   Text(
                                     widget.title!,
-                                    style: widget.titleStyle ?? AppTextStyle.poppins(
-                                      fontSize: AppDimension.getFontSize(20),
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
+                                    style: widget.titleStyle ??
+                                        AppTextStyle.poppins(
+                                          fontSize:
+                                              AppDimension.getFontSize(20),
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                   ),
                                 AppImages(
                                   imagePath: AppImageData.close,
-                                  height: AppDimension.getResponsiveHeight(32).h,
+                                  height:
+                                      AppDimension.getResponsiveHeight(32).h,
                                   width: AppDimension.getResponsiveWidth(32).w,
                                   onPressed: _handleClose,
                                 ),
@@ -202,4 +211,4 @@ class _AppModalContainerState extends State<AppModalContainer> with SingleTicker
       ),
     );
   }
-} 
+}
