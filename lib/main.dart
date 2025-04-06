@@ -3,21 +3,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'themes/app_theme.dart';
 import 'routes/app_routes.dart';
 import 'services/navigation_service.dart';
+import 'services/game_sound_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Lock orientation to portrait
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  
+
+  // Initialize sound service
+  final gameSoundService = GameSoundService();
+  await gameSoundService.initialize();
+
+  // Check vibration availability
+  await gameSoundService.checkVibrationAvailability();
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -41,7 +49,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         // Initialize AppDimension after ScreenUtil
         AppDimension.init(context);
-        
+
         return MaterialApp(
           title: 'HIPHOP & RNB BINGO',
           debugShowCheckedModeBanner: false,
