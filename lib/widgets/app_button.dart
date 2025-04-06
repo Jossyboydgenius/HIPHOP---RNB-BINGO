@@ -85,6 +85,7 @@ class _AppButtonState extends State<AppButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
+  final _soundService = GameSoundService();
 
   @override
   void initState() {
@@ -120,7 +121,13 @@ class _AppButtonState extends State<AppButton>
   void _handleTapUp(TapUpDetails details) {
     if (!widget.disabled && widget.onPressed != null) {
       _controller.reverse();
-      GameSoundService().playButtonClick();
+
+      // Trigger button click sound and haptic feedback based on platform
+      // This will play audio and vibration if enabled in user preferences
+      // For iOS, it uses CoreHaptics or UIFeedbackGenerator
+      // For Android, it uses Vibrator API
+      _soundService.playButtonClick();
+
       widget.onPressed?.call();
     }
   }
