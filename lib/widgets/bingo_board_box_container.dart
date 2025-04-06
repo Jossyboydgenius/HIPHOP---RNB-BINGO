@@ -19,7 +19,8 @@ class BingoBoardBoxContainer extends StatefulWidget {
   State<BingoBoardBoxContainer> createState() => _BingoBoardBoxContainerState();
 }
 
-class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with SingleTickerProviderStateMixin {
+class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
+    with SingleTickerProviderStateMixin {
   late List<Map<String, dynamic>> _shuffledItems;
   late AnimationController _winAnimationController;
   late Animation<double> _scaleAnimation;
@@ -29,13 +30,13 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
   void initState() {
     super.initState();
     _shuffledItems = _generateShuffledBoardItems();
-    
+
     // Initialize animation controller for win animation
     _winAnimationController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    
+
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
         tween: Tween<double>(begin: 0.0, end: 1.2)
@@ -48,7 +49,7 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
         weight: 40,
       ),
     ]).animate(_winAnimationController);
-    
+
     _opacityAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -57,7 +58,7 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
       curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
     ));
   }
-  
+
   @override
   void dispose() {
     _winAnimationController.dispose();
@@ -77,45 +78,93 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
   List<Map<String, dynamic>> _generateShuffledBoardItems() {
     // Define all items by category
     final bItems = [
-      {'text': "Come and Talk to Me", 'category': BingoCategory.B, 'isCenter': false},
+      {
+        'text': "Come and Talk to Me",
+        'category': BingoCategory.B,
+        'isCenter': false
+      },
       {'text': "Real Love", 'category': BingoCategory.B, 'isCenter': false},
       {'text': "Fantasy", 'category': BingoCategory.B, 'isCenter': false},
-      {'text': "Bad & Bougie / T Shirt", 'category': BingoCategory.B, 'isCenter': false},
+      {
+        'text': "Bad & Bougie / T Shirt",
+        'category': BingoCategory.B,
+        'isCenter': false
+      },
       {'text': "Dazz Band", 'category': BingoCategory.B, 'isCenter': false},
     ];
-    
+
     final iItems = [
-      {'text': "Forever my Lady", 'category': BingoCategory.I, 'isCenter': false},
+      {
+        'text': "Forever my Lady",
+        'category': BingoCategory.I,
+        'isCenter': false
+      },
       {'text': "Sweet Thing", 'category': BingoCategory.I, 'isCenter': false},
       {'text': "Without You", 'category': BingoCategory.I, 'isCenter': false},
-      {'text': "Walk it Talk it / Fight Night", 'category': BingoCategory.I, 'isCenter': false},
+      {
+        'text': "Walk it Talk it / Fight Night",
+        'category': BingoCategory.I,
+        'isCenter': false
+      },
       {'text': "Comodores", 'category': BingoCategory.I, 'isCenter': false},
     ];
-    
+
     final nItems = [
       {'text': "Feenin", 'category': BingoCategory.N, 'isCenter': false},
-      {'text': "I can Love You", 'category': BingoCategory.N, 'isCenter': false},
+      {
+        'text': "I can Love You",
+        'category': BingoCategory.N,
+        'isCenter': false
+      },
       {'text': "", 'category': BingoCategory.N, 'isCenter': true},
       {'text': "Slippery", 'category': BingoCategory.N, 'isCenter': false},
-      {'text': "Earth Wind and Fire", 'category': BingoCategory.N, 'isCenter': false},
+      {
+        'text': "Earth Wind and Fire",
+        'category': BingoCategory.N,
+        'isCenter': false
+      },
     ];
-    
+
     final gItems = [
       {'text': "Freek n You", 'category': BingoCategory.G, 'isCenter': false},
-      {'text': "I'm going down", 'category': BingoCategory.G, 'isCenter': false},
-      {'text': "Always Be My Baby", 'category': BingoCategory.G, 'isCenter': false},
+      {
+        'text': "I'm going down",
+        'category': BingoCategory.G,
+        'isCenter': false
+      },
+      {
+        'text': "Always Be My Baby",
+        'category': BingoCategory.G,
+        'isCenter': false
+      },
       {'text': "Straightening", 'category': BingoCategory.G, 'isCenter': false},
-      {'text': "Montel Jordan - This is How We..", 'category': BingoCategory.G, 'isCenter': false},
+      {
+        'text': "Montel Jordan - This is How We..",
+        'category': BingoCategory.G,
+        'isCenter': false
+      },
     ];
-    
+
     final oItems = [
       {'text': "Cry for you", 'category': BingoCategory.O, 'isCenter': false},
       {'text': "Not Gon Cry", 'category': BingoCategory.O, 'isCenter': false},
-      {'text': "We Belong Together", 'category': BingoCategory.O, 'isCenter': false},
-      {'text': "Handsome & Wealthy", 'category': BingoCategory.O, 'isCenter': false},
-      {'text': "Parliament-Funkadelic", 'category': BingoCategory.O, 'isCenter': false},
+      {
+        'text': "We Belong Together",
+        'category': BingoCategory.O,
+        'isCenter': false
+      },
+      {
+        'text': "Handsome & Wealthy",
+        'category': BingoCategory.O,
+        'isCenter': false
+      },
+      {
+        'text': "Parliament-Funkadelic",
+        'category': BingoCategory.O,
+        'isCenter': false
+      },
     ];
-    
+
     // Shuffle each category separately
     _shuffleList(bItems);
     _shuffleList(iItems);
@@ -124,50 +173,63 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
     _shuffleList(nonCenterNItems);
     _shuffleList(gItems);
     _shuffleList(oItems);
-    
+
     // Create a list of all items
     final allItems = <Map<String, dynamic>>[];
-    
+
     // First part of the board (before the center)
     for (int i = 0; i < 12; i++) {
       Map<String, dynamic> item;
-      if (i % 5 == 0) item = bItems[i ~/ 5];
-      else if (i % 5 == 1) item = iItems[i ~/ 5];
-      else if (i % 5 == 2) item = i ~/ 5 < 2 ? nonCenterNItems[i ~/ 5] : nonCenterNItems[i ~/ 5 - 1];
-      else if (i % 5 == 3) item = gItems[i ~/ 5];
-      else item = oItems[i ~/ 5];
-      
+      if (i % 5 == 0)
+        item = bItems[i ~/ 5];
+      else if (i % 5 == 1)
+        item = iItems[i ~/ 5];
+      else if (i % 5 == 2)
+        item =
+            i ~/ 5 < 2 ? nonCenterNItems[i ~/ 5] : nonCenterNItems[i ~/ 5 - 1];
+      else if (i % 5 == 3)
+        item = gItems[i ~/ 5];
+      else
+        item = oItems[i ~/ 5];
+
       allItems.add(item);
     }
-    
+
     // Add center item
     allItems.add(nItems[2]); // Center is always fixed with the star
-    
+
     // Last part of the board (after the center)
     for (int i = 13; i < 25; i++) {
       Map<String, dynamic> item;
-      if (i % 5 == 0) item = bItems[i ~/ 5];
-      else if (i % 5 == 1) item = iItems[i ~/ 5];
-      else if (i % 5 == 2) item = i ~/ 5 < 3 ? nonCenterNItems[i ~/ 5 - 1] : nonCenterNItems[i ~/ 5 - 2];
-      else if (i % 5 == 3) item = gItems[i ~/ 5];
-      else item = oItems[i ~/ 5];
-      
+      if (i % 5 == 0)
+        item = bItems[i ~/ 5];
+      else if (i % 5 == 1)
+        item = iItems[i ~/ 5];
+      else if (i % 5 == 2)
+        item = i ~/ 5 < 3
+            ? nonCenterNItems[i ~/ 5 - 1]
+            : nonCenterNItems[i ~/ 5 - 2];
+      else if (i % 5 == 3)
+        item = gItems[i ~/ 5];
+      else
+        item = oItems[i ~/ 5];
+
       allItems.add(item);
     }
-    
+
     // Shuffle the entire board while keeping the center fixed
     final centerItem = allItems[12];
     final itemsWithoutCenter = [...allItems];
     itemsWithoutCenter.removeAt(12);
     _shuffleList(itemsWithoutCenter);
-    
+
     // Reinsert the center item
     final result = [...itemsWithoutCenter];
     result.insert(12, centerItem);
-    
+
     return result;
   }
-  
+
   void _shuffleList(List list) {
     final random = Random();
     for (int i = list.length - 1; i > 0; i--) {
@@ -181,15 +243,17 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BingoGameBloc, BingoGameState>(
-      buildWhen: (previous, current) => 
-          previous.hasWon != current.hasWon || 
+      buildWhen: (previous, current) =>
+          previous.hasWon != current.hasWon ||
           previous.winningPattern != current.winningPattern,
       builder: (context, state) {
         // Start animation if player has won
-        if (state.hasWon && !_winAnimationController.isAnimating && _winAnimationController.status != AnimationStatus.completed) {
+        if (state.hasWon &&
+            !_winAnimationController.isAnimating &&
+            _winAnimationController.status != AnimationStatus.completed) {
           _winAnimationController.forward();
         }
-        
+
         return Stack(
           clipBehavior: Clip.none,
           children: [
@@ -228,7 +292,8 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
                       children: _buildBingoHeader()
                           .map((item) => Expanded(
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 4.w),
                                   child: item,
                                 ),
                               ))
@@ -260,7 +325,7 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
                 ],
               ),
             ),
-            
+
             // Win overlay
             if (state.hasWon)
               AnimatedBuilder(
@@ -294,7 +359,8 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
                                 ),
                                 SizedBox(height: 24.h),
                                 AppImages(
-                                  imagePath: _getPatternImage(state.winningPattern),
+                                  imagePath:
+                                      _getPatternImage(state.winningPattern),
                                   width: 120.w,
                                   height: 120.h,
                                 ),
@@ -322,7 +388,7 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
       },
     );
   }
-  
+
   String _getPatternName(String patternType) {
     switch (patternType) {
       case 'straightlineBingo':
@@ -339,7 +405,7 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
         return 'Pattern';
     }
   }
-  
+
   Color _getPatternColor(String patternType) {
     switch (patternType) {
       case 'straightlineBingo':
@@ -356,7 +422,7 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
         return Colors.white;
     }
   }
-  
+
   String _getPatternImage(String patternType) {
     switch (patternType) {
       case 'straightlineBingo':
@@ -373,4 +439,4 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer> with Si
         return AppImageData.straightlineBingo;
     }
   }
-} 
+}
