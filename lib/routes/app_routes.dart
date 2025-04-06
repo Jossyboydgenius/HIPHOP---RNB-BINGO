@@ -7,6 +7,7 @@ import '../views/game_details_screen.dart';
 import '../views/input_code_screen.dart';
 import '../views/remote_game_details_screen.dart';
 import '../views/game_screen.dart';
+
 class AppRoutes {
   static const String splash = '/';
   static const String onboarding = '/onboarding';
@@ -23,7 +24,8 @@ class AppRoutes {
     splash: (context) => const SplashScreen(),
     onboarding: (context) => const OnboardingScreen(),
     home: (context) => const HomeScreen(),
-    qrCodeScanner: (context) => const QRCodeScannerScreen(isInPerson: false), // Default to remote
+    qrCodeScanner: (context) =>
+        const QRCodeScannerScreen(isInPerson: false), // Default to remote
     gameDetails: (context) {
       final args = ModalRoute.of(context)?.settings.arguments as String?;
       return GameDetailsScreen(code: args);
@@ -40,4 +42,4 @@ class AppRoutes {
       return const GameScreen();
     },
   };
-} 
+}
