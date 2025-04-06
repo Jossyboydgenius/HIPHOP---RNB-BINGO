@@ -5,6 +5,7 @@ import '../widgets/app_loading_bar.dart';
 import '../widgets/app_text_style.dart';
 import '../routes/app_routes.dart';
 import '../services/navigation_service.dart';
+import '../services/game_sound_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _loadingAnimation;
+  final _soundService = GameSoundService();
 
   @override
   void initState() {
@@ -42,11 +44,18 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
+    // Play app launch sound when splash screen appears
+    _playAppLaunchSound();
+
     _controller.forward().then((_) {
       Future.delayed(const Duration(seconds: 1), () {
         NavigationService.pushReplacementNamed(AppRoutes.onboarding);
       });
     });
+  }
+
+  Future<void> _playAppLaunchSound() async {
+    await _soundService.playSound('assets/sounds/App-launch.mp3');
   }
 
   @override
