@@ -685,6 +685,9 @@ class _GameScreenState extends State<GameScreen>
                           width: 38.w,
                           height: 38.w,
                           onPressed: () {
+                            // Play board tap sound with haptic feedback
+                            _soundService.playBoardTap();
+
                             showDialog(
                               context: context,
                               barrierDismissible: false,
@@ -728,6 +731,9 @@ class _GameScreenState extends State<GameScreen>
                         // Info Icon with SuperTooltip
                         GestureDetector(
                           onTap: () async {
+                            // Play board tap sound with haptic feedback
+                            _soundService.playBoardTap();
+
                             await _tooltipController.showTooltip();
                           },
                           child: SuperTooltip(
