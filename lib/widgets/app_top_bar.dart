@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'bingo_boards_store_modal.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 
 class AppTopBar extends StatefulWidget {
   final String initials;
@@ -29,10 +30,13 @@ class AppTopBar extends StatefulWidget {
 class _AppTopBarState extends State<AppTopBar> {
   String? _selectedAvatar;
   bool _isMoneyExpanded = false;
+  final _soundService = GameSoundService();
 
   Widget _buildUserAvatar(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        // Play sound and haptic feedback
+        _soundService.playButtonClick();
         _showUserProfile(context);
       },
       child: Stack(
@@ -164,6 +168,8 @@ class _AppTopBarState extends State<AppTopBar> {
   Widget _buildNotificationIcon(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        // Play sound and haptic feedback
+        _soundService.playButtonClick();
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -278,6 +284,8 @@ class _AppTopBarState extends State<AppTopBar> {
                   // Money container (collapsible)
                   GestureDetector(
                     onTap: () {
+                      // Play sound and haptic feedback
+                      _soundService.playButtonClick();
                       setState(() {
                         _isMoneyExpanded = !_isMoneyExpanded;
                       });
@@ -294,6 +302,9 @@ class _AppTopBarState extends State<AppTopBar> {
                   // Gem container (also triggers money expansion on tap)
                   GestureDetector(
                     onTap: () {
+                      // Play sound and haptic feedback
+                      _soundService.playButtonClick();
+
                       // Toggle money expansion when clicking on gem
                       setState(() {
                         _isMoneyExpanded = !_isMoneyExpanded;
@@ -325,6 +336,9 @@ class _AppTopBarState extends State<AppTopBar> {
                   // Board container (never collapses)
                   GestureDetector(
                     onTap: () {
+                      // Play sound and haptic feedback
+                      _soundService.playButtonClick();
+
                       showDialog(
                         context: context,
                         barrierDismissible: false,
