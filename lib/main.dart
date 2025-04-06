@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'themes/app_theme.dart';
 import 'routes/app_routes.dart';
@@ -23,8 +24,11 @@ void main() async {
   final gameSoundService = GameSoundService();
   await gameSoundService.initialize();
 
-  // Check vibration availability
-  await gameSoundService.checkVibrationAvailability();
+  // Check vibration availability with debug logging
+  bool canVibrate = await gameSoundService.checkVibrationAvailability();
+  if (kDebugMode) {
+    print('Vibration availability: $canVibrate');
+  }
 
   runApp(
     MultiBlocProvider(
