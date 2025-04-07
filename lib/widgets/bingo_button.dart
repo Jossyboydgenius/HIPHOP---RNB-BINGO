@@ -67,12 +67,12 @@ class _BingoButtonState extends State<BingoButton>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 32.w),
+          padding: EdgeInsets.symmetric(horizontal: 62.w),
           child: AppImages(
             imagePath: AppImageData.bingoButton,
-            width: AppDimension.isSmall ? 720.w : 680.w,
-            height: AppDimension.isSmall ? 200.h : 180.h,
-            fit: BoxFit.contain,
+            // width: AppDimension.isSmall ? 120.w : 120.w,
+            height: AppDimension.isSmall ? 220.h : 220.h,
+            // fit: BoxFit.contain,
           ),
         ),
       ),
