@@ -142,6 +142,12 @@ class _GameScreenState extends State<GameScreen>
     // Play prize win sound
     _soundService.playPrizeWin();
 
+    // Calculate the total prize amount for all rounds
+    int grandTotalPrize = 0;
+    for (int i = 1; i <= _maxRounds; i++) {
+      grandTotalPrize += 50 * i;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -150,12 +156,16 @@ class _GameScreenState extends State<GameScreen>
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: VictoryModal(
           roundNumber: _maxRounds,
-          prizeAmount: 1000, // Update with actual prize amount from game state
+          prizeAmount: grandTotalPrize,
           nextRoundSeconds: 60,
+          isFinalRound: true,
+          totalRounds: _maxRounds,
           onClaimPrize: () {
             // Navigator.pop is already handled in the modal
             // Optionally reset game here if you want
-            context.read<BingoGameBloc>().add(ResetGame());
+            context
+                .read<BingoGameBloc>()
+                .add(const ResetGame(isGameOver: true));
           },
         ),
       ),
@@ -367,6 +377,9 @@ class _GameScreenState extends State<GameScreen>
     // Use the current round from the class member
     int currentRound = _currentRound;
 
+    // Check if this is the final round
+    bool isFinalRound = currentRound >= _maxRounds;
+
     // Calculate prize amount - increase with rounds
     int prizeAmount = 50 * currentRound;
 
@@ -384,6 +397,8 @@ class _GameScreenState extends State<GameScreen>
             roundNumber: currentRound,
             prizeAmount: prizeAmount,
             nextRoundSeconds: 60,
+            isFinalRound: isFinalRound,
+            totalRounds: _maxRounds,
             onClaimPrize: () {
               // Show loading spinner first
               _showLoadingOverlay(context);
@@ -396,7 +411,7 @@ class _GameScreenState extends State<GameScreen>
                 final bingoBloc = context.read<BingoGameBloc>();
                 bingoBloc.add(const ResetGame(isGameOver: false));
 
-                // Increment the round counter
+                // Increment the round counter if not in the final round
                 setState(() {
                   if (_currentRound < _maxRounds) {
                     _currentRound++;
@@ -475,9 +490,7 @@ class _GameScreenState extends State<GameScreen>
                           ),
                           SizedBox(width: 12.w),
                           // Player Container
-                          const GamePlayerContainer(
-                            playerCount: 120,
-                          ),
+                          const GamePlayerContainer(),
                         ],
                       ),
                     ),
