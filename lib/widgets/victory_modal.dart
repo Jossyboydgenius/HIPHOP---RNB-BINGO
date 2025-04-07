@@ -1,0 +1,293 @@
+import 'dart:async';
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_button.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_modal_container.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
+import 'package:hiphop_rnb_bingo/widgets/claim_prize_success_modal.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
+
+class VictoryModal extends StatefulWidget {
+  final VoidCallback onClaimPrize;
+  final int roundNumber;
+  final int prizeAmount;
+  final int nextRoundSeconds;
+
+  const VictoryModal({
+    super.key,
+    required this.onClaimPrize,
+    required this.roundNumber,
+    required this.prizeAmount,
+    this.nextRoundSeconds = 60,
+  });
+
+  @override
+  State<VictoryModal> createState() => _VictoryModalState();
+}
+
+class _VictoryModalState extends State<VictoryModal>
+    with SingleTickerProviderStateMixin {
+  late Timer _countdownTimer;
+  late int _remainingSeconds;
+  final _soundService = GameSoundService();
+  bool _hasClaimed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _remainingSeconds = widget.nextRoundSeconds;
+    _startCountdown();
+  }
+
+  @override
+  void dispose() {
+    _countdownTimer.cancel();
+    super.dispose();
+  }
+
+  void _startCountdown() {
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingSeconds > 0) {
+        setState(() {
+          _remainingSeconds--;
+        });
+      } else {
+        _countdownTimer.cancel();
+
+        // Auto-claim prize if not claimed yet
+        if (!_hasClaimed) {
+          _claimPrizeAndProceed();
+        } else {
+          _proceedToNextRound();
+        }
+      }
+    });
+  }
+
+  void _proceedToNextRound() {
+    // Shuffle the board for the next round
+    context.read<BingoGameBloc>().add(const ResetGame(isGameOver: false));
+
+    Navigator.of(context).pop();
+    widget.onClaimPrize();
+  }
+
+  void _claimPrizeAndProceed() {
+    // Handle automatic prize claiming when timer expires
+    setState(() {
+      _hasClaimed = true;
+    });
+    _proceedToNextRound();
+  }
+
+  void _showClaimPrizeSuccessModal() {
+    // Stop timer while showing the success modal
+    _countdownTimer.cancel();
+
+    // We don't pop the current modal, we just show the claim success over it
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ClaimPrizeSuccessModal(
+        amount: widget.prizeAmount.toString(),
+        onClose: () {
+          // Set the claimed state to true but don't recreate the modal
+          setState(() {
+            _hasClaimed = true;
+          });
+
+          // Restart countdown from where it left off
+          _startCountdown();
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topCenter,
+        children: [
+          // Main container
+          AppModalContainer(
+            width: AppDimension.isSmall ? 320.w : 280.w,
+            height: AppDimension.isSmall ? 420.h : 300.h,
+            fillColor: Colors.white,
+            borderColor: Colors.white,
+            layerColor: AppColors.purpleOverlay,
+            showCloseButton: false,
+            handleBackNavigation: true,
+            onClose: () {
+              // Empty function - we'll handle close via button
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 20.w,
+                vertical: 20.h,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Round prize text
+                  Text(
+                    'Round ${widget.roundNumber} Prize',
+                    style: AppTextStyle.poppins(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                  ),
+
+                  SizedBox(height: 16.h),
+
+                  // Prize amount with dollar bill icon
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppImages(
+                        imagePath: AppImageData.money,
+                        width: 30.w,
+                        height: 30.h,
+                      ),
+                      SizedBox(width: 10.w),
+                      Text(
+                        '\$${widget.prizeAmount}',
+                        style: AppTextStyle.mochiyPopOne(
+                          fontSize: 34.sp,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 10.h),
+
+                  // Claim prize instruction text changes based on claimed status
+                  Text(
+                    _hasClaimed
+                        ? 'Claimed prize is added to your wallet'
+                        : 'Claim prize is added to your wallet',
+                    style: AppTextStyle.poppins(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  SizedBox(height: 20.h),
+
+                  // Claim prize or Continue button based on claimed status
+                  SizedBox(
+                    width: 240.w,
+                    child: _hasClaimed
+                        ? AppButton(
+                            text: 'Continue',
+                            textStyle: AppTextStyle.poppins(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                            fillColor: AppColors.darkPurple,
+                            layerColor: AppColors.darkPurple2,
+                            extraLayerColor: AppColors.purpleOverlay,
+                            extraLayerHeight:
+                                AppDimension.isSmall ? 40.h : 20.h,
+                            extraLayerTopPosition: 34.h,
+                            extraLayerOffset: 1,
+                            height: AppDimension.isSmall ? 70.h : 50.h,
+                            layerHeight: AppDimension.isSmall ? 57.h : 44.h,
+                            layerTopPosition: -1.5.h,
+                            hasBorder: true,
+                            borderColor: Colors.white,
+                            onPressed: () {
+                              _soundService.playButtonClick();
+                              _proceedToNextRound();
+                            },
+                            borderRadius: 24.r,
+                          )
+                        : AppButton(
+                            text: 'Claim Prize',
+                            textStyle: AppTextStyle.poppins(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.black,
+                            ),
+                            fillColor: AppColors.yellowDark,
+                            layerColor: AppColors.yellowPrimary,
+                            extraLayerColor: AppColors.purpleOverlay,
+                            extraLayerHeight:
+                                AppDimension.isSmall ? 40.h : 20.h,
+                            extraLayerTopPosition: 34.h,
+                            extraLayerOffset: 1,
+                            height: AppDimension.isSmall ? 70.h : 50.h,
+                            layerHeight: AppDimension.isSmall ? 57.h : 44.h,
+                            layerTopPosition: -1.5.h,
+                            hasBorder: true,
+                            borderColor: Colors.white,
+                            onPressed: () {
+                              _soundService.playButtonClick();
+                              _showClaimPrizeSuccessModal();
+                            },
+                            borderRadius: 24.r,
+                          ),
+                  ),
+
+                  SizedBox(height: 16.h),
+
+                  // Next round countdown with specified styling
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text:
+                              'Proceed to Round ${widget.roundNumber + 1} in ',
+                          style: AppTextStyle.mochiyPopOne(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '$_remainingSeconds Secs',
+                          style: AppTextStyle.mochiyPopOne(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.darkPurple,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // "YOU WON" banner positioned above the modal
+          Positioned(
+            top: -95.h,
+            child: AppImages(
+              imagePath: AppImageData.won,
+              width: 340.w,
+              height: 140.h,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
