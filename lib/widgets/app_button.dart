@@ -19,6 +19,10 @@ class AppButton extends StatefulWidget {
   final double borderRadius;
   final double? layerHeight;
   final double? layerTopPosition;
+  final Color? extraLayerColor;
+  final double? extraLayerHeight;
+  final double? extraLayerTopPosition;
+  final double? extraLayerOffset;
   final TextStyle? textStyle;
   final TextStyle? subtitleStyle;
   final bool disabled;
@@ -55,6 +59,10 @@ class AppButton extends StatefulWidget {
     this.borderRadius = 20,
     this.layerHeight,
     this.layerTopPosition,
+    this.extraLayerColor,
+    this.extraLayerHeight,
+    this.extraLayerTopPosition,
+    this.extraLayerOffset = 3.0,
     this.textStyle,
     this.subtitleStyle,
     this.disabled = false,
@@ -236,7 +244,7 @@ class _AppButtonState extends State<AppButton>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final buttonContent = GestureDetector(
       onTapDown: _handleTapDown,
       onTapUp: _handleTapUp,
       onTapCancel: _handleTapCancel,
@@ -259,6 +267,7 @@ class _AppButtonState extends State<AppButton>
           ),
           child: Stack(
             children: [
+              // Main layer
               if (widget.layerColor != null) ...[
                 Positioned(
                   left: 0,
@@ -282,5 +291,37 @@ class _AppButtonState extends State<AppButton>
         ),
       ),
     );
+
+    // If there's an extra layer, wrap the button with it
+    if (widget.extraLayerColor != null) {
+      final offset = (widget.extraLayerOffset ?? 3.0).h;
+
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Extra layer - positioned behind and slightly lower than the main button
+          Positioned(
+            left: offset,
+            right: offset,
+            top: (widget.extraLayerTopPosition ?? 4).h,
+            height: (widget.extraLayerHeight ?? (widget.height + 6)).h,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(widget.borderRadius.r),
+                color: widget.disabled
+                    ? widget.extraLayerColor!.withOpacity(0.5)
+                    : widget.extraLayerColor,
+              ),
+            ),
+          ),
+
+          // Main button
+          buttonContent,
+        ],
+      );
+    }
+
+    // If no extra layer, just return the button
+    return buttonContent;
   }
 }
