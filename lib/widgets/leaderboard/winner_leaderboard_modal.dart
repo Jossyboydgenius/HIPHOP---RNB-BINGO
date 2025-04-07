@@ -7,8 +7,9 @@ import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
-import 'package:hiphop_rnb_bingo/routes/app_routes.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_modal_container.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
+import 'package:hiphop_rnb_bingo/views/home_screen.dart';
 
 class PlayerScore {
   final String name;
@@ -40,6 +41,7 @@ class WinnerLeaderboardModal extends StatefulWidget {
 
 class _WinnerLeaderboardModalState extends State<WinnerLeaderboardModal> {
   late List<PlayerScore> _leaderboard;
+  final _soundService = GameSoundService();
 
   @override
   void initState() {
@@ -95,144 +97,148 @@ class _WinnerLeaderboardModalState extends State<WinnerLeaderboardModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.symmetric(horizontal: 24.w),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Center(
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.topCenter,
-            children: [
-              AppModalContainer(
-                width: 340.w,
-                height: 550.h,
-                fillColor: Colors.white,
-                borderColor: Colors.white,
-                layerColor: AppColors.purpleOverlay,
-                showCloseButton: false,
-                handleBackNavigation: true,
-                onClose: () {},
-                child: Column(
-                  children: [
-                    SizedBox(height: 60.h),
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.topCenter,
+          children: [
+            AppModalContainer(
+              width: 340.w,
+              height: 550.h,
+              fillColor: Colors.white,
+              borderColor: Colors.white,
+              layerColor: AppColors.purpleOverlay,
+              showCloseButton: false,
+              handleBackNavigation: true,
+              onClose: () {},
+              child: Column(
+                children: [
+                  SizedBox(height: 60.h),
 
-                    // Title
-                    Text(
-                      'Winners Leaderboard',
-                      style: AppTextStyle.mochiyPopOne(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center,
+                  // Title
+                  Text(
+                    'Winners Leaderboard',
+                    style: AppTextStyle.mochiyPopOne(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
                     ),
-                    SizedBox(height: 12.h),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 12.h),
 
-                    // Scrollable leaderboard entries
-                    Expanded(
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: Column(
-                          children: [
-                            for (int i = 0; i < _leaderboard.length; i++)
-                              _buildLeaderboardItem(_leaderboard[i]),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // Fixed bottom section with reduced spacing
-                    Padding(
+                  // Scrollable leaderboard entries
+                  Expanded(
+                    child: SingleChildScrollView(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Total amount
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Total',
-                                style: AppTextStyle.mochiyPopOne(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              SizedBox(width: 12.w),
-                              AppImages(
-                                imagePath: AppImageData.money1,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                '\$${widget.totalAmount.toInt()}',
-                                style: AppTextStyle.mochiyPopOne(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 12.h),
-
-                          // Back to home button
-                          SizedBox(
-                            width: double.infinity,
-                            child: AppButton(
-                              text: 'Back to Home',
-                              textStyle: AppTextStyle.poppins(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                              ),
-                              fillColor: AppColors.darkPurple,
-                              layerColor: AppColors.darkPurple2,
-                              extraLayerColor: AppColors.purpleOverlay,
-                              extraLayerHeight:
-                                  AppDimension.isSmall ? 70.h : 50.h,
-                              extraLayerTopPosition: 4.h,
-                              extraLayerOffset: 1,
-                              height: AppDimension.isSmall ? 70.h : 50.h,
-                              layerHeight: AppDimension.isSmall ? 57.h : 44.h,
-                              layerTopPosition: -1.5.h,
-                              hasBorder: true,
-                              borderColor: Colors.white,
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                if (widget.onBackToHome != null) {
-                                  widget.onBackToHome!();
-                                } else {
-                                  Navigator.of(context)
-                                      .pushReplacementNamed(AppRoutes.home);
-                                }
-                              },
-                              borderRadius: 24.r,
-                            ),
-                          ),
-                          SizedBox(height: 12.h),
+                          for (int i = 0; i < _leaderboard.length; i++)
+                            _buildLeaderboardItem(_leaderboard[i]),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
+                  ),
 
-              // "YOU WON" banner positioned above the modal
-              Positioned(
-                top: -95.h,
-                child: AppImages(
-                  imagePath: AppImageData.won,
-                  width: 340.w,
-                  height: 140.h,
-                ),
+                  // Fixed bottom section with reduced spacing
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Total amount
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Total',
+                              style: AppTextStyle.mochiyPopOne(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            AppImages(
+                              imagePath: AppImageData.money1,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                            SizedBox(width: 8.w),
+                            Text(
+                              '\$${widget.totalAmount.toInt()}',
+                              style: AppTextStyle.mochiyPopOne(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 12.h),
+
+                        // Back to home button
+                        SizedBox(
+                          width: double.infinity,
+                          child: AppButton(
+                            text: 'Back to Home',
+                            textStyle: AppTextStyle.poppins(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                            fillColor: AppColors.darkPurple,
+                            layerColor: AppColors.darkPurple2,
+                            extraLayerColor: AppColors.purpleOverlay,
+                            extraLayerHeight:
+                                AppDimension.isSmall ? 70.h : 50.h,
+                            extraLayerTopPosition: 4.h,
+                            extraLayerOffset: 1,
+                            height: AppDimension.isSmall ? 70.h : 50.h,
+                            layerHeight: AppDimension.isSmall ? 57.h : 44.h,
+                            layerTopPosition: -1.5.h,
+                            hasBorder: true,
+                            borderColor: Colors.white,
+                            onPressed: () {
+                              _soundService.playButtonClick();
+                              Navigator.of(context).pop();
+                              if (widget.onBackToHome != null) {
+                                widget.onBackToHome!();
+                              } else {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (context) => const HomeScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              }
+                            },
+                            borderRadius: 24.r,
+                          ),
+                        ),
+                        SizedBox(height: 12.h),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+
+            // "YOU WON" banner positioned above the modal
+            Positioned(
+              top: -95.h,
+              child: AppImages(
+                imagePath: AppImageData.won,
+                width: 340.w,
+                height: 140.h,
+              ),
+            ),
+          ],
         ),
       ),
     );
