@@ -17,6 +17,7 @@ class GameTimeContainer extends StatefulWidget {
   final int maxRounds;
   final int timePerRoundInSeconds;
   final Function(bool didWin, int currentRound)? onRoundComplete;
+  final VoidCallback? onTimeExpired;
 
   const GameTimeContainer({
     super.key,
@@ -24,6 +25,7 @@ class GameTimeContainer extends StatefulWidget {
     this.maxRounds = 3,
     this.timePerRoundInSeconds = 240, // 4 minutes per round
     this.onRoundComplete,
+    this.onTimeExpired,
   });
 
   @override
@@ -82,7 +84,13 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
 
         // Only notify if at least one round was played
         if (_currentRound > 0) {
-          widget.onRoundComplete?.call(false, _currentRound);
+          // Notify the parent about time expiration, if callback is provided
+          // Otherwise, fall back to onRoundComplete
+          if (widget.onTimeExpired != null) {
+            widget.onTimeExpired!();
+          } else {
+            widget.onRoundComplete?.call(false, _currentRound);
+          }
           _showTimeUpMessage();
         }
       }
