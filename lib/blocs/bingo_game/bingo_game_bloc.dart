@@ -183,8 +183,11 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
       newPattern = state.winningPattern;
     }
 
-    // Reset game state with the appropriate winning pattern
-    emit(BingoGameState.initial().copyWith(winningPattern: newPattern));
+    // Create a fresh initial state that will randomize the board
+    final newState = BingoGameState.initial();
+
+    // Reset game state with the appropriate winning pattern and shuffled board
+    emit(newState.copyWith(winningPattern: newPattern));
 
     // Set the game over reset flag if this reset is from a game over
     if (event.isGameOver) {
