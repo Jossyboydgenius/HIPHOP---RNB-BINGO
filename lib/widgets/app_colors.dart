@@ -28,6 +28,7 @@ class AppColors {
   static const Color darkPurple1 = Color(0xFF8550F1);
   static const Color darkPurple2 = Color(0xFF9A4AFE);
   static const Color darkPurple3 = Color(0xFFA75CF4);
+  static const Color darkPurple4 = Color(0xFF5B099B);
 
   // Gray shades
   static const Color grayLight = Color(0xFFF0F0F0);
@@ -46,6 +47,7 @@ class AppColors {
   static const Color backgroundDark = Color(0x66101010);
   static const Color backgroundLight = Color(0xFFF0F0F0);
   static const Color backgroundGrey = Color(0xFFD9D9D9);
+  static const Color backgroundLight2 = Color(0xFFF3F2FF);
 
   // Pink/Red shades
   static const Color pinkPrimary = Color(0xFFFF4672);
