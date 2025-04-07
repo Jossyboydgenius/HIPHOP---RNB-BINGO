@@ -14,6 +14,7 @@ class AppImageData {
   static const String glowing = '$_base/glowing.png';
   static const String medalGold = '$_base/medal-gold.png';
   static const String money = '$_base/money.png';
+  static const String money1 = '$_base/money1.png';
   static const String treasure = '$_base/treasure.png';
   static const String won = '$_base/won.png';
   static const String lose = '$_base/lose.png';
