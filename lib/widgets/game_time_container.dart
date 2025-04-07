@@ -39,6 +39,9 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
   Timer? _loadingTimer; // Timer for loading screen
   final _soundService = GameSoundService(); // Add sound service instance
 
+  // Getter to expose current round to parent
+  int get currentRound => _currentRound;
+
   @override
   void initState() {
     super.initState();
@@ -277,26 +280,15 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
                 _isLoading
                     ? SizedBox(
                         width: 50.w,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              height: 10.h,
-                              width: 10.w,
-                              child: SpinKitCubeGrid(
-                                size: 10.w,
-                                color: AppColors.yellowPrimary,
-                              ),
+                        child: Center(
+                          child: SizedBox(
+                            height: 15.h,
+                            width: 15.w,
+                            child: SpinKitCubeGrid(
+                              size: 15.w,
+                              color: AppColors.yellowPrimary,
                             ),
-                            SizedBox(width: 8.w),
-                            Text(
-                              'Loading...',
-                              style: AppTextStyle.mochiyPopOne(
-                                fontSize: 8.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       )
                     : Text(
