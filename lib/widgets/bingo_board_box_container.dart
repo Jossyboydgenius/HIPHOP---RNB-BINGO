@@ -9,8 +9,10 @@ import 'package:hiphop_rnb_bingo/widgets/called_boards_container.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
+import 'package:hiphop_rnb_bingo/widgets/claim_prize_success_modal.dart';
 
 class BingoBoardBoxContainer extends StatefulWidget {
   const BingoBoardBoxContainer({super.key});
@@ -63,6 +65,16 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
   void dispose() {
     _winAnimationController.dispose();
     super.dispose();
+  }
+
+  // Regenerate the board with new shuffled items
+  void _reshuffleBoard() {
+    // Reset the win animation controller
+    _winAnimationController.reset();
+
+    setState(() {
+      _shuffledItems = _generateShuffledBoardItems();
+    });
   }
 
   List<Widget> _buildBingoHeader() {
@@ -242,10 +254,44 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BingoGameBloc, BingoGameState>(
+    return BlocConsumer<BingoGameBloc, BingoGameState>(
       buildWhen: (previous, current) =>
           previous.hasWon != current.hasWon ||
+          previous.calledBoards != current.calledBoards ||
           previous.winningPattern != current.winningPattern,
+      listenWhen: (previous, current) =>
+          // Listen for reset conditions
+          (previous.calledBoards.isNotEmpty && current.calledBoards.isEmpty) ||
+          (previous.hasWon == true && current.hasWon == false) ||
+          // Listen for win condition
+          (previous.hasWon == false && current.hasWon == true),
+      listener: (context, state) {
+        if (state.calledBoards.isEmpty || !state.hasWon) {
+          // Game has been reset
+          _reshuffleBoard();
+        } else if (state.hasWon) {
+          // Game has been won - show prize claim modal
+          // Start the win animation
+          _winAnimationController.forward();
+
+          // Show claim prize modal
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => ClaimPrizeSuccessModal(
+                amount: "${(Random().nextInt(90) + 10).toString()}",
+                onClose: () {
+                  // Handle prize claimed, potentially reset the game
+                  context
+                      .read<BingoGameBloc>()
+                      .add(ResetGame(isGameOver: false));
+                },
+              ),
+            );
+          });
+        }
+      },
       builder: (context, state) {
         // Start animation if player has won
         if (state.hasWon &&
