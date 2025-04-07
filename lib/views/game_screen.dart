@@ -22,6 +22,9 @@ import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
+import 'package:hiphop_rnb_bingo/widgets/lose_modal.dart';
+import 'dart:math';
+import 'package:hiphop_rnb_bingo/views/home_screen.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -42,6 +45,10 @@ class _GameScreenState extends State<GameScreen>
   final int _timePerRound = 240; // 4 minutes
   // Current round tracker
   int _currentRound = 1;
+  // Track player losses
+  int _playerLosses = 0;
+  // Force recreate timer
+  int _timerKey = 0;
 
   // SuperTooltip controller
   final _tooltipController = SuperTooltipController();
@@ -134,13 +141,24 @@ class _GameScreenState extends State<GameScreen>
       }
     } else if (!didWin) {
       // User lost the round
-      _showFinalLoseMessage();
+      _playerLosses++;
+
+      if (_playerLosses >= 2) {
+        // Player has lost twice, show eliminated modal
+        _showFinalLoseMessage();
+      } else {
+        // Player still has another chance, show lose modal
+        _showLoseModal(false);
+      }
     }
   }
 
   void _showFinalWinMessage() {
     // Play prize win sound
     _soundService.playPrizeWin();
+
+    // Reset player losses on win
+    _playerLosses = 0;
 
     // Calculate the total prize amount for all rounds
     int grandTotalPrize = 0;
@@ -162,7 +180,12 @@ class _GameScreenState extends State<GameScreen>
           totalRounds: _maxRounds,
           onClaimPrize: () {
             // Navigator.pop is already handled in the modal
-            // Optionally reset game here if you want
+            // Reset game for a potential next play
+            setState(() {
+              _currentRound = 1; // Reset to first round
+              _timerKey++; // Force timer recreation
+            });
+
             context
                 .read<BingoGameBloc>()
                 .add(const ResetGame(isGameOver: true));
@@ -185,6 +208,14 @@ class _GameScreenState extends State<GameScreen>
         child: EliminatedModal(
           onTryAgain: () {
             // Only reset the game, Navigator.pop is already handled in the modal
+            _playerLosses = 0; // Reset losses
+
+            // Force timer recreation when trying again
+            setState(() {
+              _currentRound = 1; // Reset to first round
+              _timerKey++; // Increment timer key to force recreation
+            });
+
             context.read<BingoGameBloc>().add(ResetGame(isGameOver: true));
           },
         ),
@@ -377,6 +408,9 @@ class _GameScreenState extends State<GameScreen>
     // Use the current round from the class member
     int currentRound = _currentRound;
 
+    // Reset player losses on round win
+    _playerLosses = 0;
+
     // Check if this is the final round
     bool isFinalRound = currentRound >= _maxRounds;
 
@@ -415,6 +449,8 @@ class _GameScreenState extends State<GameScreen>
                 setState(() {
                   if (_currentRound < _maxRounds) {
                     _currentRound++;
+                    // Force timer recreation for next round
+                    _timerKey++;
                   }
                 });
 
@@ -450,6 +486,87 @@ class _GameScreenState extends State<GameScreen>
     );
   }
 
+  void _onTimeExpired() {
+    // Player ran out of time, counts as a loss
+    _playerLosses++;
+
+    if (_playerLosses >= 2) {
+      // Player has lost twice, show eliminated modal
+      _showFinalLoseMessage();
+    } else {
+      // Player still has another chance, show lose modal
+      _showLoseModal(false);
+    }
+  }
+
+  void _showLoseModal(bool isEliminated) {
+    final String winnerName = _generateRandomWinnerName();
+    final bool isFinalRound = _currentRound >= _maxRounds;
+
+    _soundService.playWrongBingo();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => LoseModal(
+        round: _currentRound,
+        winnerName: winnerName,
+        isFinalRound: isFinalRound,
+        totalRounds: _maxRounds,
+        onContinue: () {
+          // Navigation pop is now handled inside the LoseModal
+          // No need to pop here
+
+          if (isFinalRound) {
+            // Game over, reset everything
+            _playerLosses = 0; // Reset losses
+            context
+                .read<BingoGameBloc>()
+                .add(const ResetGame(isGameOver: true));
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              (route) => false,
+            );
+          } else {
+            // Go to next round - don't show eliminated modal
+            setState(() {
+              _currentRound++;
+              // Increment timer key to force recreation of the GameTimeContainer
+              _timerKey++;
+            });
+            // Reset the board for the next round
+            context
+                .read<BingoGameBloc>()
+                .add(const ResetGame(isGameOver: false));
+          }
+        },
+        onBackToHome: () {
+          // Reset the game and go back home
+          _playerLosses = 0; // Reset losses
+          context.read<BingoGameBloc>().add(const ResetGame(isGameOver: true));
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            (route) => false,
+          );
+        },
+      ),
+    );
+  }
+
+  String _generateRandomWinnerName() {
+    final aiNames = [
+      'John Doe',
+      'Jane Smith',
+      'Mike Johnson',
+      'Sarah Williams',
+      'David Brown',
+      'Emma Taylor',
+      'Chris Wilson',
+    ];
+
+    return aiNames[Random().nextInt(aiNames.length)];
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -482,11 +599,18 @@ class _GameScreenState extends State<GameScreen>
                             ),
                           ),
                           // Time Container
-                          GameTimeContainer(
-                            initialRound: 1,
-                            maxRounds: _maxRounds,
-                            timePerRoundInSeconds: _timePerRound,
-                            onRoundComplete: _onRoundComplete,
+                          Positioned(
+                            right: AppDimension.isSmall ? 12.w : 16.w,
+                            top: MediaQuery.of(context).padding.top + 16.h,
+                            child: GameTimeContainer(
+                              key: ValueKey(
+                                  _timerKey), // Forces recreation when key changes
+                              initialRound: _currentRound,
+                              maxRounds: _maxRounds,
+                              timePerRoundInSeconds: _timePerRound,
+                              onRoundComplete: _onRoundComplete,
+                              onTimeExpired: _onTimeExpired,
+                            ),
                           ),
                           SizedBox(width: 12.w),
                           // Player Container
