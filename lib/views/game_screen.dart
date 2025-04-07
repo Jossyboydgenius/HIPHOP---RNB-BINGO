@@ -40,6 +40,8 @@ class _GameScreenState extends State<GameScreen>
   final int _maxRounds = 3;
   // Time per round in seconds
   final int _timePerRound = 240; // 4 minutes
+  // Current round tracker
+  int _currentRound = 1;
 
   // SuperTooltip controller
   final _tooltipController = SuperTooltipController();
@@ -122,9 +124,14 @@ class _GameScreenState extends State<GameScreen>
 
   // Method to handle round completion
   void _onRoundComplete(bool didWin, int currentRound) {
-    if (didWin && currentRound >= _maxRounds) {
-      // Game complete - user won all rounds
-      _showFinalWinMessage();
+    if (didWin) {
+      // Update our current round to match
+      _currentRound = currentRound;
+
+      if (currentRound >= _maxRounds) {
+        // Game complete - user won all rounds
+        _showFinalWinMessage();
+      }
     } else if (!didWin) {
       // User lost the round
       _showFinalLoseMessage();
@@ -354,6 +361,79 @@ class _GameScreenState extends State<GameScreen>
   //     _dismissPatternChange();
   //   }
   // }
+
+  // Method to show the victory modal for each completed round
+  void _showRoundVictoryModal(BuildContext context, BingoGameState state) {
+    // Use the current round from the class member
+    int currentRound = _currentRound;
+
+    // Calculate prize amount - increase with rounds
+    int prizeAmount = 50 * currentRound;
+
+    // Show the victory modal with delayed animation
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        barrierColor: Colors.black54,
+        builder: (dialogContext) => BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: VictoryModal(
+            roundNumber: currentRound,
+            prizeAmount: prizeAmount,
+            nextRoundSeconds: 60,
+            onClaimPrize: () {
+              // Show loading spinner first
+              _showLoadingOverlay(context);
+
+              // After showing loading for 2 seconds, proceed to next round
+              Future.delayed(const Duration(seconds: 2), () {
+                if (!mounted) return;
+
+                // Reset the game state but keep the current round
+                final bingoBloc = context.read<BingoGameBloc>();
+                bingoBloc.add(const ResetGame(isGameOver: false));
+
+                // Increment the round counter
+                setState(() {
+                  if (_currentRound < _maxRounds) {
+                    _currentRound++;
+                  }
+                });
+
+                // Remove the loading overlay
+                Navigator.of(context).pop();
+              });
+            },
+          ),
+        ),
+      );
+    });
+  }
+
+  // Helper method to show loading overlay
+  void _showLoadingOverlay(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black54,
+      builder: (loadingContext) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: Center(
+            child: SpinKitCubeGrid(
+              color: AppColors.yellowPrimary,
+              size: 50.w,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -697,6 +777,19 @@ class _GameScreenState extends State<GameScreen>
                       previous.hasWon != current.hasWon,
                   builder: (context, state) {
                     if (state.hasWon) {
+                      // Get winning pattern name for display
+                      final winPattern = state.winningPattern;
+                      final patternTitle =
+                          _winningPatterns[winPattern]?['title'] ?? 'Bingo';
+
+                      // Show loading overlay first, then victory modal
+                      Future.delayed(const Duration(seconds: 2), () {
+                        if (mounted) {
+                          // Show the victory modal with the current round number
+                          _showRoundVictoryModal(context, state);
+                        }
+                      });
+
                       return Positioned.fill(
                         child: Container(
                           color: Colors.black.withOpacity(0.7),
@@ -704,7 +797,7 @@ class _GameScreenState extends State<GameScreen>
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // Winning message
+                                // BINGO! text with fixed sizing to prevent overflow
                                 Text(
                                   'BINGO!',
                                   style: AppTextStyle.mochiyPopOne(
@@ -713,7 +806,7 @@ class _GameScreenState extends State<GameScreen>
                                     color: Colors.white,
                                   ),
                                 ),
-                                SizedBox(height: 24.h),
+                                SizedBox(height: 15.h),
                                 // Loading spinner
                                 SizedBox(
                                   height: 40.h,
@@ -723,12 +816,23 @@ class _GameScreenState extends State<GameScreen>
                                     size: 40.w,
                                   ),
                                 ),
-                                SizedBox(height: 24.h),
+                                SizedBox(height: 15.h),
                                 // Loading message
                                 Text(
                                   'Preparing next round...',
                                   style: AppTextStyle.mochiyPopOne(
                                     fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 15.h),
+                                // Show which pattern they won with
+                                Text(
+                                  'You won with a $patternTitle!',
+                                  style: AppTextStyle.mochiyPopOne(
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.white,
                                   ),
