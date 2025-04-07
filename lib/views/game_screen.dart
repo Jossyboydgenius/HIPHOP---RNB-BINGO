@@ -14,6 +14,8 @@ import 'package:hiphop_rnb_bingo/widgets/bingo_button.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/chat_room_modal.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
+import 'package:hiphop_rnb_bingo/widgets/eliminated_modal.dart';
+import 'package:hiphop_rnb_bingo/widgets/victory_modal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
@@ -136,71 +138,19 @@ class _GameScreenState extends State<GameScreen>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.purplePrimary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24.r),
-          side: BorderSide(color: Colors.white, width: 3.w),
+      barrierColor: Colors.black54,
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: VictoryModal(
+          roundNumber: _maxRounds,
+          prizeAmount: 1000, // Update with actual prize amount from game state
+          nextRoundSeconds: 60,
+          onClaimPrize: () {
+            // Navigator.pop is already handled in the modal
+            // Optionally reset game here if you want
+            context.read<BingoGameBloc>().add(ResetGame());
+          },
         ),
-        title: Text(
-          'Congratulations!',
-          style: AppTextStyle.mochiyPopOne(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppImages(
-              imagePath: AppImageData.won,
-              width: 120.w,
-              height: 120.h,
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              'You completed all $_maxRounds rounds successfully!',
-              style: AppTextStyle.dmSans(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              // Play board tap sound with haptic feedback
-              _soundService.playBoardTap();
-
-              Navigator.pop(context);
-              // Optionally reset game here if you want
-              context.read<BingoGameBloc>().add(ResetGame());
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 24.w,
-                vertical: 8.h,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.greenBright,
-                borderRadius: BorderRadius.circular(100.r),
-              ),
-              child: Text(
-                'Continue',
-                style: AppTextStyle.dmSans(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -212,71 +162,15 @@ class _GameScreenState extends State<GameScreen>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.purplePrimary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24.r),
-          side: BorderSide(color: Colors.white, width: 3.w),
+      barrierColor: Colors.black54,
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: EliminatedModal(
+          onTryAgain: () {
+            // Only reset the game, Navigator.pop is already handled in the modal
+            context.read<BingoGameBloc>().add(ResetGame(isGameOver: true));
+          },
         ),
-        title: Text(
-          'Game Over',
-          style: AppTextStyle.mochiyPopOne(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppImages(
-              imagePath: AppImageData.lose,
-              width: 120.w,
-              height: 120.h,
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              'You ran out of time. Try again!',
-              style: AppTextStyle.dmSans(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              // Play board tap sound with haptic feedback
-              _soundService.playBoardTap();
-
-              Navigator.pop(context);
-              // Reset game
-              context.read<BingoGameBloc>().add(ResetGame(isGameOver: true));
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 24.w,
-                vertical: 8.h,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.yellowPrimary,
-                borderRadius: BorderRadius.circular(100.r),
-              ),
-              child: Text(
-                'Try Again',
-                style: AppTextStyle.dmSans(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
