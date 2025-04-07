@@ -37,7 +37,7 @@ class _EliminatedModalState extends State<EliminatedModal>
           // Main modal container
           AppModalContainer(
             width: AppDimension.isSmall ? 320.w : 280.w,
-            height: AppDimension.isSmall ? 420.h : 300.h,
+            height: AppDimension.isSmall ? 380.h : 300.h,
             fillColor: Colors.white,
             borderColor: Colors.white,
             layerColor: AppColors.purpleOverlay,
