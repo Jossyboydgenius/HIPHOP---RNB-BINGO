@@ -13,12 +13,15 @@ import 'package:hiphop_rnb_bingo/widgets/claim_prize_success_modal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
+import 'package:hiphop_rnb_bingo/widgets/leaderboard/winner_leaderboard_modal.dart';
 
 class VictoryModal extends StatefulWidget {
   final VoidCallback onClaimPrize;
   final int roundNumber;
   final int prizeAmount;
   final int nextRoundSeconds;
+  final bool isFinalRound;
+  final int totalRounds;
 
   const VictoryModal({
     super.key,
@@ -26,6 +29,8 @@ class VictoryModal extends StatefulWidget {
     required this.roundNumber,
     required this.prizeAmount,
     this.nextRoundSeconds = 60,
+    this.isFinalRound = false,
+    this.totalRounds = 3,
   });
 
   @override
@@ -38,11 +43,13 @@ class _VictoryModalState extends State<VictoryModal>
   late int _remainingSeconds;
   final _soundService = GameSoundService();
   bool _hasClaimed = false;
+  double _grandTotalPrize = 0;
 
   @override
   void initState() {
     super.initState();
     _remainingSeconds = widget.nextRoundSeconds;
+    _grandTotalPrize = widget.prizeAmount.toDouble();
     _startCountdown();
   }
 
@@ -72,11 +79,34 @@ class _VictoryModalState extends State<VictoryModal>
   }
 
   void _proceedToNextRound() {
-    // Shuffle the board for the next round
-    context.read<BingoGameBloc>().add(const ResetGame(isGameOver: false));
+    // If this is the final round, show the leaderboard
+    if (widget.isFinalRound) {
+      _showWinnerLeaderboard();
+    } else {
+      // Shuffle the board for the next round
+      context.read<BingoGameBloc>().add(const ResetGame(isGameOver: false));
 
-    Navigator.of(context).pop();
-    widget.onClaimPrize();
+      Navigator.of(context).pop();
+      widget.onClaimPrize();
+    }
+  }
+
+  void _showWinnerLeaderboard() {
+    Navigator.of(context).pop(); // Close the VictoryModal
+
+    // Show the leaderboard with the grand total prize
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WinnerLeaderboardModal(
+        totalAmount: _grandTotalPrize,
+        onBackToHome: () {
+          // Reset the game and go back home
+          context.read<BingoGameBloc>().add(const ResetGame(isGameOver: true));
+          widget.onClaimPrize();
+        },
+      ),
+    );
   }
 
   void _claimPrizeAndProceed() {
@@ -141,7 +171,9 @@ class _VictoryModalState extends State<VictoryModal>
                 children: [
                   // Round prize text
                   Text(
-                    'Round ${widget.roundNumber} Prize',
+                    widget.isFinalRound
+                        ? 'Grand Finale Prize'
+                        : 'Round ${widget.roundNumber} Prize',
                     style: AppTextStyle.poppins(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
@@ -156,9 +188,9 @@ class _VictoryModalState extends State<VictoryModal>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AppImages(
-                        imagePath: AppImageData.money,
-                        width: 30.w,
-                        height: 30.h,
+                        imagePath: AppImageData.money1,
+                        width: 36.w,
+                        height: 36.h,
                       ),
                       SizedBox(width: 10.w),
                       Text(
@@ -178,10 +210,10 @@ class _VictoryModalState extends State<VictoryModal>
                   Text(
                     _hasClaimed
                         ? 'Claimed prize is added to your wallet'
-                        : 'Claim prize is added to your wallet',
+                        : 'Claim prize to add to your wallet',
                     style: AppTextStyle.poppins(
                       fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black87,
                     ),
                     textAlign: TextAlign.center,
@@ -204,8 +236,8 @@ class _VictoryModalState extends State<VictoryModal>
                             layerColor: AppColors.darkPurple2,
                             extraLayerColor: AppColors.purpleOverlay,
                             extraLayerHeight:
-                                AppDimension.isSmall ? 40.h : 20.h,
-                            extraLayerTopPosition: 34.h,
+                                AppDimension.isSmall ? 70.h : 50.h,
+                            extraLayerTopPosition: 4.h,
                             extraLayerOffset: 1,
                             height: AppDimension.isSmall ? 70.h : 50.h,
                             layerHeight: AppDimension.isSmall ? 57.h : 44.h,
@@ -229,8 +261,8 @@ class _VictoryModalState extends State<VictoryModal>
                             layerColor: AppColors.yellowPrimary,
                             extraLayerColor: AppColors.purpleOverlay,
                             extraLayerHeight:
-                                AppDimension.isSmall ? 40.h : 20.h,
-                            extraLayerTopPosition: 34.h,
+                                AppDimension.isSmall ? 70.h : 50.h,
+                            extraLayerTopPosition: 4.h,
                             extraLayerOffset: 1,
                             height: AppDimension.isSmall ? 70.h : 50.h,
                             layerHeight: AppDimension.isSmall ? 57.h : 44.h,
@@ -253,10 +285,11 @@ class _VictoryModalState extends State<VictoryModal>
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text:
-                              'Proceed to Round ${widget.roundNumber + 1} in ',
+                          text: widget.isFinalRound
+                              ? 'Proceed to Leaderboard in '
+                              : 'Proceed to Round ${widget.roundNumber + 1} in ',
                           style: AppTextStyle.mochiyPopOne(
-                            fontSize: 12.sp,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.w400,
                             color: Colors.black,
                           ),
@@ -264,7 +297,7 @@ class _VictoryModalState extends State<VictoryModal>
                         TextSpan(
                           text: '$_remainingSeconds Secs',
                           style: AppTextStyle.mochiyPopOne(
-                            fontSize: 12.sp,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.w400,
                             color: AppColors.darkPurple,
                           ),
