@@ -9,15 +9,20 @@ import 'package:hiphop_rnb_bingo/widgets/app_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/balance/balance_event.dart';
 
 class ClaimPrizeSuccessModal extends StatefulWidget {
   final VoidCallback onClose;
   final String amount;
+  final bool updateBalance;
 
   const ClaimPrizeSuccessModal({
     super.key,
     required this.onClose,
     required this.amount,
+    this.updateBalance = true,
   });
 
   @override
@@ -28,6 +33,7 @@ class _ClaimPrizeSuccessModalState extends State<ClaimPrizeSuccessModal>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   final _soundService = GameSoundService();
+  bool _hasUpdatedBalance = false;
 
   @override
   void initState() {
@@ -39,6 +45,31 @@ class _ClaimPrizeSuccessModalState extends State<ClaimPrizeSuccessModal>
 
     // Play a winning sound when showing this modal
     _soundService.playPrizeWin();
+
+    // Update the money balance as soon as the modal appears
+    if (widget.updateBalance && !_hasUpdatedBalance) {
+      _updateMoneyBalance();
+      _hasUpdatedBalance = true;
+    }
+  }
+
+  void _updateMoneyBalance() {
+    try {
+      // Get the current money balance from the bloc
+      final currentBalance = context.read<BalanceBloc>().state.moneyBalance;
+
+      // Parse the amount string to an integer
+      final amountToAdd = int.tryParse(widget.amount) ?? 0;
+
+      // Update the money balance
+      if (amountToAdd > 0) {
+        context
+            .read<BalanceBloc>()
+            .add(UpdateMoneyBalance(currentBalance + amountToAdd));
+      }
+    } catch (e) {
+      print('Error updating money balance: $e');
+    }
   }
 
   @override
