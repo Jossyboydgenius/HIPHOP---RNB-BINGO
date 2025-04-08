@@ -1,14 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
-import 'package:hiphop_rnb_bingo/blocs/balance/balance_event.dart';
-import 'package:hiphop_rnb_bingo/blocs/balance/balance_state.dart';
-import 'package:hiphop_rnb_bingo/widgets/app_button.dart';
-import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
-import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
-import 'package:hiphop_rnb_bingo/widgets/app_top_bar.dart';
+/*
+ * Demo balance screen - temporarily commented out
+ * Will be used later for testing the prize payout modal functionality
+ */
 
+import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
+// import 'package:hiphop_rnb_bingo/blocs/balance/balance_event.dart';
+// import 'package:hiphop_rnb_bingo/blocs/balance/balance_state.dart';
+// import 'package:hiphop_rnb_bingo/widgets/app_button.dart';
+// import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
+// import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
+// import 'package:hiphop_rnb_bingo/widgets/app_top_bar.dart';
+
+/*
 class DemoBalanceScreen extends StatelessWidget {
   const DemoBalanceScreen({Key? key}) : super(key: key);
 
@@ -161,6 +167,22 @@ class DemoBalanceScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+*/
+
+// Temporary placeholder class to avoid compiler errors
+// This can be removed when uncommenting the full implementation above
+class DemoBalanceScreen extends StatelessWidget {
+  const DemoBalanceScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text('Demo screen temporarily disabled'),
+      ),
     );
   }
 }
