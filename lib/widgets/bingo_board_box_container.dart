@@ -11,10 +11,8 @@ import 'package:hiphop_rnb_bingo/widgets/called_boards_container.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
-import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
-import 'package:hiphop_rnb_bingo/widgets/claim_prize_success_modal.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 
 class BingoBoardBoxContainer extends StatefulWidget {
@@ -383,23 +381,6 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
 
           // Start the win animation
           _winAnimationController.forward();
-
-          // Show claim prize modal
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => ClaimPrizeSuccessModal(
-                amount: "${(Random().nextInt(90) + 10).toString()}",
-                onClose: () {
-                  // Handle prize claimed, potentially reset the game
-                  context
-                      .read<BingoGameBloc>()
-                      .add(ResetGame(isGameOver: false));
-                },
-              ),
-            );
-          });
         }
       },
       builder: (context, state) {
