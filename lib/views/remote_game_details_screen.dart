@@ -12,6 +12,7 @@ import '../widgets/app_icons.dart';
 import '../widgets/app_images.dart';
 import '../widgets/app_text_style.dart';
 import '../widgets/app_top_bar.dart';
+import '../widgets/exit_confirmation_modal.dart';
 import '../widgets/game_details_container.dart';
 import '../widgets/payment_options_modal.dart';
 import '../widgets/app_toast.dart';
@@ -85,6 +86,28 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
     );
   }
 
+  // Show exit confirmation dialog
+  void _showExitConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ExitConfirmationModal(
+        title: 'Exit Remote Game',
+        message: 'Are you sure you want to go back to the home screen?',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        exitApp: false,
+        onClose: () {
+          // Do nothing on close, modal will be dismissed
+        },
+        onConfirm: () {
+          // Navigate back to home screen
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        },
+      ),
+    );
+  }
+
   String get _timeString {
     final minutes = (_remainingSeconds / 60).floor();
     final seconds = _remainingSeconds % 60;
@@ -95,7 +118,8 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
+        // Show exit confirmation dialog instead of going back immediately
+        _showExitConfirmation(context);
         return false;
       },
       child: Scaffold(
