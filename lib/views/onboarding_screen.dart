@@ -11,6 +11,7 @@ import '../widgets/app_icons.dart';
 import '../enums/modal_type.dart';
 import '../routes/app_routes.dart';
 import '../widgets/app_sizer.dart';
+import '../widgets/exit_confirmation_modal.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -43,12 +44,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     });
   }
 
+  // Show exit confirmation dialog
+  void _showExitConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ExitConfirmationModal(
+        title: 'Exit Game',
+        message: 'Are you sure you want to exit the game?',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        exitApp: true,
+        onClose: () {
+          // Do nothing on close, modal will be dismissed
+        },
+        onConfirm: () {
+          // This will be handled inside the ExitConfirmationModal to exit the app
+        },
+      ),
+    );
+  }
+
   Widget _buildModalContent(ModalType type) {
     return Column(
       children: [
         SizedBox(height: AppDimension.isSmall ? 14.h : 12.h),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppDimension.getResponsiveWidth(20).w),
+          padding: EdgeInsets.symmetric(
+              horizontal: AppDimension.getResponsiveWidth(20).w),
           child: Column(
             children: [
               AppButton(
@@ -153,7 +176,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushReplacementNamed(context, AppRoutes.splash);
+        // Show exit confirmation dialog instead of navigating back
+        _showExitConfirmation(context);
         return false;
       },
       child: Scaffold(
@@ -170,7 +194,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     SizedBox(height: AppDimension.isSmall ? 80.h : 60.h),
                     Container(
-                      margin: EdgeInsets.only(bottom: AppDimension.isSmall ? 120.h : 168.h),
+                      margin: EdgeInsets.only(
+                          bottom: AppDimension.isSmall ? 120.h : 168.h),
                       child: Center(
                         child: Column(
                           children: [
@@ -195,7 +220,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               fontWeight: FontWeight.w900,
                               onPressed: () => _showModal(ModalType.signIn),
                             ),
-                            SizedBox(height: AppDimension.isSmall ? 22.h : 22.h),
+                            SizedBox(
+                                height: AppDimension.isSmall ? 22.h : 22.h),
                             AppButton(
                               text: 'Sign Up',
                               textStyle: AppTextStyle.poppins(
@@ -235,23 +261,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AppDimension.getResponsiveWidth(20).w),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppDimension.getResponsiveWidth(20).w),
                       child: Center(
                         child: AppModalContainer(
                           width: AppDimension.isSmall ? 320.w : 280.w,
                           height: AppDimension.isSmall ? 420.h : 300.h,
-                          fillColor: _currentModal == ModalType.signIn 
-                              ? AppColors.yellowPrimary 
+                          fillColor: _currentModal == ModalType.signIn
+                              ? AppColors.yellowPrimary
                               : AppColors.purplePrimary,
-                          borderColor: _currentModal == ModalType.signIn 
-                              ? AppColors.yellowLight 
+                          borderColor: _currentModal == ModalType.signIn
+                              ? AppColors.yellowLight
                               : AppColors.purpleLight,
-                          layerColor: _currentModal == ModalType.signIn 
-                              ? AppColors.yellowDark 
+                          layerColor: _currentModal == ModalType.signIn
+                              ? AppColors.yellowDark
                               : AppColors.purpleDark,
                           layerTopPosition: -4,
                           borderRadius: 32,
-                          title: _currentModal == ModalType.signIn ? 'Sign In' : 'Sign Up',
+                          title: _currentModal == ModalType.signIn
+                              ? 'Sign In'
+                              : 'Sign Up',
                           titleStyle: AppTextStyle.poppins(
                             fontSize: AppDimension.getFontSize(22).sp,
                             fontWeight: FontWeight.w800,
@@ -270,4 +299,4 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
     );
   }
-} 
+}
