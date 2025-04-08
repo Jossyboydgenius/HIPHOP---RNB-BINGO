@@ -12,6 +12,7 @@ import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'bingo_boards_store_modal.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
+import 'prize_payout_modal.dart';
 
 class AppTopBar extends StatefulWidget {
   final String initials;
@@ -281,14 +282,22 @@ class _AppTopBarState extends State<AppTopBar> {
               _buildUserAvatar(context),
               Row(
                 children: [
-                  // Money container (collapsible)
+                  // Money container (for prize payouts)
                   GestureDetector(
                     onTap: () {
                       // Play sound and haptic feedback
                       _soundService.playButtonClick();
-                      setState(() {
-                        _isMoneyExpanded = !_isMoneyExpanded;
-                      });
+
+                      // Show the prize payout modal
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) => PrizePayoutModal(
+                          onClose: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      );
                     },
                     child: _buildAmountContainer(
                       color: AppColors.green,
