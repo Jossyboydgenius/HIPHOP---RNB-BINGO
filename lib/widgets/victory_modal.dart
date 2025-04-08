@@ -92,7 +92,8 @@ class _VictoryModalState extends State<VictoryModal>
   }
 
   void _showWinnerLeaderboard() {
-    Navigator.of(context).pop(); // Close the VictoryModal
+    // Close all existing modals first
+    Navigator.of(context).popUntil((route) => route.isFirst);
 
     // Show the leaderboard with the grand total prize
     showDialog(
@@ -103,7 +104,10 @@ class _VictoryModalState extends State<VictoryModal>
         onBackToHome: () {
           // Reset the game and go back home
           context.read<BingoGameBloc>().add(const ResetGame(isGameOver: true));
-          widget.onClaimPrize();
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/home',
+            (route) => false,
+          );
         },
       ),
     );
