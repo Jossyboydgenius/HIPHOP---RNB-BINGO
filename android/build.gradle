@@ -3,6 +3,21 @@ allprojects {
         google()
         mavenCentral()
     }
+    
+    project.plugins.withId('com.android.library') {
+        android {
+            ndkVersion "28.0.12916984"
+        }
+    }
+    
+    afterEvaluate {
+        if (project.hasProperty('android')) {
+            println "Project: ${project.name}, NDK Version: ${project.android.ndkVersion}"
+            if (project.android.hasProperty('ndkDirectory')) {
+                println "NDK Directory: ${project.android.ndkDirectory}"
+            }
+        }
+    }
 }
 
 rootProject.buildDir = "../build"
@@ -11,18 +26,18 @@ subprojects {
         if (project.hasProperty('android')) {
             android {
                 compileOptions {
-                    sourceCompatibility JavaVersion.VERSION_11
-                    targetCompatibility JavaVersion.VERSION_11
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
                 }
             }
         }
         if (project.hasProperty('android') && project.plugins.hasPlugin('kotlin-android')) {
             kotlin {
-                jvmToolchain(11)
+                jvmToolchain(17)
             }
             tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
                 kotlinOptions {
-                    jvmTarget = "11"
+                    jvmTarget = "17"
                 }
             }
         }

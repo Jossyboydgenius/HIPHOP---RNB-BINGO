@@ -14,12 +14,26 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    
+    gradle.ext.ndkVersion = "28.0.12916984"
+    gradle.ext.ndkPath = "/Users/dreytech/Library/Android/sdk/ndk/28.0.12916984"
 }
 
 plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version "8.1.0" apply false
-    id "org.jetbrains.kotlin.android" version "1.8.22" apply false
+    id "com.android.application" version "8.2.1" apply false
+    id "org.jetbrains.kotlin.android" version "1.9.0" apply false
+    id "org.gradle.toolchains.foojay-resolver-convention" version "0.7.0"
 }
 
 include ":app"
+
+gradle.afterProject { project ->
+    if (project.hasProperty('android')) {
+        project.android {
+            if (!project.android.hasProperty('ndkVersion')) {
+                ndkVersion = gradle.ext.ndkVersion
+            }
+        }
+    }
+}
