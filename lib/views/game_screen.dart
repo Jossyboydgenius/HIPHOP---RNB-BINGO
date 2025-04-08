@@ -367,7 +367,7 @@ class _GameScreenState extends State<GameScreen>
                                     ),
                                   ),
                                 ),
-                                backgroundColor: Colors.black,
+                                backgroundColor: Colors.transparent,
                                 elevation: 0,
                               ),
                             );
