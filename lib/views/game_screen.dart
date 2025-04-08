@@ -908,79 +908,21 @@ class _GameScreenState extends State<GameScreen>
                   ),
                 ),
 
-                // Loading Overlay when transitioning between rounds
+                // Bingo won overlay - removing this as it's redundant with BingoBoardBoxContainer
                 BlocBuilder<BingoGameBloc, BingoGameState>(
                   buildWhen: (previous, current) =>
                       previous.hasWon != current.hasWon,
                   builder: (context, state) {
                     if (state.hasWon) {
-                      // Get winning pattern name for display
-                      final winPattern = state.winningPattern;
-                      final patternTitle =
-                          _winningPatterns[winPattern]?['title'] ?? 'Bingo';
-
-                      // Show loading overlay first, then victory modal
+                      // Show the victory modal with a short delay
                       Future.delayed(const Duration(seconds: 2), () {
                         if (mounted) {
                           // Show the victory modal with the current round number
                           _showRoundVictoryModal(context, state);
                         }
                       });
-
-                      return Positioned.fill(
-                        child: Container(
-                          color: Colors.black.withOpacity(0.7),
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // BINGO! text with fixed sizing to prevent overflow
-                                Text(
-                                  'BINGO!',
-                                  style: AppTextStyle.mochiyPopOne(
-                                    fontSize: 36.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(height: 15.h),
-                                // Loading spinner
-                                SizedBox(
-                                  height: 40.h,
-                                  width: 40.w,
-                                  child: SpinKitCubeGrid(
-                                    color: AppColors.yellowPrimary,
-                                    size: 40.w,
-                                  ),
-                                ),
-                                SizedBox(height: 15.h),
-                                // Loading message
-                                Text(
-                                  'Preparing next round...',
-                                  style: AppTextStyle.mochiyPopOne(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 15.h),
-                                // Show which pattern they won with
-                                Text(
-                                  'You won with a $patternTitle!',
-                                  style: AppTextStyle.mochiyPopOne(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
                     }
+                    // Remove the overlay since we already have the animation in BingoBoardBoxContainer
                     return const SizedBox.shrink();
                   },
                 ),
