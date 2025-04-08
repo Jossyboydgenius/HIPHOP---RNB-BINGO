@@ -33,6 +33,16 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
   // Track animation state for each tile
   List<bool> _animationCompleted = List.generate(25, (_) => false);
 
+  // Animation types for shuffling
+  final List<String> _animationTypes = [
+    'scale', // Original scale animation
+    'flip', // 3D flip animation
+    'slide', // Slide from different directions
+    'fade', // Fade with rotation
+    'bounce' // Bounce in animation
+  ];
+  String _currentAnimationType = 'scale';
+
   // For tracking board shuffle animation
   bool _isShuffling = false;
   List<Map<String, dynamic>> _previousItems = [];
@@ -41,6 +51,9 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
   void initState() {
     super.initState();
     _shuffledItems = _generateShuffledBoardItems();
+
+    // Choose a random animation type on init
+    _selectRandomAnimation();
 
     // Start with shuffling animation on first load
     _isShuffling = true;
@@ -80,6 +93,13 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
     super.dispose();
   }
 
+  // Select a random animation type
+  void _selectRandomAnimation() {
+    final random = Random();
+    _currentAnimationType =
+        _animationTypes[random.nextInt(_animationTypes.length)];
+  }
+
   // Start shuffle animation for the board
   void _startShuffleAnimation() {
     setState(() {
@@ -90,12 +110,38 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
     // Play shuffle sound
     _soundService.playBoardTap();
 
-    // Stagger the animations for each tile
-    for (int i = 0; i < 25; i++) {
+    // Determine animation sequence based on the current type
+    List<int> animationOrder;
+    switch (_currentAnimationType) {
+      case 'slide':
+        // Animate from one side to another (left to right)
+        animationOrder = List.generate(25, (i) => i ~/ 5 * 5 + (i % 5));
+        break;
+      case 'flip':
+        // Animate from center outward
+        animationOrder = _generateCenterOutwardOrder();
+        break;
+      case 'bounce':
+        // Bounce in row by row
+        animationOrder = List.generate(25, (i) => i);
+        break;
+      case 'fade':
+        // Random order fade in
+        animationOrder = List.generate(25, (i) => i)..shuffle();
+        break;
+      case 'scale':
+      default:
+        // Default spiral pattern
+        animationOrder = _generateSpiralOrder();
+        break;
+    }
+
+    // Stagger the animations for each tile based on the order
+    for (int i = 0; i < animationOrder.length; i++) {
       Future.delayed(Duration(milliseconds: 50 + (i * 30)), () {
         if (mounted) {
           setState(() {
-            _animationCompleted[i] = true;
+            _animationCompleted[animationOrder[i]] = true;
           });
         }
       });
@@ -111,6 +157,73 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
     });
   }
 
+  // Generate a spiral order (outside to inside)
+  List<int> _generateSpiralOrder() {
+    List<int> result = [];
+    List<List<int>> matrix =
+        List.generate(5, (_) => List.generate(5, (_) => 0));
+
+    int num = 0;
+    int top = 0, bottom = 4;
+    int left = 0, right = 4;
+
+    while (top <= bottom && left <= right) {
+      // Traverse right
+      for (int i = left; i <= right; i++) {
+        matrix[top][i] = num++;
+      }
+      top++;
+
+      // Traverse down
+      for (int i = top; i <= bottom; i++) {
+        matrix[i][right] = num++;
+      }
+      right--;
+
+      // Traverse left
+      if (top <= bottom) {
+        for (int i = right; i >= left; i--) {
+          matrix[bottom][i] = num++;
+        }
+        bottom--;
+      }
+
+      // Traverse up
+      if (left <= right) {
+        for (int i = bottom; i >= top; i--) {
+          matrix[i][left] = num++;
+        }
+        left++;
+      }
+    }
+
+    // Convert 2D matrix order to 1D list indices
+    for (int i = 0; i < 5; i++) {
+      for (int j = 0; j < 5; j++) {
+        result.add(matrix[i][j]);
+      }
+    }
+
+    return result;
+  }
+
+  // Generate center outward order
+  List<int> _generateCenterOutwardOrder() {
+    // Start with the center tile (index 12)
+    List<int> result = [12];
+
+    // Inner ring (directly adjacent to center)
+    result.addAll([7, 11, 13, 17]);
+
+    // Middle ring
+    result.addAll([2, 6, 8, 16, 18, 22]);
+
+    // Outer ring (corners and edges)
+    result.addAll([0, 1, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 23, 24]);
+
+    return result;
+  }
+
   // Regenerate the board with new shuffled items
   void _reshuffleBoard() {
     // Reset the win animation controller
@@ -121,6 +234,9 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
 
     // Generate new shuffled items
     final newItems = _generateShuffledBoardItems();
+
+    // Select a new random animation type for this shuffle
+    _selectRandomAnimation();
 
     setState(() {
       _shuffledItems = newItems;
@@ -312,22 +428,142 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
 
     // Apply shuffle animation
     if (_isShuffling) {
-      return AnimatedOpacity(
-        opacity: _animationCompleted[index] ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeIn,
-        child: AnimatedScale(
-          scale: _animationCompleted[index] ? 1.0 : 0.0,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.elasticOut,
-          child: BingoBoardItem(
-            text: item['text'] as String,
-            category: item['category'] as BingoCategory,
-            isCenter: item['isCenter'] as bool,
-            index: index,
-          ),
-        ),
-      );
+      switch (_currentAnimationType) {
+        case 'flip':
+          return AnimatedOpacity(
+            opacity: _animationCompleted[index] ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeIn,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(
+                begin: 0.0,
+                end: _animationCompleted[index] ? 1.0 : 0.0,
+              ),
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+              builder: (context, value, child) {
+                return Transform(
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, 0.001)
+                    ..rotateY(pi * (1 - value)),
+                  alignment: Alignment.center,
+                  child: child,
+                );
+              },
+              child: BingoBoardItem(
+                text: item['text'] as String,
+                category: item['category'] as BingoCategory,
+                isCenter: item['isCenter'] as bool,
+                index: index,
+              ),
+            ),
+          );
+
+        case 'slide':
+          final random = Random(index);
+          final xOffset = random.nextBool() ? -200.0 : 200.0;
+
+          return AnimatedOpacity(
+            opacity: _animationCompleted[index] ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeIn,
+            child: TweenAnimationBuilder<Offset>(
+              tween: Tween<Offset>(
+                begin: Offset(xOffset, 0),
+                end: _animationCompleted[index]
+                    ? Offset.zero
+                    : Offset(xOffset, 0),
+              ),
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.elasticOut,
+              builder: (context, offset, child) {
+                return Transform.translate(
+                  offset: offset,
+                  child: child,
+                );
+              },
+              child: BingoBoardItem(
+                text: item['text'] as String,
+                category: item['category'] as BingoCategory,
+                isCenter: item['isCenter'] as bool,
+                index: index,
+              ),
+            ),
+          );
+
+        case 'fade':
+          return AnimatedOpacity(
+            opacity: _animationCompleted[index] ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeIn,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(
+                begin: -0.5,
+                end: _animationCompleted[index] ? 0.0 : -0.5,
+              ),
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOutBack,
+              builder: (context, value, child) {
+                return Transform.rotate(
+                  angle: value * pi,
+                  child: child,
+                );
+              },
+              child: BingoBoardItem(
+                text: item['text'] as String,
+                category: item['category'] as BingoCategory,
+                isCenter: item['isCenter'] as bool,
+                index: index,
+              ),
+            ),
+          );
+
+        case 'bounce':
+          return AnimatedOpacity(
+            opacity: _animationCompleted[index] ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeIn,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(
+                begin: -50.0,
+                end: _animationCompleted[index] ? 0.0 : -50.0,
+              ),
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.bounceOut,
+              builder: (context, value, child) {
+                return Transform.translate(
+                  offset: Offset(0, value),
+                  child: child,
+                );
+              },
+              child: BingoBoardItem(
+                text: item['text'] as String,
+                category: item['category'] as BingoCategory,
+                isCenter: item['isCenter'] as bool,
+                index: index,
+              ),
+            ),
+          );
+
+        case 'scale':
+        default:
+          return AnimatedOpacity(
+            opacity: _animationCompleted[index] ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeIn,
+            child: AnimatedScale(
+              scale: _animationCompleted[index] ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.elasticOut,
+              child: BingoBoardItem(
+                text: item['text'] as String,
+                category: item['category'] as BingoCategory,
+                isCenter: item['isCenter'] as bool,
+                index: index,
+              ),
+            ),
+          );
+      }
     }
 
     // Normal display without shuffle animation
