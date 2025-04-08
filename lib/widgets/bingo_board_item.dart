@@ -9,6 +9,7 @@ import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_sounds.dart';
 
 class BingoBoardItem extends StatefulWidget {
   final String text;
@@ -30,37 +31,58 @@ class BingoBoardItem extends StatefulWidget {
 
 class _BingoBoardItemState extends State<BingoBoardItem>
     with SingleTickerProviderStateMixin {
-  late AnimationController _pulseController;
+  late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
+  late Animation<double> _rotationAnimation;
   bool _showRipple = false;
   final _rippleKey = GlobalKey<_RippleEffectState>();
+
+  // Track if this item has already played its part in a winning pattern sound
+  bool _hasSoundedForPattern = false;
+  final GameSoundService _soundService = GameSoundService();
 
   @override
   void initState() {
     super.initState();
 
-    // Setup pulse animation
-    _pulseController = AnimationController(
+    // Setup animations
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
 
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.08,
-    ).animate(
-      CurvedAnimation(
-        parent: _pulseController,
-        curve: Curves.easeInOut,
+    _pulseAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 1.12)
+            .chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 50,
       ),
-    );
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.12, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 50,
+      ),
+    ]).animate(_animationController);
 
-    _pulseController.repeat(reverse: true);
+    _rotationAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: -0.05, end: 0.05)
+            .chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 50,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.05, end: -0.05)
+            .chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 50,
+      ),
+    ]).animate(_animationController);
+
+    _animationController.repeat(reverse: false);
   }
 
   @override
   void dispose() {
-    _pulseController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -220,6 +242,91 @@ class _BingoBoardItemState extends State<BingoBoardItem>
     return _isPartOfWinningPattern(selectedItems, patternType);
   }
 
+  /// Checks if the current pattern is complete but hasn't been claimed yet
+  bool _isPatternCompleteButNotClaimed(
+      List<int> selectedItems, String patternType, bool hasWon) {
+    if (hasWon) return false; // Pattern has already been claimed
+
+    switch (patternType) {
+      case 'straightlineBingo':
+        // Check row
+        final int row = widget.index ~/ 5;
+        bool isRowComplete = true;
+        for (int col = 0; col < 5; col++) {
+          if (!selectedItems.contains(row * 5 + col)) {
+            isRowComplete = false;
+            break;
+          }
+        }
+        if (isRowComplete) return true;
+
+        // Check column
+        final int col = widget.index % 5;
+        bool isColComplete = true;
+        for (int row = 0; row < 5; row++) {
+          if (!selectedItems.contains(row * 5 + col)) {
+            isColComplete = false;
+            break;
+          }
+        }
+        if (isColComplete) return true;
+
+        // Check diagonal (top-left to bottom-right)
+        bool isDiag1Complete = true;
+        for (int i = 0; i < 5; i++) {
+          if (!selectedItems.contains(i * 5 + i)) {
+            isDiag1Complete = false;
+            break;
+          }
+        }
+        if (isDiag1Complete) return true;
+
+        // Check diagonal (top-right to bottom-left)
+        bool isDiag2Complete = true;
+        for (int i = 0; i < 5; i++) {
+          if (!selectedItems.contains(i * 5 + (4 - i))) {
+            isDiag2Complete = false;
+            break;
+          }
+        }
+        return isDiag2Complete;
+
+      case 'blackoutBingo':
+        return selectedItems.length == 25;
+
+      case 'fourCornersBingo':
+        return selectedItems.contains(0) &&
+            selectedItems.contains(4) &&
+            selectedItems.contains(20) &&
+            selectedItems.contains(24);
+
+      case 'tShapeBingo':
+        return selectedItems.contains(0) &&
+            selectedItems.contains(1) &&
+            selectedItems.contains(2) &&
+            selectedItems.contains(3) &&
+            selectedItems.contains(4) &&
+            selectedItems.contains(7) &&
+            selectedItems.contains(12) &&
+            selectedItems.contains(17) &&
+            selectedItems.contains(22);
+
+      case 'xPatternBingo':
+        return selectedItems.contains(0) &&
+            selectedItems.contains(6) &&
+            selectedItems.contains(12) &&
+            selectedItems.contains(18) &&
+            selectedItems.contains(24) &&
+            selectedItems.contains(4) &&
+            selectedItems.contains(8) &&
+            selectedItems.contains(16) &&
+            selectedItems.contains(20);
+
+      default:
+        return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BingoGameBloc, BingoGameState>(
@@ -242,91 +349,165 @@ class _BingoBoardItemState extends State<BingoBoardItem>
             _isPartOfPotentialWinningPattern(
                 state.selectedItems, state.winningPattern);
 
+        // Check if pattern is complete but not yet claimed
+        final bool isPatternCompleteNotClaimed =
+            _isPatternCompleteButNotClaimed(
+                state.selectedItems, state.winningPattern, state.hasWon);
+
+        // The first item in a pattern should play the sound when pattern is complete
+        if (isPatternCompleteNotClaimed &&
+            !_hasSoundedForPattern &&
+            isPotentialWinningItem) {
+          // Only play once by tracking state
+          _hasSoundedForPattern = true;
+
+          // Play app launch sound when pattern is complete but not claimed
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _soundService.playSound(AppSoundData.appLaunch);
+            _soundService.vibrateHeavy(); // Add strong haptic feedback
+          });
+        }
+
+        // Reset the sound flag when selections change and pattern is no longer complete
+        if (!isPatternCompleteNotClaimed) {
+          _hasSoundedForPattern = false;
+        }
+
         // Determine if we should show the star icon for this item
         final bool showIcon =
             widget.isCenter || isWinningItem || isPotentialWinningItem;
 
-        // Enable/disable pulse animation based on selection
-        if (isSelected && !widget.isCenter) {
-          if (_pulseController.status == AnimationStatus.dismissed) {
-            _pulseController.repeat(reverse: true);
+        // Adjust animation speed based on pattern completion status
+        if (isPotentialWinningItem || isWinningItem) {
+          // Fast animation for winning items
+          if (_animationController.duration?.inMilliseconds != 600) {
+            _animationController.stop();
+            _animationController.duration = const Duration(milliseconds: 600);
+            _animationController.repeat(reverse: false);
+          }
+        } else if (isSelected && !widget.isCenter) {
+          // Normal animation for selected items
+          if (_animationController.duration?.inMilliseconds != 1200) {
+            _animationController.stop();
+            _animationController.duration = const Duration(milliseconds: 1200);
+            _animationController.repeat(reverse: false);
           }
         } else {
-          if (_pulseController.status != AnimationStatus.dismissed) {
-            _pulseController.reset();
+          // No animation for unselected items
+          if (_animationController.isAnimating) {
+            _animationController.stop();
+            _animationController.reset();
           }
         }
 
         // Create the item container without gesture detector
         Widget itemContainer = AnimatedBuilder(
-          animation: _pulseAnimation,
+          animation: _animationController,
           builder: (context, child) {
             return Transform.scale(
-              scale:
-                  isSelected && !widget.isCenter ? _pulseAnimation.value : 1.0,
-              child: Stack(
-                children: [
-                  // Main container
-                  Container(
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? categoryColor
-                          : categoryColor.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: isSelected ? Colors.white : categoryColor,
-                        width: 2.w,
-                      ),
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: categoryColor.withOpacity(0.5),
-                                blurRadius: 8,
-                                spreadRadius: 2,
-                              ),
-                              BoxShadow(
-                                color: categoryColor.withOpacity(0.3),
-                                blurRadius: 12,
-                                spreadRadius: 4,
-                              ),
-                            ]
-                          : null,
-                    ),
-                    child: Center(
-                      child: showIcon
-                          ? AppIcons(
-                              icon: categoryIcon,
-                              size: 32.r,
-                            )
-                          : Padding(
-                              padding: EdgeInsets.all(4.r),
-                              child: Text(
-                                widget.text,
-                                style: AppTextStyle.mochiyPopOne(
-                                  fontSize: 8.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+              scale: isSelected && !widget.isCenter
+                  ? (isPotentialWinningItem || isWinningItem
+                      ? _pulseAnimation.value
+                      : isSelected
+                          ? 1.05
+                          : 1.0)
+                  : 1.0,
+              child: Transform.rotate(
+                angle: (isPotentialWinningItem || isWinningItem)
+                    ? _rotationAnimation.value
+                    : 0,
+                child: Stack(
+                  children: [
+                    // Main container
+                    Container(
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? categoryColor
+                            : categoryColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: isSelected ? Colors.white : categoryColor,
+                          width: isPotentialWinningItem || isWinningItem
+                              ? 3.w
+                              : 2.w,
+                        ),
+                        boxShadow: [
+                          // Strong glow for winning pattern items
+                          if (isPotentialWinningItem || isWinningItem)
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.6),
+                              blurRadius: 12,
+                              spreadRadius: 2,
                             ),
+                          // Medium glow for normal selected items
+                          if (isSelected &&
+                              !(isPotentialWinningItem || isWinningItem))
+                            BoxShadow(
+                              color: categoryColor.withOpacity(0.5),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                            ),
+                          // Subtle outer glow for all items
+                          if (isSelected)
+                            BoxShadow(
+                              color: categoryColor.withOpacity(0.3),
+                              blurRadius: 12,
+                              spreadRadius: 4,
+                            ),
+                        ],
+                      ),
+                      child: Center(
+                        child: showIcon
+                            ? Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Add a white glow behind the icon for winning pattern
+                                  if (isPotentialWinningItem || isWinningItem)
+                                    Container(
+                                      width: 40.r,
+                                      height: 40.r,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white.withOpacity(0.3),
+                                      ),
+                                    ),
+                                  // Main icon
+                                  AppIcons(
+                                    icon: categoryIcon,
+                                    size: 32.r,
+                                  ),
+                                ],
+                              )
+                            : Padding(
+                                padding: EdgeInsets.all(4.r),
+                                child: Text(
+                                  widget.text,
+                                  style: AppTextStyle.mochiyPopOne(
+                                    fontSize: 8.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                      ),
                     ),
-                  ),
 
-                  // Ripple effect overlay
-                  if (_showRipple)
-                    RippleEffect(
-                      key: _rippleKey,
-                      color: categoryColor.withOpacity(0.5),
-                      onComplete: () {
-                        setState(() {
-                          _showRipple = false;
-                        });
-                      },
-                    ),
-                ],
+                    // Ripple effect overlay
+                    if (_showRipple)
+                      RippleEffect(
+                        key: _rippleKey,
+                        color: categoryColor.withOpacity(0.5),
+                        onComplete: () {
+                          setState(() {
+                            _showRipple = false;
+                          });
+                        },
+                      ),
+                  ],
+                ),
               ),
             );
           },
