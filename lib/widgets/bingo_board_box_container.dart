@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures, unnecessary_string_interpolations, prefer_const_constructors
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +15,7 @@ import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/claim_prize_success_modal.dart';
+import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 
 class BingoBoardBoxContainer extends StatefulWidget {
   const BingoBoardBoxContainer({super.key});
@@ -27,11 +30,23 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
   late AnimationController _winAnimationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
+  final GameSoundService _soundService = GameSoundService();
+
+  // Track animation state for each tile
+  List<bool> _animationCompleted = List.generate(25, (_) => false);
+
+  // For tracking board shuffle animation
+  bool _isShuffling = false;
+  List<Map<String, dynamic>> _previousItems = [];
 
   @override
   void initState() {
     super.initState();
     _shuffledItems = _generateShuffledBoardItems();
+
+    // Start with shuffling animation on first load
+    _isShuffling = true;
+    _startShuffleAnimation();
 
     // Initialize animation controller for win animation
     _winAnimationController = AnimationController(
@@ -67,14 +82,54 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
     super.dispose();
   }
 
+  // Start shuffle animation for the board
+  void _startShuffleAnimation() {
+    setState(() {
+      _isShuffling = true;
+      _animationCompleted = List.generate(25, (_) => false);
+    });
+
+    // Play shuffle sound
+    _soundService.playBoardTap();
+
+    // Stagger the animations for each tile
+    for (int i = 0; i < 25; i++) {
+      Future.delayed(Duration(milliseconds: 50 + (i * 30)), () {
+        if (mounted) {
+          setState(() {
+            _animationCompleted[i] = true;
+          });
+        }
+      });
+    }
+
+    // End the shuffle animation after all tiles are done
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (mounted) {
+        setState(() {
+          _isShuffling = false;
+        });
+      }
+    });
+  }
+
   // Regenerate the board with new shuffled items
   void _reshuffleBoard() {
     // Reset the win animation controller
     _winAnimationController.reset();
 
+    // Save the previous items for animation
+    _previousItems = List.from(_shuffledItems);
+
+    // Generate new shuffled items
+    final newItems = _generateShuffledBoardItems();
+
     setState(() {
-      _shuffledItems = _generateShuffledBoardItems();
+      _shuffledItems = newItems;
     });
+
+    // Start shuffle animation
+    _startShuffleAnimation();
   }
 
   List<Widget> _buildBingoHeader() {
@@ -252,6 +307,59 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
     }
   }
 
+  // Build a board item with shuffle animation
+  Widget _buildBoardItemWithAnimation(int index, BingoGameState state) {
+    final item = _shuffledItems[index];
+    final isSelected = state.isItemSelected(index);
+
+    // Apply shuffle animation
+    if (_isShuffling) {
+      return AnimatedOpacity(
+        opacity: _animationCompleted[index] ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeIn,
+        child: AnimatedScale(
+          scale: _animationCompleted[index] ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.elasticOut,
+          child: BingoBoardItem(
+            text: item['text'] as String,
+            category: item['category'] as BingoCategory,
+            isCenter: item['isCenter'] as bool,
+            index: index,
+          ),
+        ),
+      );
+    }
+
+    // Normal display without shuffle animation
+    return BingoBoardItem(
+      text: item['text'] as String,
+      category: item['category'] as BingoCategory,
+      isCenter: item['isCenter'] as bool,
+      index: index,
+    );
+  }
+
+  // Play win sounds based on pattern
+  void _playWinSound(String patternType) {
+    // Play correct bingo sound for the win
+    _soundService.playCorrectBingo();
+
+    // Depending on the pattern, play an additional sound for more feedback
+    switch (patternType) {
+      case 'blackoutBingo':
+        // For blackout bingo, play prize win sound for bigger achievement
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _soundService.playPrizeWin();
+        });
+        break;
+      default:
+        // Normal win just uses correct bingo sound
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<BingoGameBloc, BingoGameState>(
@@ -270,7 +378,9 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
           // Game has been reset
           _reshuffleBoard();
         } else if (state.hasWon) {
-          // Game has been won - show prize claim modal
+          // Game has been won - play winning sound
+          _playWinSound(state.winningPattern);
+
           // Start the win animation
           _winAnimationController.forward();
 
@@ -358,13 +468,7 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
                       ),
                       itemCount: 25,
                       itemBuilder: (context, index) {
-                        final item = _shuffledItems[index];
-                        return BingoBoardItem(
-                          text: item['text'] as String,
-                          category: item['category'] as BingoCategory,
-                          isCenter: item['isCenter'] as bool,
-                          index: index,
-                        );
+                        return _buildBoardItemWithAnimation(index, state);
                       },
                     ),
                   ),
@@ -391,37 +495,79 @@ class _BingoBoardBoxContainerState extends State<BingoBoardBoxContainer>
                               width: 3.w,
                             ),
                           ),
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  'BINGO!',
-                                  style: AppTextStyle.mochiyPopOne(
-                                    fontSize: 32.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                          child: Stack(
+                            children: [
+                              // Background particles effect
+                              ...List.generate(20, (index) {
+                                final random = Random();
+                                final size = random.nextDouble() * 20 + 5;
+                                return Positioned(
+                                  left: random.nextDouble() * 300,
+                                  top: random.nextDouble() * 300,
+                                  child: TweenAnimationBuilder<double>(
+                                    tween: Tween<double>(begin: 0, end: 1),
+                                    duration: Duration(
+                                        milliseconds:
+                                            800 + random.nextInt(1200)),
+                                    builder: (context, value, child) {
+                                      return Transform.translate(
+                                        offset: Offset(
+                                          sin(value * 3) * 30,
+                                          value * -50,
+                                        ),
+                                        child: Opacity(
+                                          opacity: 1 - value,
+                                          child: Container(
+                                            width: size,
+                                            height: size,
+                                            decoration: BoxDecoration(
+                                              color: _getPatternColor(
+                                                      state.winningPattern)
+                                                  .withOpacity(0.6),
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
+                                );
+                              }),
+
+                              // Main content
+                              Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'BINGO!',
+                                      style: AppTextStyle.mochiyPopOne(
+                                        fontSize: 32.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(height: 24.h),
+                                    AppImages(
+                                      imagePath: _getPatternImage(
+                                          state.winningPattern),
+                                      width: 120.w,
+                                      height: 120.h,
+                                    ),
+                                    SizedBox(height: 24.h),
+                                    Text(
+                                      'You won with a ${_getPatternName(state.winningPattern)}!',
+                                      style: AppTextStyle.mochiyPopOne(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(height: 24.h),
-                                AppImages(
-                                  imagePath:
-                                      _getPatternImage(state.winningPattern),
-                                  width: 120.w,
-                                  height: 120.h,
-                                ),
-                                SizedBox(height: 24.h),
-                                Text(
-                                  'You won with a ${_getPatternName(state.winningPattern)}!',
-                                  style: AppTextStyle.mochiyPopOne(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
