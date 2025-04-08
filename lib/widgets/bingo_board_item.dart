@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:math';
 import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_icons.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
@@ -9,7 +10,6 @@ import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
-import 'package:hiphop_rnb_bingo/widgets/app_sounds.dart';
 
 class BingoBoardItem extends StatefulWidget {
   final String text;
@@ -31,58 +31,60 @@ class BingoBoardItem extends StatefulWidget {
 
 class _BingoBoardItemState extends State<BingoBoardItem>
     with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+  late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
   late Animation<double> _rotationAnimation;
+  late Animation<double> _glowAnimation;
   bool _showRipple = false;
   final _rippleKey = GlobalKey<_RippleEffectState>();
-
-  // Track if this item has already played its part in a winning pattern sound
-  bool _hasSoundedForPattern = false;
-  final GameSoundService _soundService = GameSoundService();
+  bool _patternCompleteSoundPlayed = false;
 
   @override
   void initState() {
     super.initState();
 
     // Setup animations
-    _animationController = AnimationController(
+    _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
 
-    _pulseAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 1.12)
-            .chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 50,
+    _pulseAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.08,
+    ).animate(
+      CurvedAnimation(
+        parent: _pulseController,
+        curve: Curves.easeInOut,
       ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.12, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 50,
-      ),
-    ]).animate(_animationController);
+    );
 
-    _rotationAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: -0.05, end: 0.05)
-            .chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 50,
+    _rotationAnimation = Tween<double>(
+      begin: -0.05,
+      end: 0.05,
+    ).animate(
+      CurvedAnimation(
+        parent: _pulseController,
+        curve: Curves.easeInOut,
       ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 0.05, end: -0.05)
-            .chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 50,
-      ),
-    ]).animate(_animationController);
+    );
 
-    _animationController.repeat(reverse: false);
+    _glowAnimation = Tween<double>(
+      begin: 2.0,
+      end: 8.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _pulseController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _pulseController.repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -242,34 +244,33 @@ class _BingoBoardItemState extends State<BingoBoardItem>
     return _isPartOfWinningPattern(selectedItems, patternType);
   }
 
-  /// Checks if the current pattern is complete but hasn't been claimed yet
-  bool _isPatternCompleteButNotClaimed(
-      List<int> selectedItems, String patternType, bool hasWon) {
-    if (hasWon) return false; // Pattern has already been claimed
-
+  // Check if entire winning pattern is complete (for sound trigger)
+  bool _isEntirePatternComplete(List<int> selectedItems, String patternType) {
     switch (patternType) {
       case 'straightlineBingo':
-        // Check row
-        final int row = widget.index ~/ 5;
-        bool isRowComplete = true;
-        for (int col = 0; col < 5; col++) {
-          if (!selectedItems.contains(row * 5 + col)) {
-            isRowComplete = false;
-            break;
-          }
-        }
-        if (isRowComplete) return true;
-
-        // Check column
-        final int col = widget.index % 5;
-        bool isColComplete = true;
+        // Check all rows
         for (int row = 0; row < 5; row++) {
-          if (!selectedItems.contains(row * 5 + col)) {
-            isColComplete = false;
-            break;
+          bool isRowComplete = true;
+          for (int col = 0; col < 5; col++) {
+            if (!selectedItems.contains(row * 5 + col)) {
+              isRowComplete = false;
+              break;
+            }
           }
+          if (isRowComplete) return true;
         }
-        if (isColComplete) return true;
+
+        // Check all columns
+        for (int col = 0; col < 5; col++) {
+          bool isColComplete = true;
+          for (int row = 0; row < 5; row++) {
+            if (!selectedItems.contains(row * 5 + col)) {
+              isColComplete = false;
+              break;
+            }
+          }
+          if (isColComplete) return true;
+        }
 
         // Check diagonal (top-left to bottom-right)
         bool isDiag1Complete = true;
@@ -349,73 +350,57 @@ class _BingoBoardItemState extends State<BingoBoardItem>
             _isPartOfPotentialWinningPattern(
                 state.selectedItems, state.winningPattern);
 
-        // Check if pattern is complete but not yet claimed
-        final bool isPatternCompleteNotClaimed =
-            _isPatternCompleteButNotClaimed(
-                state.selectedItems, state.winningPattern, state.hasWon);
+        // Check if entire pattern is complete (for sound trigger)
+        final bool isPatternComplete = !state.hasWon &&
+            _isEntirePatternComplete(state.selectedItems, state.winningPattern);
 
-        // The first item in a pattern should play the sound when pattern is complete
-        if (isPatternCompleteNotClaimed &&
-            !_hasSoundedForPattern &&
+        // Play sound when pattern is completed
+        if (isPatternComplete &&
+            !_patternCompleteSoundPlayed &&
             isPotentialWinningItem) {
-          // Only play once by tracking state
-          _hasSoundedForPattern = true;
-
-          // Play app launch sound when pattern is complete but not claimed
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _soundService.playSound(AppSoundData.appLaunch);
-            _soundService.vibrateHeavy(); // Add strong haptic feedback
-          });
+          _patternCompleteSoundPlayed = true;
+          // Play correct bingo sound as feedback for pattern completion
+          GameSoundService().playCorrectBingo();
         }
-
-        // Reset the sound flag when selections change and pattern is no longer complete
-        if (!isPatternCompleteNotClaimed) {
-          _hasSoundedForPattern = false;
+        // Reset the sound flag if pattern is broken or user selects a new pattern
+        else if (!isPatternComplete && _patternCompleteSoundPlayed) {
+          _patternCompleteSoundPlayed = false;
         }
 
         // Determine if we should show the star icon for this item
         final bool showIcon =
             widget.isCenter || isWinningItem || isPotentialWinningItem;
 
-        // Adjust animation speed based on pattern completion status
-        if (isPotentialWinningItem || isWinningItem) {
-          // Fast animation for winning items
-          if (_animationController.duration?.inMilliseconds != 600) {
-            _animationController.stop();
-            _animationController.duration = const Duration(milliseconds: 600);
-            _animationController.repeat(reverse: false);
+        // Enable/disable pulse animation based on selection and pattern completion
+        if ((isSelected && !widget.isCenter) || isPotentialWinningItem) {
+          if (_pulseController.status == AnimationStatus.dismissed) {
+            _pulseController.repeat(reverse: true);
           }
-        } else if (isSelected && !widget.isCenter) {
-          // Normal animation for selected items
-          if (_animationController.duration?.inMilliseconds != 1200) {
-            _animationController.stop();
-            _animationController.duration = const Duration(milliseconds: 1200);
-            _animationController.repeat(reverse: false);
+
+          // Speed up animation for pattern items
+          if (isPotentialWinningItem &&
+              _pulseController.duration!.inMilliseconds > 600) {
+            _pulseController.duration = const Duration(milliseconds: 600);
+          } else if (!isPotentialWinningItem &&
+              _pulseController.duration!.inMilliseconds < 1200) {
+            _pulseController.duration = const Duration(milliseconds: 1200);
           }
         } else {
-          // No animation for unselected items
-          if (_animationController.isAnimating) {
-            _animationController.stop();
-            _animationController.reset();
+          if (_pulseController.status != AnimationStatus.dismissed) {
+            _pulseController.reset();
           }
         }
 
         // Create the item container without gesture detector
         Widget itemContainer = AnimatedBuilder(
-          animation: _animationController,
+          animation: _pulseAnimation,
           builder: (context, child) {
-            return Transform.scale(
-              scale: isSelected && !widget.isCenter
-                  ? (isPotentialWinningItem || isWinningItem
-                      ? _pulseAnimation.value
-                      : isSelected
-                          ? 1.05
-                          : 1.0)
-                  : 1.0,
-              child: Transform.rotate(
-                angle: (isPotentialWinningItem || isWinningItem)
-                    ? _rotationAnimation.value
-                    : 0,
+            return Transform.rotate(
+              angle: isPotentialWinningItem ? _rotationAnimation.value : 0.0,
+              child: Transform.scale(
+                scale: isSelected && !widget.isCenter
+                    ? _pulseAnimation.value
+                    : 1.0,
                 child: Stack(
                   children: [
                     // Main container
@@ -426,57 +411,57 @@ class _BingoBoardItemState extends State<BingoBoardItem>
                             : categoryColor.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
-                          color: isSelected ? Colors.white : categoryColor,
-                          width: isPotentialWinningItem || isWinningItem
-                              ? 3.w
-                              : 2.w,
+                          color: isPotentialWinningItem
+                              ? Colors.white
+                              : isSelected
+                                  ? Colors.white.withOpacity(0.8)
+                                  : categoryColor,
+                          width: isPotentialWinningItem ? 3.w : 2.w,
                         ),
-                        boxShadow: [
-                          // Strong glow for winning pattern items
-                          if (isPotentialWinningItem || isWinningItem)
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.6),
-                              blurRadius: 12,
-                              spreadRadius: 2,
-                            ),
-                          // Medium glow for normal selected items
-                          if (isSelected &&
-                              !(isPotentialWinningItem || isWinningItem))
-                            BoxShadow(
-                              color: categoryColor.withOpacity(0.5),
-                              blurRadius: 8,
-                              spreadRadius: 2,
-                            ),
-                          // Subtle outer glow for all items
-                          if (isSelected)
-                            BoxShadow(
-                              color: categoryColor.withOpacity(0.3),
-                              blurRadius: 12,
-                              spreadRadius: 4,
-                            ),
-                        ],
+                        boxShadow: isPotentialWinningItem
+                            ? [
+                                BoxShadow(
+                                  color: Colors.white.withOpacity(0.6),
+                                  blurRadius: _glowAnimation.value,
+                                  spreadRadius: 2,
+                                ),
+                                BoxShadow(
+                                  color: categoryColor.withOpacity(0.7),
+                                  blurRadius: 8,
+                                  spreadRadius: 3,
+                                ),
+                              ]
+                            : isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: categoryColor.withOpacity(0.5),
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    ),
+                                    BoxShadow(
+                                      color: categoryColor.withOpacity(0.3),
+                                      blurRadius: 12,
+                                      spreadRadius: 4,
+                                    ),
+                                  ]
+                                : null,
                       ),
                       child: Center(
                         child: showIcon
-                            ? Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // Add a white glow behind the icon for winning pattern
-                                  if (isPotentialWinningItem || isWinningItem)
-                                    Container(
-                                      width: 40.r,
-                                      height: 40.r,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white.withOpacity(0.3),
-                                      ),
-                                    ),
-                                  // Main icon
-                                  AppIcons(
-                                    icon: categoryIcon,
-                                    size: 32.r,
-                                  ),
-                                ],
+                            ? AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                padding: EdgeInsets.all(
+                                    isPotentialWinningItem ? 2.r : 0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isPotentialWinningItem
+                                      ? Colors.white.withOpacity(0.3)
+                                      : Colors.transparent,
+                                ),
+                                child: AppIcons(
+                                  icon: categoryIcon,
+                                  size: isPotentialWinningItem ? 36.r : 32.r,
+                                ),
                               )
                             : Padding(
                                 padding: EdgeInsets.all(4.r),
@@ -506,6 +491,53 @@ class _BingoBoardItemState extends State<BingoBoardItem>
                           });
                         },
                       ),
+
+                    // Special sparkle effect for potential winning items
+                    if (isPotentialWinningItem)
+                      ...List.generate(4, (index) {
+                        final double angle =
+                            index * (3.14159 / 2); // Distribute at 90° angles
+                        return Positioned(
+                          left: 0,
+                          right: 0,
+                          top: 0,
+                          bottom: 0,
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween<double>(begin: 0, end: 1),
+                            duration:
+                                Duration(milliseconds: 1200 + (index * 200)),
+                            curve: Curves.easeInOut,
+                            builder: (context, value, child) {
+                              return Transform.translate(
+                                offset: Offset(
+                                  cos(angle + (value * 2 * 3.14159)) *
+                                      16 *
+                                      value,
+                                  sin(angle + (value * 2 * 3.14159)) *
+                                      16 *
+                                      value,
+                                ),
+                                child: Opacity(
+                                  opacity: (1 - value) * 0.7,
+                                  child: Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            onEnd: () {
+                              setState(() {
+                                // Restart animation
+                              });
+                            },
+                          ),
+                        );
+                      }),
                   ],
                 ),
               ),
