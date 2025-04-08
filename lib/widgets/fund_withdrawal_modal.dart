@@ -172,8 +172,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: AppColors.blueLight2,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 10.w, vertical: 1.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 1.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),
                   ),
@@ -341,9 +341,9 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
             children: [
               AppModalContainer(
                 width: double.infinity,
-                height: selectedOption == null 
-                  ? (AppDimension.isSmall ? 550.h : 300.h)
-                  : (AppDimension.isSmall ? 750.h : 400.h),
+                height: selectedOption == null
+                    ? (AppDimension.isSmall ? 550.h : 300.h)
+                    : (AppDimension.isSmall ? 750.h : 400.h),
                 fillColor: AppColors.purplePrimary,
                 borderColor: AppColors.purpleLight,
                 layerColor: AppColors.purpleDark,
@@ -356,7 +356,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.all(AppDimension.isSmall ? 24.r : 16.r),
+                        padding:
+                            EdgeInsets.all(AppDimension.isSmall ? 24.r : 16.r),
                         child: Column(
                           children: [
                             Expanded(
@@ -364,17 +365,21 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
+                                  borderRadius: BorderRadius.circular(
+                                      AppDimension.isSmall ? 20.r : 16.r),
                                 ),
                                 child: SingleChildScrollView(
                                   child: Padding(
-                                    padding: EdgeInsets.all(AppDimension.isSmall ? 24.r : 16.r),
+                                    padding: EdgeInsets.all(
+                                        AppDimension.isSmall ? 24.r : 16.r),
                                     child: showSummary
                                         ? _buildSummary()
                                         : selectedOption == null
                                             ? Column(
                                                 children: paymentOptions.keys
-                                                    .map((title) => _buildPaymentOption(title))
+                                                    .map((title) =>
+                                                        _buildPaymentOption(
+                                                            title))
                                                     .toList(),
                                               )
                                             : _buildInputDetails(),
@@ -384,12 +389,15 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                             ),
                             if (selectedOption != null || showSummary)
                               Padding(
-                                padding: EdgeInsets.only(top: AppDimension.isSmall ? 24.h : 16.h),
+                                padding: EdgeInsets.only(
+                                    top: AppDimension.isSmall ? 24.h : 16.h),
                                 child: Text(
                                   'Please verify your account carefully to ensure we can transfer money successfully',
                                   textAlign: TextAlign.center,
                                   style: AppTextStyle.dmSans(
-                                    fontSize: AppDimension.isSmall ? 12.sp : 12.sp,
+                                    fontSize:
+                                        AppDimension.isSmall ? 12.sp : 12.sp,
+                                    fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -403,7 +411,8 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
               ),
               if (selectedOption != null || showSummary)
                 Padding(
-                  padding: EdgeInsets.only(top: AppDimension.isSmall ? 46.h : 44.h),
+                  padding:
+                      EdgeInsets.only(top: AppDimension.isSmall ? 46.h : 44.h),
                   child: AppButton(
                     text: 'Confirm',
                     textStyle: AppTextStyle.poppins(
@@ -443,4 +452,4 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
     _fullNameController.dispose();
     super.dispose();
   }
-} 
+}
