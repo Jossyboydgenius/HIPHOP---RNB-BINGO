@@ -7,7 +7,8 @@ import '../views/game_details_screen.dart';
 import '../views/input_code_screen.dart';
 import '../views/remote_game_details_screen.dart';
 import '../views/game_screen.dart';
-import '../views/demo_balance_screen.dart';
+// Import commented out for now, will be used later
+// import '../views/demo_balance_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -18,9 +19,10 @@ class AppRoutes {
   static const String inputCode = '/inputCode';
   static const String remoteGameDetails = '/remoteGameDetails';
   static const String gameScreen = '/gameScreen';
-  static const String demoBalance = '/demoBalance';
+  // Demo route commented out for now, will be used later
+  // static const String demoBalance = '/demoBalance';
 
-  static const String initialRoute = demoBalance;
+  static const String initialRoute = gameScreen;
 
   static Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
@@ -43,6 +45,7 @@ class AppRoutes {
     gameScreen: (context) {
       return const GameScreen();
     },
-    demoBalance: (context) => const DemoBalanceScreen(),
+    // Demo screen commented out for now, will be used later
+    // demoBalance: (context) => const DemoBalanceScreen(),
   };
 }
