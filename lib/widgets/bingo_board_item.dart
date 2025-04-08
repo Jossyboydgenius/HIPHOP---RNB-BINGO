@@ -10,7 +10,7 @@ import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 
-class BingoBoardItem extends StatelessWidget {
+class BingoBoardItem extends StatefulWidget {
   final String text;
   final BingoCategory category;
   final bool isCenter;
@@ -24,8 +24,48 @@ class BingoBoardItem extends StatelessWidget {
     required this.index,
   });
 
+  @override
+  State<BingoBoardItem> createState() => _BingoBoardItemState();
+}
+
+class _BingoBoardItemState extends State<BingoBoardItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
+  bool _showRipple = false;
+  final _rippleKey = GlobalKey<_RippleEffectState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Setup pulse animation
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    _pulseAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.08,
+    ).animate(
+      CurvedAnimation(
+        parent: _pulseController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _pulseController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
   Color get categoryColor {
-    switch (category) {
+    switch (widget.category) {
       case BingoCategory.B:
         return AppColors.deepBlue1;
       case BingoCategory.I:
@@ -40,7 +80,7 @@ class BingoBoardItem extends StatelessWidget {
   }
 
   String get categoryIcon {
-    switch (category) {
+    switch (widget.category) {
       case BingoCategory.B:
         return AppIconData.star3;
       case BingoCategory.I:
@@ -59,7 +99,7 @@ class BingoBoardItem extends StatelessWidget {
     switch (patternType) {
       case 'straightlineBingo':
         // Row check
-        final int row = index ~/ 5;
+        final int row = widget.index ~/ 5;
         bool isRowComplete = true;
         for (int col = 0; col < 5; col++) {
           if (!selectedItems.contains(row * 5 + col)) {
@@ -70,7 +110,7 @@ class BingoBoardItem extends StatelessWidget {
         if (isRowComplete) return true;
 
         // Column check
-        final int col = index % 5;
+        final int col = widget.index % 5;
         bool isColComplete = true;
         for (int row = 0; row < 5; row++) {
           if (!selectedItems.contains(row * 5 + col)) {
@@ -81,7 +121,7 @@ class BingoBoardItem extends StatelessWidget {
         if (isColComplete) return true;
 
         // Diagonal check (top-left to bottom-right)
-        if (index % 6 == 0 && index < 25) {
+        if (widget.index % 6 == 0 && widget.index < 25) {
           // Indexes 0, 6, 12, 18, 24
           bool isDiag1Complete = true;
           for (int i = 0; i < 5; i++) {
@@ -94,11 +134,11 @@ class BingoBoardItem extends StatelessWidget {
         }
 
         // Diagonal check (top-right to bottom-left)
-        if ((index == 4) ||
-            (index == 8) ||
-            (index == 12) ||
-            (index == 16) ||
-            (index == 20)) {
+        if ((widget.index == 4) ||
+            (widget.index == 8) ||
+            (widget.index == 12) ||
+            (widget.index == 16) ||
+            (widget.index == 20)) {
           bool isDiag2Complete = true;
           for (int i = 0; i < 5; i++) {
             if (!selectedItems.contains(i * 5 + (4 - i))) {
@@ -123,12 +163,15 @@ class BingoBoardItem extends StatelessWidget {
             selectedItems.contains(24);
 
         return isFourCorners &&
-            (index == 0 || index == 4 || index == 20 || index == 24);
+            (widget.index == 0 ||
+                widget.index == 4 ||
+                widget.index == 20 ||
+                widget.index == 24);
 
       case 'tShapeBingo':
         // Top row or middle column
-        final bool isTopRow = index < 5;
-        final bool isMiddleCol = index % 5 == 2;
+        final bool isTopRow = widget.index < 5;
+        final bool isMiddleCol = widget.index % 5 == 2;
         final bool isTPattern = selectedItems.contains(0) &&
             selectedItems.contains(1) &&
             selectedItems.contains(2) &&
@@ -143,13 +186,13 @@ class BingoBoardItem extends StatelessWidget {
 
       case 'xPatternBingo':
         // Diagonals - check if index is part of either diagonal
-        final bool isDiag1 =
-            index % 6 == 0 && index < 25; // Indexes 0, 6, 12, 18, 24
-        final bool isDiag2 = (index == 4) ||
-            (index == 8) ||
-            (index == 12) ||
-            (index == 16) ||
-            (index == 20);
+        final bool isDiag1 = widget.index % 6 == 0 &&
+            widget.index < 25; // Indexes 0, 6, 12, 18, 24
+        final bool isDiag2 = (widget.index == 4) ||
+            (widget.index == 8) ||
+            (widget.index == 12) ||
+            (widget.index == 16) ||
+            (widget.index == 20);
         final bool isXPattern = selectedItems.contains(0) &&
             selectedItems.contains(6) &&
             selectedItems.contains(12) &&
@@ -170,7 +213,7 @@ class BingoBoardItem extends StatelessWidget {
   /// Checks if the current index is part of a potential winning pattern (before user claims bingo)
   bool _isPartOfPotentialWinningPattern(
       List<int> selectedItems, String patternType) {
-    if (!selectedItems.contains(index)) {
+    if (!selectedItems.contains(widget.index)) {
       return false; // This cell isn't even selected, so it can't be part of a winning pattern
     }
 
@@ -185,8 +228,10 @@ class BingoBoardItem extends StatelessWidget {
           previous.selectedItems != current.selectedItems ||
           previous.hasWon != current.hasWon,
       builder: (context, state) {
-        final bool isCalled = isCenter || state.isItemCalled(text);
-        final bool isSelected = isCenter || state.isItemSelected(index);
+        final bool isCalled =
+            widget.isCenter || state.isItemCalled(widget.text);
+        final bool isSelected =
+            widget.isCenter || state.isItemSelected(widget.index);
         final bool isWinningItem = state.hasWon &&
             isSelected &&
             _isPartOfWinningPattern(state.selectedItems, state.winningPattern);
@@ -199,57 +244,96 @@ class BingoBoardItem extends StatelessWidget {
 
         // Determine if we should show the star icon for this item
         final bool showIcon =
-            isCenter || isWinningItem || isPotentialWinningItem;
+            widget.isCenter || isWinningItem || isPotentialWinningItem;
+
+        // Enable/disable pulse animation based on selection
+        if (isSelected && !widget.isCenter) {
+          if (_pulseController.status == AnimationStatus.dismissed) {
+            _pulseController.repeat(reverse: true);
+          }
+        } else {
+          if (_pulseController.status != AnimationStatus.dismissed) {
+            _pulseController.reset();
+          }
+        }
 
         // Create the item container without gesture detector
-        Widget itemContainer = Container(
-          decoration: BoxDecoration(
-            color: isSelected ? categoryColor : categoryColor.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: isSelected ? Colors.white : categoryColor,
-              width: 2.w,
-            ),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: categoryColor.withOpacity(0.5),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                    BoxShadow(
-                      color: categoryColor.withOpacity(0.3),
-                      blurRadius: 12,
-                      spreadRadius: 4,
-                    ),
-                  ]
-                : null,
-          ),
-          child: Center(
-            child: showIcon
-                ? AppIcons(
-                    icon: categoryIcon,
-                    size: 32.r,
-                  )
-                : Padding(
-                    padding: EdgeInsets.all(4.r),
-                    child: Text(
-                      text,
-                      style: AppTextStyle.mochiyPopOne(
-                        fontSize: 8.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
+        Widget itemContainer = AnimatedBuilder(
+          animation: _pulseAnimation,
+          builder: (context, child) {
+            return Transform.scale(
+              scale:
+                  isSelected && !widget.isCenter ? _pulseAnimation.value : 1.0,
+              child: Stack(
+                children: [
+                  // Main container
+                  Container(
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? categoryColor
+                          : categoryColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: isSelected ? Colors.white : categoryColor,
+                        width: 2.w,
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: categoryColor.withOpacity(0.5),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                              ),
+                              BoxShadow(
+                                color: categoryColor.withOpacity(0.3),
+                                blurRadius: 12,
+                                spreadRadius: 4,
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: Center(
+                      child: showIcon
+                          ? AppIcons(
+                              icon: categoryIcon,
+                              size: 32.r,
+                            )
+                          : Padding(
+                              padding: EdgeInsets.all(4.r),
+                              child: Text(
+                                widget.text,
+                                style: AppTextStyle.mochiyPopOne(
+                                  fontSize: 8.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                     ),
                   ),
-          ),
+
+                  // Ripple effect overlay
+                  if (_showRipple)
+                    RippleEffect(
+                      key: _rippleKey,
+                      color: categoryColor.withOpacity(0.5),
+                      onComplete: () {
+                        setState(() {
+                          _showRipple = false;
+                        });
+                      },
+                    ),
+                ],
+              ),
+            );
+          },
         );
 
         // If it's the center item, return it directly without gesture detector
-        if (isCenter) {
+        if (widget.isCenter) {
           return itemContainer;
         }
 
@@ -259,18 +343,103 @@ class BingoBoardItem extends StatelessWidget {
             // Play board tap sound with haptic feedback
             GameSoundService().playBoardTap();
 
-            print("BingoBoardItem tapped: $text, isCalled: $isCalled");
+            // Show ripple effect
+            setState(() {
+              _showRipple = true;
+            });
+
             if (isCalled) {
               context.read<BingoGameBloc>().add(
                     SelectBingoItem(
-                      text: text,
-                      category: category,
-                      index: index,
+                      text: widget.text,
+                      category: widget.category,
+                      index: widget.index,
                     ),
                   );
             }
           },
           child: itemContainer,
+        );
+      },
+    );
+  }
+}
+
+class RippleEffect extends StatefulWidget {
+  final Color color;
+  final VoidCallback onComplete;
+
+  const RippleEffect({
+    super.key,
+    required this.color,
+    required this.onComplete,
+  });
+
+  @override
+  State<RippleEffect> createState() => _RippleEffectState();
+}
+
+class _RippleEffectState extends State<RippleEffect>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _radiusAnimation;
+  late Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _radiusAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+      ),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 0.7, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+      ),
+    );
+
+    _controller.forward().then((_) => widget.onComplete());
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return Positioned.fill(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12.r),
+            child: Opacity(
+              opacity: _opacityAnimation.value,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: widget.color,
+                ),
+                // Use a FractionallySizedBox to animate from 0 to filling the parent
+                child: FractionallySizedBox(
+                  widthFactor: _radiusAnimation.value * 2,
+                  heightFactor: _radiusAnimation.value * 2,
+                  child: const SizedBox(),
+                ),
+              ),
+            ),
+          ),
         );
       },
     );
