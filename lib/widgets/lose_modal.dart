@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_button.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
@@ -11,6 +12,8 @@ import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 import 'package:hiphop_rnb_bingo/widgets/leaderboard/lose_leaderboard_modal.dart';
+import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoseModal extends StatefulWidget {
   final int round;
@@ -113,12 +116,22 @@ class _LoseModalState extends State<LoseModal> {
   }
 
   void _showLoseLeaderboard() {
+    // Close all existing modals first
+    Navigator.of(context).popUntil((route) => route.isFirst);
+
     // Show the leaderboard dialog
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => LoseLeaderboardModal(
-        onBackToHome: widget.onBackToHome,
+        onBackToHome: () {
+          // Reset the game and go back home
+          context.read<BingoGameBloc>().add(const ResetGame(isGameOver: true));
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/home',
+            (route) => false,
+          );
+        },
       ),
     );
   }
