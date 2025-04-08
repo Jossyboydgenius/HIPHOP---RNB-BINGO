@@ -14,6 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/widgets/leaderboard/winner_leaderboard_modal.dart';
+import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/balance/balance_event.dart';
 
 class VictoryModal extends StatefulWidget {
   final VoidCallback onClaimPrize;
@@ -101,6 +103,8 @@ class _VictoryModalState extends State<VictoryModal>
       barrierDismissible: false,
       builder: (context) => WinnerLeaderboardModal(
         totalAmount: _grandTotalPrize,
+        // Only update the balance if it hasn't been claimed yet
+        updateBalance: !_hasClaimed,
         onBackToHome: () {
           // Reset the game and go back home
           context.read<BingoGameBloc>().add(const ResetGame(isGameOver: true));
@@ -118,7 +122,21 @@ class _VictoryModalState extends State<VictoryModal>
     setState(() {
       _hasClaimed = true;
     });
+
+    // Update money balance when prize is claimed
+    _updateMoneyBalance(widget.prizeAmount);
+
     _proceedToNextRound();
+  }
+
+  void _updateMoneyBalance(int prizeAmount) {
+    // Get current money balance
+    final currentBalance = context.read<BalanceBloc>().state.moneyBalance;
+
+    // Update with new prize amount
+    context
+        .read<BalanceBloc>()
+        .add(UpdateMoneyBalance(currentBalance + prizeAmount));
   }
 
   void _showClaimPrizeSuccessModal() {
@@ -136,6 +154,9 @@ class _VictoryModalState extends State<VictoryModal>
           setState(() {
             _hasClaimed = true;
           });
+
+          // Update money balance when prize is claimed
+          _updateMoneyBalance(widget.prizeAmount);
 
           // Restart countdown from where it left off
           _startCountdown();
