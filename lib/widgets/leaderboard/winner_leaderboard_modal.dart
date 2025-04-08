@@ -10,6 +10,9 @@ import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_modal_container.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
 import 'package:hiphop_rnb_bingo/views/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/balance/balance_bloc.dart';
+import 'package:hiphop_rnb_bingo/blocs/balance/balance_event.dart';
 
 class PlayerScore {
   final String name;
@@ -28,11 +31,13 @@ class PlayerScore {
 class WinnerLeaderboardModal extends StatefulWidget {
   final double totalAmount;
   final VoidCallback? onBackToHome;
+  final bool updateBalance;
 
   const WinnerLeaderboardModal({
     super.key,
     required this.totalAmount,
     this.onBackToHome,
+    this.updateBalance = true,
   });
 
   @override
@@ -42,11 +47,36 @@ class WinnerLeaderboardModal extends StatefulWidget {
 class _WinnerLeaderboardModalState extends State<WinnerLeaderboardModal> {
   late List<PlayerScore> _leaderboard;
   final _soundService = GameSoundService();
+  bool _hasUpdatedBalance = false;
 
   @override
   void initState() {
     super.initState();
     _generateLeaderboard();
+
+    // Update the money balance on leaderboard display
+    if (widget.updateBalance && !_hasUpdatedBalance) {
+      _updateMoneyBalance();
+      _hasUpdatedBalance = true;
+    }
+  }
+
+  void _updateMoneyBalance() {
+    try {
+      // Get the current money balance from the bloc
+      final currentBalance = context.read<BalanceBloc>().state.moneyBalance;
+
+      // Add the total prize amount to the balance
+      final amountToAdd = widget.totalAmount.toInt();
+
+      if (amountToAdd > 0) {
+        context
+            .read<BalanceBloc>()
+            .add(UpdateMoneyBalance(currentBalance + amountToAdd));
+      }
+    } catch (e) {
+      print('Error updating money balance in leaderboard: $e');
+    }
   }
 
   void _generateLeaderboard() {
