@@ -7,6 +7,8 @@ import '../views/game_details_screen.dart';
 import '../views/input_code_screen.dart';
 import '../views/remote_game_details_screen.dart';
 import '../views/game_screen.dart';
+// Import commented out for now, will be used later
+// import '../views/demo_balance_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -17,6 +19,8 @@ class AppRoutes {
   static const String inputCode = '/inputCode';
   static const String remoteGameDetails = '/remoteGameDetails';
   static const String gameScreen = '/gameScreen';
+  // Demo route commented out for now, will be used later
+  // static const String demoBalance = '/demoBalance';
 
   static const String initialRoute = gameScreen;
 
@@ -41,5 +45,7 @@ class AppRoutes {
     gameScreen: (context) {
       return const GameScreen();
     },
+    // Demo screen commented out for now, will be used later
+    // demoBalance: (context) => const DemoBalanceScreen(),
   };
 }
