@@ -8,15 +8,16 @@ plugins {
 android {
     namespace = "com.hiphopandrnb.hiphop_rnb_bingo"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "28.0.12916984"
+    ndkPath = "/Users/dreytech/Library/Android/sdk/ndk/28.0.12916984"
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
     
     tasks.withType(JavaCompile) {

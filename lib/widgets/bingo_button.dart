@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
+import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
 
 class BingoButton extends StatefulWidget {
   final VoidCallback onPressed;
@@ -66,13 +67,23 @@ class _BingoButtonState extends State<BingoButton>
       onTapCancel: _handleTapCancel,
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: Padding(
+        child: Container(
           padding: EdgeInsets.symmetric(horizontal: 62.w),
-          child: AppImages(
-            imagePath: AppImageData.bingoButton,
-            // width: AppDimension.isSmall ? 120.w : 120.w,
-            height: AppDimension.isSmall ? 220.h : 220.h,
-            // fit: BoxFit.contain,
+          child: Container(
+            decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.darkPurple4,
+                  blurRadius: 70,
+                  spreadRadius: 3,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: AppImages(
+              imagePath: AppImageData.bingoButton,
+              height: AppDimension.isSmall ? 220.h : 220.h,
+            ),
           ),
         ),
       ),

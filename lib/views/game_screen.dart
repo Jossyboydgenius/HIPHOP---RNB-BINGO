@@ -305,37 +305,7 @@ class _GameScreenState extends State<GameScreen>
           child: SafeArea(
             child: Stack(
               children: [
-                Column(
-                  children: [
-                    // Top Bar with game title, timer, and player count
-                    GameTopBar(
-                      currentRound: _currentRound,
-                      maxRounds: _maxRounds,
-                      timePerRound: _timePerRound,
-                      timerKey: _timerKey,
-                      onRoundComplete: _onRoundComplete,
-                      onTimeExpired: _onTimeExpired,
-                    ),
-
-                    SizedBox(height: 16.h),
-
-                    // Called Board Container
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: const CalledBoardsContainer(),
-                    ),
-
-                    SizedBox(height: 16.h),
-
-                    // Bingo Board Box Container
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: const BingoBoardBoxContainer(),
-                    ),
-                  ],
-                ),
-
-                // Positioned Bingo Button
+                // Positioned Bingo Button - Now at the BOTTOM of the stack
                 Positioned(
                   left: 0,
                   right: 0,
@@ -367,7 +337,7 @@ class _GameScreenState extends State<GameScreen>
                                     ),
                                   ),
                                 ),
-                                backgroundColor: Colors.black,
+                                backgroundColor: Colors.transparent,
                                 elevation: 0,
                               ),
                             );
@@ -376,6 +346,37 @@ class _GameScreenState extends State<GameScreen>
                       );
                     },
                   ),
+                ),
+
+                // Main column of game content - Now above the bingo button
+                Column(
+                  children: [
+                    // Top Bar with game title, timer, and player count
+                    GameTopBar(
+                      currentRound: _currentRound,
+                      maxRounds: _maxRounds,
+                      timePerRound: _timePerRound,
+                      timerKey: _timerKey,
+                      onRoundComplete: _onRoundComplete,
+                      onTimeExpired: _onTimeExpired,
+                    ),
+
+                    SizedBox(height: 16.h),
+
+                    // Called Board Container
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: const CalledBoardsContainer(),
+                    ),
+
+                    SizedBox(height: 16.h),
+
+                    // Bingo Board Box Container
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: const BingoBoardBoxContainer(),
+                    ),
+                  ],
                 ),
 
                 // Pattern change notification

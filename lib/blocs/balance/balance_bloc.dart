@@ -11,5 +11,9 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
     on<UpdateBoardBalance>((event, emit) {
       emit(state.copyWith(boardBalance: event.newBalance));
     });
+
+    on<UpdateMoneyBalance>((event, emit) {
+      emit(state.copyWith(moneyBalance: event.newBalance));
+    });
   }
-} 
+}
