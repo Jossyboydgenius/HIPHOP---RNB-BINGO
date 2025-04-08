@@ -11,12 +11,14 @@ import 'package:hiphop_rnb_bingo/widgets/bingo_button.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
 import 'package:hiphop_rnb_bingo/widgets/victory_modal.dart';
+import 'package:hiphop_rnb_bingo/widgets/exit_confirmation_modal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_bloc.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_event.dart';
 import 'package:hiphop_rnb_bingo/blocs/bingo_game/bingo_game_state.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 import 'package:hiphop_rnb_bingo/services/game_sound_service.dart';
+import 'package:hiphop_rnb_bingo/routes/app_routes.dart';
 
 // Import our new components
 import 'package:hiphop_rnb_bingo/widgets/game_components/game_top_bar.dart';
@@ -127,6 +129,29 @@ class _GameScreenState extends State<GameScreen>
     }
   }
 
+  // Show exit confirmation dialog
+  void _showExitConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ExitConfirmationModal(
+        title: 'Exit Game',
+        message:
+            'Are you sure you want to exit the current game? \n Your progress will be lost.',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        exitApp: false,
+        onClose: () {
+          // Do nothing on close, modal will be dismissed
+        },
+        onConfirm: () {
+          // Navigate back to the previous screen
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        },
+      ),
+    );
+  }
+
   // Method to handle round completion
   void _onRoundComplete(bool didWin, int currentRound) {
     if (didWin) {
@@ -201,7 +226,10 @@ class _GameScreenState extends State<GameScreen>
       await _tooltipController.hideTooltip();
       return false;
     }
-    return true;
+
+    // Show exit confirmation dialog
+    _showExitConfirmation(context);
+    return false;
   }
 
   // void _handleFullScreenTap() {
