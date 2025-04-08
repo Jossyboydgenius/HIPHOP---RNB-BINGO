@@ -52,8 +52,8 @@ class AppImageData {
   static const String straightlineBingo = '$_base/straightline-bingo.png';
   static const String tShapeBingo = '$_base/T-shape-bingo.png';
   static const String xPatternBingo = '$_base/X-pattern-bingo.png';
-  // static const String uShapeBingo = '$_base/U-shape-bingo.png';
-  // static const String lShapeBingo = '$_base/L-shape-bingo.png';
+  static const String uShapeBingo = '$_base/U-shape-bingo.png';
+  static const String lShapeBingo = '$_base/L-shape-bingo.png';
   static const String send = '$_base/send.png';
   static const String close = '$_base/close.png';
 
