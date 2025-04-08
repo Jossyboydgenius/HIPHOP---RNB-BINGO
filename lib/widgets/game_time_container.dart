@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_colors.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_images.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_text_style.dart';
@@ -134,20 +133,11 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
       // Play correct bingo sound
       _soundService.playCorrectBingo();
 
-      // Show loading spinner for 3 seconds before advancing to next round
-      setState(() {
-        _isLoading = true;
-      });
-
-      // Show success message first
-      _showRoundSuccessMessage();
-
-      // After 3 seconds, advance to next round
-      _loadingTimer = Timer(const Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-
+      // No longer show loading spinner - just handle round advancement
+      if (_currentRound < widget.maxRounds) {
+        // After a delay, advance to next round
+        _loadingTimer = Timer(const Duration(seconds: 3), () {
+          if (mounted) {
             if (_currentRound < widget.maxRounds) {
               // Move to next round
               _currentRound++;
@@ -167,62 +157,25 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
               _soundService.playPrizeWin();
 
               widget.onRoundComplete?.call(true, _currentRound);
-              _showGameCompleteMessage();
             }
-          });
-        }
-      });
+          }
+        });
+      } else {
+        // Player completed all rounds
+        // Play prize win sound
+        _soundService.playPrizeWin();
+
+        widget.onRoundComplete?.call(true, _currentRound);
+      }
     }
   }
 
   void _showRoundSuccessMessage() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Container(
-          padding: EdgeInsets.all(16.r),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Text(
-            "Round complete! Moving to round ${_currentRound + 1}",
-            style: AppTextStyle.mochiyPopOne(
-              fontSize: 12.sp,
-              color: Colors.black,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        duration: const Duration(seconds: 3),
-      ),
-    );
+    // No longer needed - removing this message
   }
 
   void _showGameCompleteMessage() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Container(
-          padding: EdgeInsets.all(16.r),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Text(
-            "Congratulations! You completed all rounds!",
-            style: AppTextStyle.mochiyPopOne(
-              fontSize: 12.sp,
-              color: Colors.black,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        duration: const Duration(seconds: 3),
-      ),
-    );
+    // No longer needed - removing this message
   }
 
   String get _timeString {
@@ -285,28 +238,14 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(width: AppDimension.isSmall ? 14.w : 16.w),
-                _isLoading
-                    ? SizedBox(
-                        width: 50.w,
-                        child: Center(
-                          child: SizedBox(
-                            height: 15.h,
-                            width: 15.w,
-                            child: SpinKitCubeGrid(
-                              size: 15.w,
-                              color: AppColors.yellowPrimary,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Text(
-                        '$_timeString ($_currentRound)',
-                        style: AppTextStyle.mochiyPopOne(
-                          fontSize: AppDimension.isSmall ? 10.sp : 10.sp,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      ),
+                Text(
+                  '$_timeString ($_currentRound)',
+                  style: AppTextStyle.mochiyPopOne(
+                    fontSize: AppDimension.isSmall ? 10.sp : 10.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
+                ),
               ],
             ),
           ),
