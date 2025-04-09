@@ -22,7 +22,7 @@ class AppRoutes {
   // Demo route commented out for now, will be used later
   // static const String demoBalance = '/demoBalance';
 
-  static const String initialRoute = gameScreen;
+  static const String initialRoute = splash;
 
   static Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
