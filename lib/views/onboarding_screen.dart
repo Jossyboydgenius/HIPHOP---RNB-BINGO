@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
+import 'dart:io' show Platform;
 import '../widgets/app_background.dart';
 import '../widgets/app_button.dart';
 import '../widgets/app_images.dart';
@@ -12,6 +14,13 @@ import '../enums/modal_type.dart';
 import '../routes/app_routes.dart';
 import '../widgets/app_sizer.dart';
 import '../widgets/exit_confirmation_modal.dart';
+import '../services/google_auth_service.dart';
+import '../services/apple_auth_service.dart';
+import '../services/facebook_auth_service.dart';
+import '../blocs/auth/auth_bloc.dart';
+import '../blocs/auth/auth_event.dart';
+import '../blocs/auth/auth_state.dart';
+import '../app/locator.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -23,6 +32,11 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   ModalType? _currentModal;
   bool _isModalVisible = false;
+  bool _isLoading = false;
+  final GoogleAuthService _googleAuthService = locator<GoogleAuthService>();
+  final AppleAuthService _appleAuthService = locator<AppleAuthService>();
+  final FacebookAuthService _facebookAuthService =
+      locator<FacebookAuthService>();
 
   void _showModal(ModalType type) {
     setState(() {
@@ -65,7 +79,108 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
+  Future<void> _handleGoogleSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final token = await _googleAuthService.signIn();
+
+      if (token != null && mounted) {
+        context.read<AuthBloc>().add(SignInWithGoogle(token));
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Google sign-in cancelled or failed')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Google sign-in error: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleAppleSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final token = await _appleAuthService.signIn();
+
+      if (token != null && mounted) {
+        context.read<AuthBloc>().add(SignInWithApple(token));
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Apple sign-in cancelled or failed')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Apple sign-in error: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  // TODO: Implement Facebook authentication
+  Future<void> _handleFacebookSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final token = await _facebookAuthService.signIn();
+
+      if (token != null && mounted) {
+        context.read<AuthBloc>().add(SignInWithFacebook(token));
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Facebook sign-in cancelled or failed')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Facebook sign-in error: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   Widget _buildModalContent(ModalType type) {
+    // Determine if we're on iOS to show Apple sign-in option
+    final bool isIOS = Platform.isIOS;
+
     return Column(
       children: [
         SizedBox(height: AppDimension.isSmall ? 14.h : 12.h),
@@ -89,9 +204,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 textColor: Colors.black,
                 fontFamily: AppTextStyle.dmSansFont,
                 fontSize: AppDimension.getFontSize(12).sp,
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                },
+                onPressed: _isLoading ? null : _handleGoogleSignIn,
               ),
               SizedBox(height: AppDimension.isSmall ? 12.h : 8.h),
               AppButton(
@@ -109,30 +222,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 textColor: Colors.black,
                 fontFamily: AppTextStyle.dmSansFont,
                 fontSize: AppDimension.getFontSize(12).sp,
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                },
+                onPressed: _isLoading ? null : _handleFacebookSignIn,
               ),
-              SizedBox(height: AppDimension.isSmall ? 12.h : 8.h),
-              AppButton(
-                text: 'Apple',
-                iconPath: AppIconData.apple,
-                iconSize: AppDimension.isSmall ? 18.sp : 20.sp,
-                fillColor: AppColors.purpleOverlay,
-                layerColor: Colors.white,
-                height: AppDimension.isSmall ? 48.h : 44.h,
-                hasBorder: true,
-                layerTopPosition: 0,
-                layerHeight: AppDimension.isSmall ? 38.h : 34.h,
-                borderRadius: 100,
-                borderColor: Colors.white,
-                textColor: Colors.black,
-                fontFamily: AppTextStyle.dmSansFont,
-                fontSize: AppDimension.getFontSize(12).sp,
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                },
-              ),
+              // Only show Apple sign-in button on iOS devices
+              if (isIOS) ...[
+                SizedBox(height: AppDimension.isSmall ? 12.h : 8.h),
+                AppButton(
+                  text: 'Apple',
+                  iconPath: AppIconData.apple,
+                  iconSize: AppDimension.isSmall ? 18.sp : 20.sp,
+                  fillColor: AppColors.purpleOverlay,
+                  layerColor: Colors.white,
+                  height: AppDimension.isSmall ? 48.h : 44.h,
+                  hasBorder: true,
+                  layerTopPosition: 0,
+                  layerHeight: AppDimension.isSmall ? 38.h : 34.h,
+                  borderRadius: 100,
+                  borderColor: Colors.white,
+                  textColor: Colors.black,
+                  fontFamily: AppTextStyle.dmSansFont,
+                  fontSize: AppDimension.getFontSize(12).sp,
+                  onPressed: _isLoading ? null : _handleAppleSignIn,
+                ),
+              ],
             ],
           ),
         ),
@@ -174,127 +286,162 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Show exit confirmation dialog instead of navigating back
-        _showExitConfirmation(context);
-        return false;
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.authenticated) {
+          // Navigate to home screen on successful authentication
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        } else if (state.status == AuthStatus.error) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(state.errorMessage ?? 'Authentication failed')),
+          );
+
+          // Close the loading state
+          setState(() {
+            _isLoading = false;
+          });
+        }
       },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            AppBackground(
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    const Spacer(),
-                    AppImages(
-                      imagePath: AppImageData.bingo,
-                      height: AppDimension.isSmall ? 280.h : 200.h,
-                    ),
-                    SizedBox(height: AppDimension.isSmall ? 80.h : 60.h),
-                    Container(
-                      margin: EdgeInsets.only(
-                          bottom: AppDimension.isSmall ? 120.h : 168.h),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            AppButton(
-                              text: 'Sign In',
-                              textStyle: AppTextStyle.poppins(
-                                fontSize: AppDimension.getFontSize(18).sp,
+      child: WillPopScope(
+        onWillPop: () async {
+          // Show exit confirmation dialog instead of navigating back
+          _showExitConfirmation(context);
+          return false;
+        },
+        child: Scaffold(
+          body: Stack(
+            children: [
+              AppBackground(
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      const Spacer(),
+                      AppImages(
+                        imagePath: AppImageData.bingo,
+                        height: AppDimension.isSmall ? 280.h : 200.h,
+                      ),
+                      SizedBox(height: AppDimension.isSmall ? 80.h : 60.h),
+                      Container(
+                        margin: EdgeInsets.only(
+                            bottom: AppDimension.isSmall ? 120.h : 168.h),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              AppButton(
+                                text: 'Sign In',
+                                textStyle: AppTextStyle.poppins(
+                                  fontSize: AppDimension.getFontSize(18).sp,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                ),
+                                fillColor: AppColors.yellowDark,
+                                layerColor: AppColors.yellowPrimary,
+                                height: AppDimension.isSmall ? 70.h : 50.h,
+                                width: AppDimension.isSmall ? 280.w : 240.w,
+                                hasBorder: true,
+                                layerTopPosition: -1.h,
+                                layerHeight: AppDimension.isSmall ? 58.h : 42.h,
+                                borderWidth: AppDimension.isSmall ? 2.w : 2.w,
+                                borderRadius:
+                                    AppDimension.isSmall ? 24.r : 18.r,
+                                fontFamily: AppTextStyle.poppinsFont,
+                                fontSize: AppDimension.isSmall ? 24.sp : 20.sp,
                                 fontWeight: FontWeight.w900,
-                                color: Colors.white,
+                                onPressed: () => _showModal(ModalType.signIn),
                               ),
-                              fillColor: AppColors.yellowDark,
-                              layerColor: AppColors.yellowPrimary,
-                              height: AppDimension.isSmall ? 70.h : 50.h,
-                              width: AppDimension.isSmall ? 280.w : 240.w,
-                              hasBorder: true,
-                              layerTopPosition: -1.h,
-                              layerHeight: AppDimension.isSmall ? 58.h : 42.h,
-                              borderWidth: AppDimension.isSmall ? 2.w : 2.w,
-                              borderRadius: AppDimension.isSmall ? 24.r : 18.r,
-                              fontFamily: AppTextStyle.poppinsFont,
-                              fontSize: AppDimension.isSmall ? 24.sp : 20.sp,
-                              fontWeight: FontWeight.w900,
-                              onPressed: () => _showModal(ModalType.signIn),
-                            ),
-                            SizedBox(
-                                height: AppDimension.isSmall ? 22.h : 22.h),
-                            AppButton(
-                              text: 'Sign Up',
-                              textStyle: AppTextStyle.poppins(
-                                fontSize: AppDimension.getFontSize(18).sp,
+                              SizedBox(
+                                  height: AppDimension.isSmall ? 22.h : 22.h),
+                              AppButton(
+                                text: 'Sign Up',
+                                textStyle: AppTextStyle.poppins(
+                                  fontSize: AppDimension.getFontSize(18).sp,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                ),
+                                fillColor: AppColors.purpleDark,
+                                layerColor: AppColors.purplePrimary,
+                                height: AppDimension.isSmall ? 70.h : 50.h,
+                                width: AppDimension.isSmall ? 280.w : 240.w,
+                                hasBorder: true,
+                                layerTopPosition: -1.h,
+                                layerHeight: AppDimension.isSmall ? 58.h : 42.h,
+                                borderWidth: AppDimension.isSmall ? 2.w : 2.w,
+                                borderRadius:
+                                    AppDimension.isSmall ? 24.r : 18.r,
+                                fontFamily: AppTextStyle.poppinsFont,
+                                fontSize: AppDimension.isSmall ? 24.sp : 20.sp,
                                 fontWeight: FontWeight.w900,
-                                color: Colors.white,
+                                onPressed: () => _showModal(ModalType.signUp),
                               ),
-                              fillColor: AppColors.purpleDark,
-                              layerColor: AppColors.purplePrimary,
-                              height: AppDimension.isSmall ? 70.h : 50.h,
-                              width: AppDimension.isSmall ? 280.w : 240.w,
-                              hasBorder: true,
-                              layerTopPosition: -1.h,
-                              layerHeight: AppDimension.isSmall ? 58.h : 42.h,
-                              borderWidth: AppDimension.isSmall ? 2.w : 2.w,
-                              borderRadius: AppDimension.isSmall ? 24.r : 18.r,
-                              fontFamily: AppTextStyle.poppinsFont,
-                              fontSize: AppDimension.isSmall ? 24.sp : 20.sp,
-                              fontWeight: FontWeight.w900,
-                              onPressed: () => _showModal(ModalType.signUp),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: AppDimension.isSmall ? 30.h : 20.h),
-                  ],
+                      SizedBox(height: AppDimension.isSmall ? 30.h : 20.h),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if (_currentModal != null)
-              AnimatedOpacity(
-                opacity: _isModalVisible ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 200),
-                child: Container(
-                  color: Colors.black54,
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: AppDimension.getResponsiveWidth(20).w),
-                      child: Center(
-                        child: AppModalContainer(
-                          width: AppDimension.isSmall ? 320.w : 280.w,
-                          height: AppDimension.isSmall ? 420.h : 300.h,
-                          fillColor: _currentModal == ModalType.signIn
-                              ? AppColors.yellowPrimary
-                              : AppColors.purplePrimary,
-                          borderColor: _currentModal == ModalType.signIn
-                              ? AppColors.yellowLight
-                              : AppColors.purpleLight,
-                          layerColor: _currentModal == ModalType.signIn
-                              ? AppColors.yellowDark
-                              : AppColors.purpleDark,
-                          layerTopPosition: -4,
-                          borderRadius: 32,
-                          title: _currentModal == ModalType.signIn
-                              ? 'Sign In'
-                              : 'Sign Up',
-                          titleStyle: AppTextStyle.poppins(
-                            fontSize: AppDimension.getFontSize(22).sp,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
+              if (_currentModal != null)
+                AnimatedOpacity(
+                  opacity: _isModalVisible ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Container(
+                    color: Colors.black54,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: AppDimension.getResponsiveWidth(20).w),
+                        child: Center(
+                          child: AppModalContainer(
+                            width: AppDimension.isSmall ? 320.w : 280.w,
+                            // Adjust height based on platform to accommodate for fewer buttons on Android
+                            height: AppDimension.isSmall
+                                ? (Platform.isIOS ? 380.h : 320.h)
+                                : (Platform.isIOS ? 300.h : 250.h),
+                            fillColor: _currentModal == ModalType.signIn
+                                ? AppColors.yellowPrimary
+                                : AppColors.purplePrimary,
+                            borderColor: _currentModal == ModalType.signIn
+                                ? AppColors.yellowLight
+                                : AppColors.purpleLight,
+                            layerColor: _currentModal == ModalType.signIn
+                                ? AppColors.yellowDark
+                                : AppColors.purpleDark,
+                            layerTopPosition: -4,
+                            borderRadius: 32,
+                            title: _currentModal == ModalType.signIn
+                                ? 'Sign In'
+                                : 'Sign Up',
+                            titleStyle: AppTextStyle.poppins(
+                              fontSize: AppDimension.getFontSize(22).sp,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                            onClose: _hideModal,
+                            child: _buildModalContent(_currentModal!),
                           ),
-                          onClose: _hideModal,
-                          child: _buildModalContent(_currentModal!),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-          ],
+              // Loading overlay
+              if (_isLoading)
+                Container(
+                  color: Colors.black54,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.yellowPrimary),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
