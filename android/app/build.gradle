@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.hiphopandrnb.hiphop_rnb_bingo"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = "28.0.12916984"
     ndkPath = "/Users/dreytech/Library/Android/sdk/ndk/28.0.12916984"
 

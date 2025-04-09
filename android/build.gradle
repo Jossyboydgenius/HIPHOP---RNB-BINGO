@@ -4,9 +4,19 @@ allprojects {
         mavenCentral()
     }
     
+    project.plugins.withId('com.android.application') {
+        project.android.buildTypes.debug.manifestPlaceholders = [
+            appAuthRedirectScheme: 'signinwithapple'
+        ]
+        project.android.buildTypes.release.manifestPlaceholders = [
+            appAuthRedirectScheme: 'signinwithapple'
+        ]
+    }
+    
     project.plugins.withId('com.android.library') {
         android {
             ndkVersion "28.0.12916984"
+            compileSdkVersion 34
         }
     }
     
@@ -25,6 +35,7 @@ subprojects {
     afterEvaluate {
         if (project.hasProperty('android')) {
             android {
+                compileSdkVersion 34
                 compileOptions {
                     sourceCompatibility JavaVersion.VERSION_17
                     targetCompatibility JavaVersion.VERSION_17
