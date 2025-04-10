@@ -35,7 +35,7 @@ class _RemoteGameDetailsScreenState extends State<RemoteGameDetailsScreen> {
   bool _isWaiting = false;
   bool _canStart = false;
   bool _hasPaid = false;
-  int _remainingSeconds = 60;
+  int _remainingSeconds = 5;
   Timer? _timer;
 
   @override
