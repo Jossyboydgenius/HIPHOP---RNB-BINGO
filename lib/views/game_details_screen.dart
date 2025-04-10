@@ -28,7 +28,7 @@ class GameDetailsScreen extends StatefulWidget {
 class _GameDetailsScreenState extends State<GameDetailsScreen> {
   bool _isWaiting = false;
   bool _canStart = false;
-  int _remainingSeconds = 60; // 1 minute countdown
+  int _remainingSeconds = 5; // 5 seconds countdown
   Timer? _timer;
 
   @override
