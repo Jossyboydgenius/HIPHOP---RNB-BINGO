@@ -522,7 +522,7 @@ class _BingoBoardItemState extends State<BingoBoardItem>
                                   child: Container(
                                     width: 6,
                                     height: 6,
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Colors.white,
                                       shape: BoxShape.circle,
                                     ),
