@@ -93,7 +93,8 @@ class MyApp extends StatelessWidget {
             AppDimension.init(context);
             return MediaQuery(
               // Prevent system text scaling from affecting our app
-              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(1.0)),
               child: widget!,
             );
           },
