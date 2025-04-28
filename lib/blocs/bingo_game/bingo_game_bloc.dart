@@ -48,11 +48,6 @@ class BingoGameBloc extends Bloc<BingoGameEvent, BingoGameState> {
     return patterns[Random().nextInt(patterns.length)];
   }
 
-  @override
-  Future<void> close() {
-    return super.close();
-  }
-
   // Shuffle to a new pattern different from the current one
   String _shuffleWinningPattern() {
     String newPattern;
