@@ -147,7 +147,7 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
               _soundService.playNewRound();
 
               // Reset the game state (keep the winning pattern)
-              context.read<BingoGameBloc>().add(ResetGame());
+              context.read<BingoGameBloc>().add(const ResetGame());
 
               // Start the timer for next round
               _startTimer();
@@ -168,14 +168,6 @@ class _GameTimeContainerState extends State<GameTimeContainer> {
         widget.onRoundComplete?.call(true, _currentRound);
       }
     }
-  }
-
-  void _showRoundSuccessMessage() {
-    // No longer needed - removing this message
-  }
-
-  void _showGameCompleteMessage() {
-    // No longer needed - removing this message
   }
 
   String get _timeString {
