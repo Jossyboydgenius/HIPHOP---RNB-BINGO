@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hiphop_rnb_bingo/widgets/app_sizer.dart';
-import 'dart:ui';
 import 'app_modal_container.dart';
 import 'app_colors.dart';
 import 'app_icons.dart';
@@ -32,7 +31,7 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final int maxLength = 250;
-  
+
   // Add this list to store chat messages
   final List<Map<String, dynamic>> messages = [
     {
@@ -43,14 +42,16 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
       'isMe': false,
     },
     {
-      'message': 'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit',
+      'message':
+          'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit',
       'senderName': 'John Doe',
       'senderInitials': 'JD',
       'time': '00:05',
       'isMe': false,
     },
     {
-      'message': 'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit',
+      'message':
+          'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit, Lorem ipsum dolor sit amet, Lorem ipsum dolor sit',
       'senderName': 'Me',
       'senderInitials': 'JD', // Use widget.userInitials here
       'time': 'Just Now',
@@ -118,10 +119,12 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
         Expanded(
           child: Container(
             height: AppDimension.isSmall ? 72.h : 62.h,
-            padding: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 16.w : 12.w),
+            padding: EdgeInsets.symmetric(
+                horizontal: AppDimension.isSmall ? 16.w : 12.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
+              borderRadius:
+                  BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
             ),
             child: Material(
               color: Colors.transparent,
@@ -145,7 +148,8 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                       ),
                       border: InputBorder.none,
                       counterText: '',
-                      contentPadding: EdgeInsets.only(right: AppDimension.isSmall ? 4.w : 2.w),
+                      contentPadding: EdgeInsets.only(
+                          right: AppDimension.isSmall ? 4.w : 2.w),
                     ),
                     onChanged: (_) => setState(() {}),
                   ),
@@ -173,13 +177,14 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
           height: AppDimension.isSmall ? 72.h : 62.h,
           child: AppButton(
             text: '',
-            onPressed: _messageController.text.isEmpty ? null : _handleSendMessage,
-            fillColor: _messageController.text.isEmpty 
-              ? AppColors.grayDark 
-              : AppColors.greenDark,
-            layerColor: _messageController.text.isEmpty 
-              ? AppColors.grayLight 
-              : AppColors.greenBright,
+            onPressed:
+                _messageController.text.isEmpty ? null : _handleSendMessage,
+            fillColor: _messageController.text.isEmpty
+                ? AppColors.grayDark
+                : AppColors.greenDark,
+            layerColor: _messageController.text.isEmpty
+                ? AppColors.grayLight
+                : AppColors.greenBright,
             borderColor: Colors.white,
             hasBorder: true,
             borderWidth: AppDimension.isSmall ? 3.w : 2.w,
@@ -226,17 +231,20 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 14.w : 16.w),
+            padding: EdgeInsets.symmetric(
+                horizontal: AppDimension.isSmall ? 14.w : 16.w),
             child: _buildHeader(),
           ),
           SizedBox(height: AppDimension.isSmall ? 14.h : 16.h),
           Expanded(
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: AppDimension.isSmall ? 14.w : 16.w),
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppDimension.isSmall ? 14.w : 16.w),
               padding: EdgeInsets.all(AppDimension.isSmall ? 14.r : 16.r),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
+                borderRadius:
+                    BorderRadius.circular(AppDimension.isSmall ? 20.r : 16.r),
               ),
               child: Column(
                 children: [
@@ -260,9 +268,11 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
                             senderInitials: message['senderInitials'],
                             time: message['time'],
                             isMe: message['isMe'],
-                            onProfileTap: message['isMe'] ? null : () {
-                              // Handle profile tap for reporting/muting
-                            },
+                            onProfileTap: message['isMe']
+                                ? null
+                                : () {
+                                    // Handle profile tap for reporting/muting
+                                  },
                           );
                         }).toList(),
                       ),
@@ -277,7 +287,8 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
               left: AppDimension.isSmall ? 14.w : 16.w,
               right: AppDimension.isSmall ? 14.w : 16.w,
               top: AppDimension.isSmall ? 14.h : 16.h,
-              bottom: MediaQuery.of(context).viewInsets.bottom + (AppDimension.isSmall ? 16.h : 10.h),
+              bottom: MediaQuery.of(context).viewInsets.bottom +
+                  (AppDimension.isSmall ? 16.h : 10.h),
             ),
             child: _buildChatInput(),
           ),
@@ -299,7 +310,7 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
         });
       });
       _messageController.clear();
-      
+
       // Scroll to bottom with animation
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollController.animateTo(
@@ -310,4 +321,4 @@ class _ChatRoomModalState extends State<ChatRoomModal> {
       });
     }
   }
-} 
+}
