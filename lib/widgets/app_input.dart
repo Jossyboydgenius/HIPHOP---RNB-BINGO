@@ -36,7 +36,8 @@ class AppInput extends StatelessWidget {
     this.showShadow = true,
   });
 
-  void _showDropdown(BuildContext context, List<String> items, TextEditingController controller) {
+  void _showDropdown(BuildContext context, List<String> items,
+      TextEditingController controller) {
     final RenderBox button = context.findRenderObject() as RenderBox;
     final Offset position = button.localToGlobal(Offset.zero);
 
@@ -69,7 +70,7 @@ class AppInput extends StatelessWidget {
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.grayDark),
+        side: const BorderSide(color: AppColors.grayDark),
       ),
     ).then((value) {
       if (value != null) {
@@ -89,29 +90,33 @@ class AppInput extends StatelessWidget {
           width: 3.w,
         ),
         color: Colors.white,
-        boxShadow: showShadow ? [
-          BoxShadow(
-            color: AppColors.grayDark.withOpacity(0.15),
-            blurRadius: 12.r,
-            offset: Offset(0, 6.h),
-            spreadRadius: 2.r,
-          ),
-        ] : null,
+        boxShadow: showShadow
+            ? [
+                BoxShadow(
+                  color: AppColors.grayDark.withOpacity(0.15),
+                  blurRadius: 12.r,
+                  offset: Offset(0, 6.h),
+                  spreadRadius: 2.r,
+                ),
+              ]
+            : null,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: readOnly && onTap != null ? () {
-            if (showDropdown) {
-              _showDropdown(
-                context,
-                ['Male', 'Female'],
-                controller,
-              );
-            } else {
-              onTap!();
-            }
-          } : null,
+          onTap: readOnly && onTap != null
+              ? () {
+                  if (showDropdown) {
+                    _showDropdown(
+                      context,
+                      ['Male', 'Female'],
+                      controller,
+                    );
+                  } else {
+                    onTap!();
+                  }
+                }
+              : null,
           borderRadius: BorderRadius.circular(12.r),
           child: Center(
             child: Row(
@@ -162,4 +167,4 @@ class AppInput extends StatelessWidget {
       ),
     );
   }
-} 
+}
