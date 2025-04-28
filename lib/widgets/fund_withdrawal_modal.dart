@@ -162,7 +162,7 @@ class _FundWithdrawalModalState extends State<FundWithdrawalModal> {
                 ),
               ],
             ),
-            Container(
+            SizedBox(
               height: 32,
               child: TextButton(
                 onPressed: () {
