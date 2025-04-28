@@ -24,7 +24,7 @@ class _CalledBoardsContainerState extends State<CalledBoardsContainer> {
 
   final Random _random = Random();
   Timer? _timer;
-  List<String> _animatedItems = [];
+  final List<String> _animatedItems = [];
 
   @override
   void initState() {
